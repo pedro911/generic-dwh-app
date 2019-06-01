@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -12,12 +13,16 @@ import javax.persistence.Table;
 @Setter
 @AllArgsConstructor
 @Entity
-@Table(name = "dimension_hierarchy")
-public class DimensionHierarchy extends BaseEntity {
+@Table(name = "fact")
+public class Fact extends BaseEntity {
 
     @ManyToOne
-    private Dimension parent;
+    private ReferenceObject referenceObject;
 
     @ManyToOne
-    private Dimension child;
+    private Ratio ratio;
+
+    @Column(name = "value")
+    private double value;
+
 }

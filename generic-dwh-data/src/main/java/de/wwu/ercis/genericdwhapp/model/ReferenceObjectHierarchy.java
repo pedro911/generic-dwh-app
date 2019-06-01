@@ -12,12 +12,14 @@ import javax.persistence.Table;
 @Setter
 @AllArgsConstructor
 @Entity
-@Table(name = "dimension_hierarchy")
-public class DimensionHierarchy extends BaseEntity {
+@Table(name = "reference_object_hierarchy")
+public class ReferenceObjectHierarchy extends BaseEntity {
+
 
     @ManyToOne
-    private Dimension parent;
+    private ReferenceObject parent;
 
     @ManyToOne
-    private Dimension child;
+    private ReferenceObject child;
+
 }
