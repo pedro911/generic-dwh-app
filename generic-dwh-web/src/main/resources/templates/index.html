@@ -5,6 +5,50 @@
     <title>Index Page</title>
 </head>
 <body>
-<h2 th:text="'Halloo from thymeleaf'"> Index Hallo!!!! </h2>
+
+<h2 th:text="'List of Dimensions'">List of Dimensions...</h2>
+
+<table class="table table-striped">
+    <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.Dimension"*/-->
+    <thead>
+    <tr>
+        <th style="width: 10px;">Id</th>
+        <th style="width: 150px;">Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dimension : ${dimensions}">
+        <td th:text="${dimension.id}">1</td>
+        <td th:text="${dimension.name}">Month</td>
+    </tr>
+
+    </tbody>
+</table>
+<p></p>
+<p></p>
+
+<h2 th:text="'List of Reference Objects'">List of Reference Objects...</h2>
+
+<table class="table table-striped">
+    <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.ReferenceObject"*/-->
+    <thead>
+    <tr>
+        <th style="width: 10px;">Id</th>
+        <th style="width: 150px;">Name</th>
+        <th style="width: 150px;">Dimension Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="referenceObject : ${referenceObjects}">
+        <td th:text="${referenceObject.id}">1</td>
+        <td th:text="${referenceObject.name}">January 2017</td>
+        <td th:text="${referenceObject.dimension.name}">Month</td>
+    </tr>
+
+    </tbody>
+</table>
+
+
 </body>
 </html>
+
