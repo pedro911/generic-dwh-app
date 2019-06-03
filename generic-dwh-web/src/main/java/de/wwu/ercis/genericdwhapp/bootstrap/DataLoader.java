@@ -43,14 +43,23 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Loading data....");
         System.out.println("################");
 
-        loadData();
+        //from generic dwh
+        loadSlideData();
+
+        /*
+        TODO
+        from star schema
+        from snow schema
+        from std tpc-h schema
+        */
+
 
         System.out.println("################");
         System.out.println("............End!");
         System.out.println("################");
     }
 
-    private void loadData() {
+    private void loadSlideData() {
 
         System.out.println("Loading initial data from slides");
 
