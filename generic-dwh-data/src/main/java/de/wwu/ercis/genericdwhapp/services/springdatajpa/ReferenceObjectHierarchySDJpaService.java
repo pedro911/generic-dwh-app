@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.services.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.ReferenceObjectHierarchy;
-import de.wwu.ercis.genericdwhapp.repositories.ReferenceObjectHierarchyRepository;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObjectHierarchy;
+import de.wwu.ercis.genericdwhapp.repositories.generichdwh.ReferenceObjectHierarchyRepository;
 import de.wwu.ercis.genericdwhapp.services.ReferenceObjectHierarchyService;
 import org.springframework.stereotype.Service;
 

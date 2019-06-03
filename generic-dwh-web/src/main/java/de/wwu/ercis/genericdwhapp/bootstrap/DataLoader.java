@@ -1,11 +1,13 @@
 package de.wwu.ercis.genericdwhapp.bootstrap;
 
-import de.wwu.ercis.genericdwhapp.model.*;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -42,6 +44,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("################");
         System.out.println("Loading data....");
         System.out.println("################");
+        log.debug("Slf4j logger");
 
         //from generic dwh
         loadSlideData();

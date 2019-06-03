@@ -1,8 +1,8 @@
 package de.wwu.ercis.genericdwhapp.services.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.DimensionCombination;
-import de.wwu.ercis.genericdwhapp.repositories.DimensionCombinationRepository;
-import de.wwu.ercis.genericdwhapp.repositories.DimensionRepository;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionCombination;
+import de.wwu.ercis.genericdwhapp.repositories.generichdwh.DimensionCombinationRepository;
+import de.wwu.ercis.genericdwhapp.repositories.generichdwh.DimensionRepository;
 import de.wwu.ercis.genericdwhapp.services.DimensionCombinationService;
 import org.springframework.stereotype.Service;
 

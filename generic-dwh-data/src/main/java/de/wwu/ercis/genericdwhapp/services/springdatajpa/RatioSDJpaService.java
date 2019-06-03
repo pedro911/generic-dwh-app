@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.services.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.Ratio;
-import de.wwu.ercis.genericdwhapp.repositories.RatioRepository;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
+import de.wwu.ercis.genericdwhapp.repositories.generichdwh.RatioRepository;
 import de.wwu.ercis.genericdwhapp.services.RatioService;
 import org.springframework.stereotype.Service;
 

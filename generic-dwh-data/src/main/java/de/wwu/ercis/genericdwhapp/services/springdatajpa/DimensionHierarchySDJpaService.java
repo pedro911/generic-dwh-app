@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.services.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.DimensionHierarchy;
-import de.wwu.ercis.genericdwhapp.repositories.DimensionHierarchyRepository;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionHierarchy;
+import de.wwu.ercis.genericdwhapp.repositories.generichdwh.DimensionHierarchyRepository;
 import de.wwu.ercis.genericdwhapp.services.DimensionHierarchyService;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.services.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.Fact;
-import de.wwu.ercis.genericdwhapp.repositories.FactRepository;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
+import de.wwu.ercis.genericdwhapp.repositories.generichdwh.FactRepository;
 import de.wwu.ercis.genericdwhapp.services.FactService;
 import org.springframework.stereotype.Service;
 
