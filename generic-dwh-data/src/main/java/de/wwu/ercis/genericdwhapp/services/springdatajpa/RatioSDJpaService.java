@@ -10,7 +10,7 @@ import java.util.Set;
 @Service
 public class RatioSDJpaService implements RatioService {
 
-    private RatioRepository ratioRepository;
+    private final RatioRepository ratioRepository;
 
     public RatioSDJpaService(RatioRepository ratioRepository) {
         this.ratioRepository = ratioRepository;

@@ -1,27 +1,29 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
 import de.wwu.ercis.genericdwhapp.model.BaseEntity;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "fact")
 public class Fact extends BaseEntity {
 
-    @NonNull
     @ManyToOne
     @JoinColumn(name = "reference_object_id")
     private ReferenceObject referenceObject;
 
-    @NonNull
     @ManyToOne
     @JoinColumn(name = "ratio_id")
     private Ratio ratio;
 
-    @NonNull
     @Column(name = "value")
     private double value;
 

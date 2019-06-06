@@ -2,25 +2,26 @@ package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
 import de.wwu.ercis.genericdwhapp.model.BaseEntity;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "ratio_combination")
 public class RatioCombination extends BaseEntity {
 
-    @NonNull
     @ManyToOne
     private Ratio combination;
 
-    @NonNull
     @ManyToOne
     private Ratio subordinate;
 
