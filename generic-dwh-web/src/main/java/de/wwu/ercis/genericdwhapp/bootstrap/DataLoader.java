@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.bootstrap;
 
 import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
-import de.wwu.ercis.genericdwhapp.services.*;
+import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -44,7 +44,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("################");
 
         //from generic dwh
-        loadSlideData();
+        //loadSlideData();
 
         /*
         TODO

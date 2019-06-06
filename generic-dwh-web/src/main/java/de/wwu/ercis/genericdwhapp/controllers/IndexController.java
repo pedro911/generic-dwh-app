@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.controllers;
 
-import de.wwu.ercis.genericdwhapp.services.DimensionService;
-import de.wwu.ercis.genericdwhapp.services.ReferenceObjectService;
+import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionService;
+import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +20,7 @@ public class IndexController {
     @RequestMapping({"", "/", "index", "index.html"})
     public String getIndexPage(Model model){
         model.addAttribute("dimensions",dimensionService.findAll());
-        model.addAttribute("referenceObjects", referenceObjectService.findAll());
+        //model.addAttribute("referenceObjects", referenceObjectService.findAll());
 
         return "index";
     }
