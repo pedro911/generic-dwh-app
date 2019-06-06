@@ -15,6 +15,7 @@
         <th style="width: 10px;">Id</th>
         <th style="width: 150px;">Name</th>
         <th style="width: 150px;">Region</th>
+        <th style="width: 150px;">Comment</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@
         <td th:text="${nation.NNationkey}">1</td>
         <td th:text="${nation.NName}">USA</td>
         <td th:text="${nation.regionByNRegionkey.RName}">North America</td>
+        <td th:text="${nation.NComment}">Comment</td>
     </tr>
 
     </tbody>

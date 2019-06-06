@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -19,32 +18,29 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "de.wwu.ercis.genericdwhapp.repositories.standard.small",
-        entityManagerFactoryRef = "standardEntityManagerFactory",
-        transactionManagerRef= "standardTransactionManager"
+@EnableJpaRepositories(basePackages = "de.wwu.ercis.genericdwhapp.repositories.standard.onegb",
+        entityManagerFactoryRef = "tpchonegbEntityManagerFactory",
+        transactionManagerRef= "tpchonegbTransactionManager"
 )
-public class TPCHStandardSmallDataSourceConfiguration {
+public class TPCHStandardOneGBDataSourceConfiguration {
 
     @Bean
-    @Primary
-    @ConfigurationProperties("app.datasource.tpchstd.small")
-    public DataSourceProperties standardDataSourceProperties() {
+    @ConfigurationProperties("app.datasource.tpchstd.onegb")
+    public DataSourceProperties tpchonegbDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @Primary
-    @ConfigurationProperties("app.datasource.tpchstd.small.configuration")
-    public DataSource standardDataSource() {
-        return standardDataSourceProperties().initializeDataSourceBuilder()
+    @ConfigurationProperties("app.datasource.tpchstd.onegb.configuration")
+    public DataSource tpchonegbDataSource() {
+        return tpchonegbDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();
     }
 
-    @Primary
-    @Bean(name = "standardEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean standardEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        System.out.println("Building tpchstd app.datasource.tpchstd.small");
-        return builder.dataSource(standardDataSource())
+    @Bean(name = "tpchonegbEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean tpchonegbEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+        System.out.println("Building tpchstd app.datasource.tpchstd.onegb");
+        return builder.dataSource(tpchonegbDataSource())
                 .packages(
                         CustomerEntity.class,
                         LineitemEntity.class,
@@ -57,12 +53,11 @@ public class TPCHStandardSmallDataSourceConfiguration {
                 .build();
     }
 
-    @Primary
     @Bean
-    public PlatformTransactionManager standardTransactionManager(
-            final @Qualifier("standardEntityManagerFactory")
-                    LocalContainerEntityManagerFactoryBean standardEntityManagerFactory) {
-        return new JpaTransactionManager(standardEntityManagerFactory.getObject());
+    public PlatformTransactionManager tpchonegbTransactionManager(
+            final @Qualifier("tpchonegbEntityManagerFactory")
+                    LocalContainerEntityManagerFactoryBean tpchonegbEntityManagerFactory) {
+        return new JpaTransactionManager(tpchonegbEntityManagerFactory.getObject());
     }
 
 }
