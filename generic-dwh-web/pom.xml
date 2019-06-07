@@ -60,11 +60,6 @@
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
-            <artifactId>jquery-ui</artifactId>
-            <version>${webjars-jquery-ui.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
             <version>${webjars-bootstrap.version}</version>
         </dependency>
@@ -99,7 +94,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+<!--    <build>
         <plugins>
             <plugin>
                 <groupId>ro.isdc.wro4j</groupId>
@@ -134,6 +129,6 @@
                 </dependencies>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 
 </project>

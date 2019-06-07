@@ -1,0 +1,114 @@
+<!doctype html>
+<html th:fragment="layout (template, menu)">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico"/>
+
+    <title>Generic DWH Tool</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}"/>
+    <script th:href="@{/webjars/jquery/3.4.1/jquery.min.js} "></script>
+    <link rel="stylesheet" th:href="@{/resources/css/genericdwh.css}"/>
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">TPC-H Standard</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
+                    <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">10GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">100GB </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Generic DWH</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
+                    <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">10GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">100GB </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Star Schema</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
+                    <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">10GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">100GB </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Snowflake Schema</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
+                    <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">10GB </a>
+                    <a class="dropdown-item" th:href="@{/oups}">100GB </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/stats}">Stats</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/oups}">Credits</a>
+            </li>
+<!--            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Disabled</a>
+            </li>-->
+        </ul>
+<!--        <form class="form-inline mt-2 mt-md-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>-->
+    </div>
+</nav>
+
+  <div class="container-fluid">
+      <div class="container xd-container">
+  
+          <th:block th:include="${template}"/>
+
+        <br/>
+        <br/>
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              <img src="../static/resources/images/ercis_logo.png" th:src="@{/resources/images/ercis_logo.png}"
+                alt="ERCIS - WWU - Muenster"/></div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+<!-- /container -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+</body>
+
+</html>
