@@ -21,7 +21,7 @@
 
 <body>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" th:href="@{/}">Generic DWH</a>
+    <a class="navbar-brand" th:href="@{/}"><i class="icon ion-md-cube"></i> Generic DWH Tool </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -38,10 +38,11 @@
                     <i class="icon ion-md-filing"></i>
                     TPC-H Standard</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
-                    <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
-                    <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
-                    <a class="dropdown-item" th:href="@{/oups}">10GB </a>
-                    <a class="dropdown-item" th:href="@{/oups}">100GB </a>
+                    <a class="dropdown-item" th:href="@{/tpch_std}">DB Model</a>
+                    <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small</a>
+                    <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1 GB</a>
+                    <a class="dropdown-item" th:href="@{/oups}">10 GB</a>
+                    <a class="dropdown-item" th:href="@{/oups}">100 GB</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -49,6 +50,7 @@
                     <i class="icon ion-md-color-wand"></i>
                     Generic DWH</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/genericdwh}">DB Model</a>
                     <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
                     <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
                     <a class="dropdown-item" th:href="@{/oups}">10GB </a>
@@ -60,6 +62,7 @@
                     <i class="icon ion-md-star"></i>
                     Star Schema</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/starschema}">DB Model</a>
                     <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
                     <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
                     <a class="dropdown-item" th:href="@{/oups}">10GB </a>
@@ -71,6 +74,7 @@
                     <i class="icon ion-md-snow"></i>
                     Snowflake Schema</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
+                    <a class="dropdown-item" th:href="@{/snowflakeschema}">DB Model</a>
                     <a class="dropdown-item" th:href="@{/tpch/nations/small}">Small </a>
                     <a class="dropdown-item" th:href="@{/tpch/nations/onegb}">1GB </a>
                     <a class="dropdown-item" th:href="@{/oups}">10GB </a>
@@ -83,7 +87,7 @@
                     Stats</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/oups}">
+                <a class="nav-link" th:href="@{/credits}">
                     <i size="large" class="icon ion-md-flag"></i>
                     Credits</a>
             </li>
@@ -108,8 +112,11 @@
         <div class="container">
           <div class="row">
             <div class="col-12 text-center">
-              <img src="../static/resources/images/ercis_logo.png" th:src="@{/resources/images/ercis_logo.png}"
-                alt="ERCIS - WWU - Muenster"/></div>
+              <a href="https://www.ercis.org/">
+                  <img src="../static/resources/images/ercis_logo.png" th:src="@{/resources/images/ercis_logo.png}"
+                                                    alt="ERCIS - WWU - Muenster"/>
+              </a>
+            </div>
           </div>
         </div>
       </div>
