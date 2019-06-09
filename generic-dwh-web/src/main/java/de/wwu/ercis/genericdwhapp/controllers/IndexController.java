@@ -21,7 +21,6 @@ public class IndexController {
     public String getIndexPage(Model model){
         model.addAttribute("dimensions",dimensionService.findAll());
         //model.addAttribute("referenceObjects", referenceObjectService.findAll());
-
         return "index";
     }
 
