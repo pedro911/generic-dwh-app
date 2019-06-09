@@ -7,11 +7,8 @@
 <body>
 <main role="main" class="container">
     <div class="jumbotron">
-        <h1>Welcome</h1>
+        <p class="lead">Generic DWH Tool - Comparing Query Performance on Generic DWH, Star and Snowflake schemas</p>
         <p></p>
-        <p class="lead">Generic DWH Tool - Comparing performance with Star and Snowflake schemas</p>
-    </div>
-    <div class="jumbotron" id="container">
         <canvas id="graph"></canvas>
     </div>
 </main>
@@ -65,8 +62,8 @@
                 ]},
             {
                 label: 'Snowflake Schema',
-                backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
-                borderColor: window.chartColors.green,
+                backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.purple,
                 borderWidth: 1,
                 data: [
                     1.5,
@@ -76,6 +73,7 @@
                     1.8
                 ]}
         ]
+
 
     };
 
@@ -87,11 +85,27 @@
             options: {
                 responsive: true,
                 legend: {
-                    position: 'top',
+                    position: 'top'
                 },
                 title: {
                     display: true,
-                    text: 'Query Time Performances'
+                    text: 'Query Average Time Performance from all DB sizes'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Query'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time (ms)'
+                        }
+                    }]
                 }
             }
         });
