@@ -4,9 +4,11 @@ import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -46,4 +48,13 @@ public class DimensionSDJpaService implements DimensionService {
     public void deleteById(Long aLong) {
         dimensionRepository.deleteById(aLong);
     }
+
+    @Override
+    public List<Dimension> findByOrderByIdAsc() {return dimensionRepository.findByOrderByIdAsc(); }
+
+    @Override
+    public List<Dimension> findAll(Sort sort) {
+        return dimensionRepository.findAll(sort);
+    }
+
 }

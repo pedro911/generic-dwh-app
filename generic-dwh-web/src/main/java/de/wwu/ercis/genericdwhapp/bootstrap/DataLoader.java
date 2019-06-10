@@ -5,9 +5,12 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
 @Slf4j
 @Component
+@Profile("default")
 public class DataLoader implements CommandLineRunner {
 
     private final DimensionService dimensionService;
@@ -40,30 +43,20 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("################");
-        System.out.println("Loading data....");
-        System.out.println("################");
-        log.debug("test");
+        System.out.println("########################################################");
+        System.out.println("Loading initial data from slides into H2 in memory db...");
+        System.out.println("########################################################");
+        log.debug("init");
 
-        //from generic dwh
-        //loadSlideData();
+        loadSlideData();
 
-        /*
-        TODO
-        from star schema
-        from snow schema
-        from std tpc-h schema
-        */
-
-
-        System.out.println("################");
-        System.out.println("............End!");
-        System.out.println("################");
+        System.out.println("##########################################################");
+        System.out.println("......................................................End!");
+        System.out.println("##########################################################");
+        log.debug("end");
     }
 
     private void loadSlideData() {
-
-        System.out.println("Loading initial data from slides");
 
         //Dimensions
         Dimension month = new Dimension("Month", true);
@@ -140,6 +133,15 @@ public class DataLoader implements CommandLineRunner {
 
         Ratio ratio3 = new Ratio("Costs");
         ratioService.save(ratio3);
+
+        Ratio ratio4 = new Ratio("Shelf space rentability");
+        ratioService.save(ratio4);
+
+        Ratio ratio5 = new Ratio("Direct product rentability");
+        ratioService.save(ratio5);
+
+        Ratio ratio6 = new Ratio("Days of inventory");
+        ratioService.save(ratio6);
 
         //Ratio Combinations
         RatioCombination ratioCombination1 = new RatioCombination(ratio2,ratio1,"+");

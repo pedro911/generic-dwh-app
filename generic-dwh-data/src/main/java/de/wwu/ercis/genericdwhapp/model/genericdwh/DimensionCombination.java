@@ -1,6 +1,5 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
-import de.wwu.ercis.genericdwhapp.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

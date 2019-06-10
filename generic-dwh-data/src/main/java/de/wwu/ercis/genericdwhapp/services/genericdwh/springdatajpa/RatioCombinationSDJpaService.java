@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.RatioCombinationService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,5 +43,10 @@ public class RatioCombinationSDJpaService implements RatioCombinationService {
     @Override
     public void deleteById(Long aLong) {
         ratioCombinationRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<RatioCombination> findByOrderByIdAsc() {
+        return ratioCombinationRepository.findByOrderByIdAsc();
     }
 }

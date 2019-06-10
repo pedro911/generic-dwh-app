@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, 'slidesdata')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Slides Data</title>
+</head>
+<body>
+<main role="main" class="container">
+    <div class="jumbotron">
+        <p></p>
+        <div class="row">
+            <div class="col-sm">
+                <div class="col-sm">
+                    <p class="lead">Reference Object</p>
+                    <table class="table table-sm">
+                        <!--/*@thymesVar id="referenceObject" type="de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject"*/-->
+                        <thead>
+                        <tr>
+                            <th style="width: 10px;">RO-ID</th>
+                            <th style="width: 150px;">RO-Name</th>
+                            <th style="width: 150px;">Dimension</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="referenceObject : ${referenceObjects}">
+                            <td th:text="${referenceObject.id}">1</td>
+                            <td th:text="${referenceObject.name}">Month</td>
+                            <td th:text="${referenceObject.dimension.name}">Month</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm">
+                <p class="lead">Dimension</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">D-ID</th>
+                        <th style="width: 150px;">D-Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dimension : ${dimensions}">
+                        <td th:text="${dimension.id}">1</td>
+                        <td th:text="${dimension.name}">Month</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <p class="lead">Fact</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Fact"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">Ratio </th>
+                        <th style="width: 150px;">Reference Object</th>
+                        <th style="width: 150px;">Fact value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="fact : ${facts}">
+                        <td th:text="${fact.ratio.name}">1</td>
+                        <td th:text="${fact.referenceObject.name}">Month</td>
+                        <td th:text="${fact.value}">Month</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p class="lead">Ref. Obj. Combination</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="referenceObjectCombination" type="de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObjectCombination"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">Combination</th>
+                        <th style="width: 150px;">Subordinate</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="referenceObjectCombination : ${referenceObjectsCombinations}">
+                        <td th:text="${referenceObjectCombination.combination.name}">Combination</td>
+                        <td th:text="${referenceObjectCombination.subordinate.name}">Subordinate</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <p class="lead">Dimension Combination</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="dimensionCombination" type="de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionCombination"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">Combination</th>
+                        <th style="width: 150px;">Subordinate</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dimensionCombination : ${dimensionsCombinations}">
+                        <td th:text="${dimensionCombination.combination.name}">Combination</td>
+                        <td th:text="${dimensionCombination.subordinate.name}">Subordinate</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <p class="lead">Ratio</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Fact"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">R-ID </th>
+                        <th style="width: 150px;">R-Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ratio : ${ratios}">
+                        <td th:text="${ratio.id}">1</td>
+                        <td th:text="${ratio.name}">Turnover</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <p class="lead">Ref. Obj. Hierarchy</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="referenceObjectHierarchy" type="de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObjectHierarchy"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">Parent</th>
+                        <th style="width: 150px;">Child</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="referenceObjectHierarchy : ${referenceObjectsHierarchies}">
+                        <td th:text="${referenceObjectHierarchy.parent.name}">Combination</td>
+                        <td th:text="${referenceObjectHierarchy.child.name}">Subordinate</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <table class="table table-sm">
+                    <p class="lead">Dimension Hierarchy</p>
+                    <!--/*@thymesVar id="dimensionHierarchy" type="de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionHierarchy"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">Parent</th>
+                        <th style="width: 150px;">Child</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="dimensionHierarchy : ${dimensionsHierarchies}">
+                        <td th:text="${dimensionHierarchy.parent.name}">Combination</td>
+                        <td th:text="${dimensionHierarchy.child.name}">Subordinate</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <p class="lead">Ratio Combination</p>
+                <table class="table table-sm">
+                    <!--/*@thymesVar id="ratioCombination" type="de.wwu.ercis.genericdwhapp.model.genericdwh.RatioCombination"*/-->
+                    <thead>
+                    <tr>
+                        <th style="width: 10px;">Combination</th>
+                        <th style="width: 150px;">Subordinate</th>
+                        <th style="width: 150px;">Algorithm</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ratioCombination : ${ratiosCombinations}">
+                        <td th:text="${ratioCombination.combination.name}">Combination</td>
+                        <td th:text="${ratioCombination.subordinate.name}">Subordinate</td>
+                        <td th:text="${ratioCombination.algorithm}">Subordinate</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

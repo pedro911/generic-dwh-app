@@ -1,4 +1,4 @@
-package de.wwu.ercis.genericdwhapp.model;
+package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

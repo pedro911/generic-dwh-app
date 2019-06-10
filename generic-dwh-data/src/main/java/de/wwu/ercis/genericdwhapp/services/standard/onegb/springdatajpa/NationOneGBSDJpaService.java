@@ -3,12 +3,16 @@ package de.wwu.ercis.genericdwhapp.services.standard.onegb.springdatajpa;
 import de.wwu.ercis.genericdwhapp.model.standard.NationEntity;
 import de.wwu.ercis.genericdwhapp.repositories.standard.onegb.NationOneGBRepository;
 import de.wwu.ercis.genericdwhapp.services.standard.onegb.NationOnegbService;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
+@Profile("alldb")
 public class NationOneGBSDJpaService implements NationOnegbService {
 
     private final NationOneGBRepository nationOneGBRepository;
@@ -42,5 +46,10 @@ public class NationOneGBSDJpaService implements NationOnegbService {
     @Override
     public void deleteById(Long aLong) {
         nationOneGBRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<NationEntity> findAll(Sort sort) {
+        return nationOneGBRepository.findAll(sort);
     }
 }

@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionHierarchyService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,5 +43,10 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
     @Override
     public void deleteById(Long aLong) {
         dimensionHierarchyRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<DimensionHierarchy> findByOrderByIdAsc() {
+        return dimensionHierarchyRepository.findByOrderByIdAsc();
     }
 }

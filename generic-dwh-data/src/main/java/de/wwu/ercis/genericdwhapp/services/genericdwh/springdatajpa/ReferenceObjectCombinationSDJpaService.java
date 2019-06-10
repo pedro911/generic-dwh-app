@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectCombination
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,5 +43,10 @@ public class ReferenceObjectCombinationSDJpaService implements ReferenceObjectCo
     @Override
     public void deleteById(Long aLong) {
         referenceObjectCombinationRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<ReferenceObjectCombination> findByOrderByIdAsc() {
+        return referenceObjectCombinationRepository.findByOrderByIdAsc();
     }
 }

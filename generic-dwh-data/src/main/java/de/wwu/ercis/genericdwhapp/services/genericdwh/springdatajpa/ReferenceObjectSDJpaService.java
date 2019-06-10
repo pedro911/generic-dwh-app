@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,5 +43,10 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     @Override
     public void deleteById(Long aLong) {
         referenceObjectRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<ReferenceObject> findByOrderByIdAsc() {
+        return referenceObjectRepository.findByOrderByIdAsc();
     }
 }
