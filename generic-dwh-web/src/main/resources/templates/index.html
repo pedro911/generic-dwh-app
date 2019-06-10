@@ -1,54 +1,119 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <head>
     <meta charset="UTF-8">
-    <title>Index Page</title>
+    <title>Index</title>
 </head>
 <body>
+<main role="main" class="container">
+    <div class="jumbotron">
+        <p class="lead">Generic DWH Tool - Comparing Query Performance on Generic DWH, Star and Snowflake schemas</p>
+        <p></p>
+        <canvas id="graph"></canvas>
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"
+        integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+<script th:src="@{/resources/js/graph.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    //get data from objects and put on graph, using dimensionids as examples
+    var dimensionsids = [];
+    /*[# th:each="dimension : ${dimensions}"]*/
+    dimensionsids.push("[(${dimension.id})]");
+    /*[/]*/
+    console.log(dimensionsids);
 
-<h2 th:text="'List of Dimensions'">List of Dimensions...</h2>
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var color = Chart.helpers.color;
+    var barChartData = {
+        labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
+        datasets: [
+            {
+            label: 'TPC-H Std',
+            backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.red,
+            borderWidth: 1,
+            data: dimensionsids
+            },
+            {
+            label: 'Generic DWH',
+            backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+            borderColor: window.chartColors.blue,
+            borderWidth: 1,
+            data: [
+                3,
+                2,
+                1,
+                3,
+                2
+            ]},
+            {
+                label: 'Star Schema',
+                backgroundColor: color(window.chartColors.orange).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.orange,
+                borderWidth: 1,
+                data: [
+                    2,
+                    7,
+                    5,
+                    0.7,
+                    0.4
+                ]},
+            {
+                label: 'Snowflake Schema',
+                backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.purple,
+                borderWidth: 1,
+                data: [
+                    1.5,
+                    7.6,
+                    6.5,
+                    2.4,
+                    1.8
+                ]}
+        ]
 
-<table class="table table-striped">
-    <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.Dimension"*/-->
-    <thead>
-    <tr>
-        <th style="width: 10px;">Id</th>
-        <th style="width: 150px;">Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="dimension : ${dimensions}">
-        <td th:text="${dimension.id}">1</td>
-        <td th:text="${dimension.name}">Month</td>
-    </tr>
 
-    </tbody>
-</table>
-<p></p>
-<p></p>
+    };
 
-<h2 th:text="'List of Reference Objects'">List of Reference Objects...</h2>
+    window.onload = function() {
+        var ctx = document.getElementById('graph').getContext('2d');
+        window.myBar = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Query Average Time Performance from all DB sizes'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Query'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time (ms)'
+                        }
+                    }]
+                }
+            }
+        });
 
-<table class="table table-striped">
-    <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.ReferenceObject"*/-->
-    <thead>
-    <tr>
-        <th style="width: 10px;">Id</th>
-        <th style="width: 150px;">Name</th>
-        <th style="width: 150px;">Dimension Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="referenceObject : ${referenceObjects}">
-        <td th:text="${referenceObject.id}">1</td>
-        <td th:text="${referenceObject.name}">January 2017</td>
-        <td th:text="${referenceObject.dimension.name}">Month</td>
-    </tr>
+    };
 
-    </tbody>
-</table>
-
-
+    var colorNames = Object.keys(window.chartColors);
+    /*]]>*/
+</script>
 </body>
 </html>
-

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'nations')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Nations Page</title>
+</head>
+<body>
+
+<h2 th:text="'List of Nations'">List of Nations...</h2>
+
+<table class="table table-sm">
+    <!--/*@thymesVar id="nation" type="de.wwu.ercis.genericdwhapp.model.standard.NationEntity"*/-->
+    <thead>
+    <tr>
+        <th style="width: 10px;">Id</th>
+        <th style="width: 150px;">Name</th>
+        <th style="width: 150px;">Region</th>
+        <th style="width: 150px;">Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="nation : ${nations}">
+        <td th:text="${nation.NNationkey}">1</td>
+        <td th:text="${nation.NName}">USA</td>
+        <td th:text="${nation.regionByNRegionkey.RName}">North America</td>
+        <td th:text="${nation.NComment}">Comment</td>
+    </tr>
+
+    </tbody>
+</table>
+
+</body>
+</html>
