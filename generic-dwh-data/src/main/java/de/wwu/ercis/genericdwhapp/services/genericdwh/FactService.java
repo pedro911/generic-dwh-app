@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FactService extends CrudService<Fact, Long>  {
 
-    List<Fact> findByOrderByIdAsc();
+    List<Fact> findByOrderByRatioIdAsc();
 }

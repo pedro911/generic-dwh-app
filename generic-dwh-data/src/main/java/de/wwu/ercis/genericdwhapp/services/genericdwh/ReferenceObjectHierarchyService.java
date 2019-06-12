@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ReferenceObjectHierarchyService extends CrudService<ReferenceObjectHierarchy, Long> {
 
-    List<ReferenceObjectHierarchy> findByOrderByIdAsc();
+    List<ReferenceObjectHierarchy> findByOrderByParentIdAsc();
 
 }

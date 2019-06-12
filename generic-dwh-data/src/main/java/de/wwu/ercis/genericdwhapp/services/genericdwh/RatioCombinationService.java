@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface RatioCombinationService extends CrudService<RatioCombination, Long> {
 
-    List<RatioCombination> findByOrderByIdAsc();
+    List<RatioCombination> findByOrderByCombinationIdAsc();
 }

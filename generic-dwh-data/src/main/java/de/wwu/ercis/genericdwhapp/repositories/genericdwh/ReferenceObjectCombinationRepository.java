@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ReferenceObjectCombinationRepository extends JpaRepository<ReferenceObjectCombination, Long> {
 
-    List<ReferenceObjectCombination> findByOrderByIdAsc();
+    List<ReferenceObjectCombination> findByOrderByCombinationIdAsc();
 
 }

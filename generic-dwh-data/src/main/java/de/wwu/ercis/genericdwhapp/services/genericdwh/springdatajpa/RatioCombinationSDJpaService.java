@@ -46,7 +46,7 @@ public class RatioCombinationSDJpaService implements RatioCombinationService {
     }
 
     @Override
-    public List<RatioCombination> findByOrderByIdAsc() {
-        return ratioCombinationRepository.findByOrderByIdAsc();
+    public List<RatioCombination> findByOrderByCombinationIdAsc() {
+        return ratioCombinationRepository.findByOrderByCombinationIdAsc();
     }
 }

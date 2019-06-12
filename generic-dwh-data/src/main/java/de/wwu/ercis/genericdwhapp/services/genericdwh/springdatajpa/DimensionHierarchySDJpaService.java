@@ -46,7 +46,7 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
     }
 
     @Override
-    public List<DimensionHierarchy> findByOrderByIdAsc() {
-        return dimensionHierarchyRepository.findByOrderByIdAsc();
+    public List<DimensionHierarchy> findByOrderByParentIdAsc() {
+        return dimensionHierarchyRepository.findByOrderByParentIdAsc();
     }
 }

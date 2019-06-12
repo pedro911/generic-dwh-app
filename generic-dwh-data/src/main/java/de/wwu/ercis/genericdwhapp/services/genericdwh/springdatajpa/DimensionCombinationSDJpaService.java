@@ -49,7 +49,7 @@ public class DimensionCombinationSDJpaService implements DimensionCombinationSer
     }
 
     @Override
-    public List<DimensionCombination> findByOrderByIdAsc() {
-        return dimensionCombinationRepository.findByOrderByIdAsc();
+    public List<DimensionCombination> findByOrderByCombinationIdAsc() {
+        return dimensionCombinationRepository.findByOrderByCombinationIdAsc();
     }
 }

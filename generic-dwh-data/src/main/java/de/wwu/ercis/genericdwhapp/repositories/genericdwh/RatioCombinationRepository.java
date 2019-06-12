@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RatioCombinationRepository extends JpaRepository<RatioCombination, Long> {
 
-    List<RatioCombination> findByOrderByIdAsc();
+    List<RatioCombination> findByOrderByCombinationIdAsc();
 }

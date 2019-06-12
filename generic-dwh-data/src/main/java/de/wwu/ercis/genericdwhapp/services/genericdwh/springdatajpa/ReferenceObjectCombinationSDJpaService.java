@@ -46,7 +46,7 @@ public class ReferenceObjectCombinationSDJpaService implements ReferenceObjectCo
     }
 
     @Override
-    public List<ReferenceObjectCombination> findByOrderByIdAsc() {
-        return referenceObjectCombinationRepository.findByOrderByIdAsc();
+    public List<ReferenceObjectCombination> findByOrderByCombinationIdAsc() {
+        return referenceObjectCombinationRepository.findByOrderByCombinationIdAsc();
     }
 }

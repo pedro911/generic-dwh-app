@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface DimensionCombinationRepository extends JpaRepository<DimensionCombination, Long> {
 
-    List<DimensionCombination> findByOrderByIdAsc();
+    List<DimensionCombination> findByOrderByCombinationIdAsc();
 
 }

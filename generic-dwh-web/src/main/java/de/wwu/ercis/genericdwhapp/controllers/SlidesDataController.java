@@ -1,11 +1,13 @@
 package de.wwu.ercis.genericdwhapp.controllers;
 
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@Profile({"default","alldb"})
 public class SlidesDataController {
 
     private final DimensionService dimensionService;
@@ -43,14 +45,14 @@ public class SlidesDataController {
         //model.addAttribute("dimensions",dimensionService.findAll(Sort.by(Sort.Direction.ASC, "name")));
         //or sort by ID without using Sort
         model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
-        model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByIdAsc());
-        model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByIdAsc());
+        model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
         model.addAttribute("referenceObjects", referenceObjectService.findByOrderByIdAsc());
-        model.addAttribute("referenceObjectsCombinations", referenceObjectCombinationService.findByOrderByIdAsc());
-        model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByIdAsc());
+        model.addAttribute("referenceObjectsCombinations", referenceObjectCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByParentIdAsc());
         model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
-        model.addAttribute("ratiosCombinations", ratioCombinationService.findByOrderByIdAsc());
-        model.addAttribute("facts", factService.findByOrderByIdAsc());
+        model.addAttribute("ratiosCombinations", ratioCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("facts", factService.findByOrderByRatioIdAsc());
         return "genericdwh/slidesdata";
     }
 

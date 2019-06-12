@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface DimensionHierarchyRepository extends JpaRepository<DimensionHierarchy, Long> {
 
-    List<DimensionHierarchy> findByOrderByIdAsc();
+    List<DimensionHierarchy> findByOrderByParentIdAsc();
 
 }

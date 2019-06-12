@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ReferenceObjectHierarchyRepository extends JpaRepository<ReferenceObjectHierarchy, Long> {
 
-    List<ReferenceObjectHierarchy> findByOrderByIdAsc();
+    List<ReferenceObjectHierarchy> findByOrderByParentIdAsc();
 
 }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ReferenceObjectCombinationService extends CrudService<ReferenceObjectCombination, Long>  {
 
-    List<ReferenceObjectCombination> findByOrderByIdAsc();
+    List<ReferenceObjectCombination> findByOrderByCombinationIdAsc();
 }

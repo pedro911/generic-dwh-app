@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface DimensionCombinationService extends CrudService<DimensionCombination, Long> {
 
-    List<DimensionCombination> findByOrderByIdAsc();
+    List<DimensionCombination> findByOrderByCombinationIdAsc();
 
 }

@@ -25,7 +25,10 @@ public class Ratio extends BaseEntity {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
-    private Set<RatioCombination> ratioCombinations = new HashSet<>();
+    private Set<RatioCombination> ratioCombinationsByCombinations = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate")
+    private Set<RatioCombination> ratioCombinationsBySubordinates = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ratio")
     private Set<Fact> facts = new HashSet<>();

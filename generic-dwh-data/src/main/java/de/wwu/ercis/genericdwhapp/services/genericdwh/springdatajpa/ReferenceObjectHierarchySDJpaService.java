@@ -46,7 +46,7 @@ public class ReferenceObjectHierarchySDJpaService implements ReferenceObjectHier
     }
 
     @Override
-    public List<ReferenceObjectHierarchy> findByOrderByIdAsc() {
-        return referenceObjectHierarchyRepository.findByOrderByIdAsc();
+    public List<ReferenceObjectHierarchy> findByOrderByParentIdAsc() {
+        return referenceObjectHierarchyRepository.findByOrderByParentIdAsc();
     }
 }

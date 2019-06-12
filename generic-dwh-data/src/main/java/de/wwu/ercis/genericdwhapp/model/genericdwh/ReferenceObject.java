@@ -38,10 +38,16 @@ public class ReferenceObject extends BaseEntity {
     private boolean is_time;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
-    private Set<ReferenceObjectCombination> referenceObjectCombinations = new HashSet<>();
+    private Set<ReferenceObjectCombination> referenceObjectCombinationsByCombinations = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate")
+    private Set<ReferenceObjectCombination> referenceObjectCombinationsBySubordinates = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    private Set<ReferenceObjectHierarchy> referenceObjectHierarchies = new HashSet<>();
+    private Set<ReferenceObjectHierarchy> referenceObjectHierarchiesByParents = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "child")
+    private Set<ReferenceObjectHierarchy> referenceObjectHierarchiesByChildren = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "referenceObject")
     private Set<Fact> facts = new HashSet<>();

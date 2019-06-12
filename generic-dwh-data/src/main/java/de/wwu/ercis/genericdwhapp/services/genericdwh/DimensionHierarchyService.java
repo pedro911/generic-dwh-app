@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface DimensionHierarchyService extends CrudService<DimensionHierarchy, Long> {
 
-    List<DimensionHierarchy> findByOrderByIdAsc();
+    List<DimensionHierarchy> findByOrderByParentIdAsc();
 
 }

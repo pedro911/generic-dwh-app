@@ -46,7 +46,7 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<Fact> findByOrderByIdAsc() {
-        return factRepository.findByOrderByIdAsc();
+    public List<Fact> findByOrderByRatioIdAsc() {
+        return factRepository.findByOrderByRatioIdAsc();
     }
 }

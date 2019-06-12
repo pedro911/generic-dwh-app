@@ -47,7 +47,8 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Loading initial data from slides into H2 in memory db...");
         System.out.println("########################################################");
         log.debug("init");
-
+        // it works only to in default profile with H2 In memory DB
+        // don't use with alldb profile, it will duplicate data and get messy!
         loadSlideData();
 
         System.out.println("##########################################################");
@@ -75,14 +76,14 @@ public class DataLoader implements CommandLineRunner {
         dimensionService.save(state);
 
         //Dimension Combinations
-        DimensionCombination dc_monthProductCategory1 = new DimensionCombination(monthProductCategory, month);
+        DimensionCombination dc_monthProductCategory1 = new DimensionCombination(monthProductCategory.getId(), month.getId());
         dimensionCombinationService.save(dc_monthProductCategory1);
 
-        DimensionCombination dc_monthProductCategory2 = new DimensionCombination(monthProductCategory, productCategory);
+        DimensionCombination dc_monthProductCategory2 = new DimensionCombination(monthProductCategory.getId(), productCategory.getId());
         dimensionCombinationService.save(dc_monthProductCategory2);
 
         //Dimension Hierarchies
-        DimensionHierarchy dh_country_state = new DimensionHierarchy(country, state);
+        DimensionHierarchy dh_country_state = new DimensionHierarchy(country.getId(), state.getId());
         dimensionHierarchyService.save(dh_country_state);
 
         //Reference Objects
@@ -114,14 +115,14 @@ public class DataLoader implements CommandLineRunner {
         referenceObjectService.save(ro8);
 
         //Reference Objects Combinations
-        ReferenceObjectCombination roc1 = new ReferenceObjectCombination(ro6,ro1);
+        ReferenceObjectCombination roc1 = new ReferenceObjectCombination(ro6.getId(),ro1.getId());
         referenceObjectCombinationService.save(roc1);
 
-        ReferenceObjectCombination roc2 = new ReferenceObjectCombination(ro6,ro4);
+        ReferenceObjectCombination roc2 = new ReferenceObjectCombination(ro6.getId(),ro4.getId());
         referenceObjectCombinationService.save(roc2);
 
         //Reference Object Hierarchies
-        ReferenceObjectHierarchy referenceObjectHierarchy1 = new ReferenceObjectHierarchy(ro7,ro8);
+        ReferenceObjectHierarchy referenceObjectHierarchy1 = new ReferenceObjectHierarchy(ro7.getId(),ro8.getId());
         referenceObjectHierarchyService.save(referenceObjectHierarchy1);
 
         //Ratios
@@ -144,29 +145,29 @@ public class DataLoader implements CommandLineRunner {
         ratioService.save(ratio6);
 
         //Ratio Combinations
-        RatioCombination ratioCombination1 = new RatioCombination(ratio2,ratio1,"+");
+        RatioCombination ratioCombination1 = new RatioCombination(ratio2.getId(),ratio1.getId(),"+");
         ratioCombinationService.save(ratioCombination1);
 
-        RatioCombination ratioCombination2 = new RatioCombination(ratio2,ratio3,"-");
+        RatioCombination ratioCombination2 = new RatioCombination(ratio2.getId(),ratio3.getId(),"-");
         ratioCombinationService.save(ratioCombination2);
 
         //Facts
-        Fact f1 = new Fact(ro1,ratio1,288317.28);
+        Fact f1 = new Fact(ratio1.getId(),ro1.getId(),288317.28);
         factService.save(f1);
 
-        Fact f2 = new Fact(ro2,ratio1,275234.09);
+        Fact f2 = new Fact(ratio1.getId(),ro2.getId(),275234.09);
         factService.save(f2);
 
-        Fact f3 = new Fact(ro3,ratio1,234582.02);
+        Fact f3 = new Fact(ratio1.getId(),ro3.getId(),234582.02);
         factService.save(f3);
 
-        Fact f6 = new Fact(ro6,ratio1,32784.53);
+        Fact f6 = new Fact(ratio1.getId(),ro6.getId(),32784.53);
         factService.save(f6);
 
-        Fact f7 = new Fact(ro7,ratio1,3924230.23);
+        Fact f7 = new Fact(ratio1.getId(),ro7.getId(),3924230.23);
         factService.save(f7);
 
-        Fact f8 = new Fact(ro8,ratio1,302138.87);
+        Fact f8 = new Fact(ratio1.getId(),ro8.getId(),302138.87);
         factService.save(f8);
     }
 }

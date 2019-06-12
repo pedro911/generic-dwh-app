@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FactRepository extends JpaRepository<Fact, Long> {
 
-    List<Fact> findByOrderByIdAsc();
+    List<Fact> findByOrderByRatioIdAsc();
 }
