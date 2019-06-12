@@ -13,28 +13,29 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 ```
-Give examples
+Run this project with Maven
+Built using IntelliJ
 ```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+How to get a development env running
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+Clone the repo and execute on root folder:
 
 ```
-until finished
+mvn install
+cd generic-dwh-web
+mvn spring-boot:run
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+If correctly deployed, application will run at http://localhost:8080
 
-## Running the tests
+Using the default profile, only the GenericDWH menu will be available with slides data loaded in H2 In Memory DB
+
+You can access DB at http://localhost:8080/h2-console
+
+## Running the tests TODO
 
 Explain how to run the automated tests for this system
 
@@ -60,9 +61,10 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Spring 5](https://spring.io/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [Bootstrap](https://getbootstrap.com/) - Used to generate RSS Feeds
+* [Spring 5](https://spring.io/) 
+* [Maven](https://maven.apache.org/)
+* [Bootstrap](https://getbootstrap.com/) 
+* [IntelliJ](https://www.jetbrains.com/idea/) 
 
 ## Contributing
 
