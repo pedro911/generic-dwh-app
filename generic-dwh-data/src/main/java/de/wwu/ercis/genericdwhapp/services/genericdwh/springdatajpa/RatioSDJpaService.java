@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.RatioService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @Service
 public class RatioSDJpaService implements RatioService {
@@ -41,5 +42,10 @@ public class RatioSDJpaService implements RatioService {
     @Override
     public void deleteById(Long aLong) {
         ratioRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<Ratio> findByOrderByIdAsc() {
+        return ratioRepository.findByOrderByIdAsc();
     }
 }

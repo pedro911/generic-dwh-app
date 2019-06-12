@@ -3,12 +3,14 @@ package de.wwu.ercis.genericdwhapp.services.standard.small.springdatajpa;
 import de.wwu.ercis.genericdwhapp.model.standard.RegionEntity;
 import de.wwu.ercis.genericdwhapp.repositories.standard.small.RegionSmallRepository;
 import de.wwu.ercis.genericdwhapp.services.standard.small.RegionSmallService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Profile("alldb")
 public class RegionSmallSDJpaService implements RegionSmallService {
 
     private final RegionSmallRepository regionSmallRepository;

@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,5 +43,10 @@ public class FactSDJpaService implements FactService {
     @Override
     public void deleteById(Long aLong) {
         factRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<Fact> findByOrderByRatioIdAsc() {
+        return factRepository.findByOrderByRatioIdAsc();
     }
 }

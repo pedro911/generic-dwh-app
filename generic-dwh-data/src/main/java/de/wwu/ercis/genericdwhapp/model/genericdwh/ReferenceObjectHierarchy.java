@@ -1,27 +1,39 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
-import de.wwu.ercis.genericdwhapp.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@IdClass(ReferenceObjectHierarchyPK.class)
 @Table(name = "reference_object_hierarchy")
-public class ReferenceObjectHierarchy extends BaseEntity {
+public class ReferenceObjectHierarchy {
+
+    @Id
+    @Column(name = "parent_id", nullable = false)
+    private Long parentId;
+
+    @Id
+    @Column(name = "child_id", nullable = false)
+    private Long childId;
 
     @ManyToOne
+    @JoinColumn(name = "parent_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject parent;
 
     @ManyToOne
+    @JoinColumn(name = "child_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject child;
 
+    public ReferenceObjectHierarchy(Long parent_id, Long child_id) {
+        this.parentId = parent_id;
+        this.childId = child_id;
+    }
 }

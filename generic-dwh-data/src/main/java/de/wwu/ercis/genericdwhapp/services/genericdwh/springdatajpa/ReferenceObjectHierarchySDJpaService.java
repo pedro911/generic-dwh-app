@@ -6,6 +6,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectHierarchySe
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,5 +43,10 @@ public class ReferenceObjectHierarchySDJpaService implements ReferenceObjectHier
     @Override
     public void deleteById(Long aLong) {
         referenceObjectHierarchyRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<ReferenceObjectHierarchy> findByOrderByParentIdAsc() {
+        return referenceObjectHierarchyRepository.findByOrderByParentIdAsc();
     }
 }

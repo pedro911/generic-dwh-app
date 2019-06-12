@@ -7,6 +7,7 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionCombinationServic
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -45,5 +46,10 @@ public class DimensionCombinationSDJpaService implements DimensionCombinationSer
     @Override
     public void deleteById(Long aLong) {
         dimensionCombinationRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<DimensionCombination> findByOrderByCombinationIdAsc() {
+        return dimensionCombinationRepository.findByOrderByCombinationIdAsc();
     }
 }
