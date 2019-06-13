@@ -25,7 +25,7 @@ public class Dimension extends BaseEntity{
     @Column (name = "name")
     private String name;
 
-    @Column(name = "is_time")
+    @Column(name = "is_time", columnDefinition = "tinyint(1)")
     private boolean is_time;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")

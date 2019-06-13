@@ -1,13 +1,11 @@
 package de.wwu.ercis.genericdwhapp.controllers;
 
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Profile({"default","alldb"})
 public class SlidesDataController {
 
     private final DimensionService dimensionService;
