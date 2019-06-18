@@ -34,7 +34,7 @@ public class ReferenceObject extends BaseEntity {
     @Column(name = "ref")
     private String ref;
 
-    @Column(name = "is_time")
+    @Column(name = "is_time", columnDefinition = "tinyint(1)")
     private boolean is_time;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
