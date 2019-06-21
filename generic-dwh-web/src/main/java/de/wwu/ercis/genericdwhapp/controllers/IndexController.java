@@ -19,8 +19,8 @@ public class IndexController {
 
     @RequestMapping({"", "/", "index", "index.html"})
     public String getIndexPage(Model model){
+        model.addAttribute("db","genericdwh_slides");
         model.addAttribute("dimensions",dimensionService.findAll());
-        //model.addAttribute("referenceObjects", referenceObjectService.findAll());
         return "index";
     }
 

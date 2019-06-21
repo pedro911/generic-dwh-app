@@ -1,35 +1,33 @@
 package de.wwu.ercis.genericdwhapp.controllers;
 
-import de.wwu.ercis.genericdwhapp.services.standard.onegb.NationOnegbService;
-import de.wwu.ercis.genericdwhapp.services.standard.small.NationSmallService;
-import org.springframework.context.annotation.Profile;
+import de.wwu.ercis.genericdwhapp.services.standard.NationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Profile("alldb")
 @RequestMapping("/tpch/nations")
 public class ListNationsController {
 
-    private final NationSmallService nationSmallService;
-    private final NationOnegbService nationOnegbService;
+    @Autowired
+    private final NationService nationService;
 
-    public ListNationsController(NationSmallService nationSmallService, NationOnegbService nationOnegbService) {
-        this.nationSmallService = nationSmallService;
-        this.nationOnegbService = nationOnegbService;
+    public ListNationsController(NationService nationService) {
+        this.nationService = nationService;
     }
 
     @RequestMapping("/small")
     public String getNationsPageSmall(Model model) {
-        model.addAttribute("nations", nationSmallService.findAll(Sort.by(Sort.Direction.ASC, "nNationkey")));
+        model.addAttribute("nations", nationService.findAll(Sort.by(Sort.Direction.ASC, "nNationkey")));
         return "nations";
     }
 
     @RequestMapping("/onegb")
     public String getNationsPageOneGB(Model model) {
-        model.addAttribute("nations", nationOnegbService.findAll(Sort.by(Sort.Direction.ASC, "nNationkey")));
+        //model.addAttribute("db","tpch_std_onegb");
+        model.addAttribute("nations", nationService.findAll(Sort.by(Sort.Direction.ASC, "nNationkey")));
         return "nations";
     }
 

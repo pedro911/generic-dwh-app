@@ -1,21 +1,19 @@
-package de.wwu.ercis.genericdwhapp.services.standard.small.springdatajpa;
+package de.wwu.ercis.genericdwhapp.services.standard.springdatajpa;
 
 import de.wwu.ercis.genericdwhapp.model.standard.RegionEntity;
-import de.wwu.ercis.genericdwhapp.repositories.standard.small.RegionSmallRepository;
-import de.wwu.ercis.genericdwhapp.services.standard.small.RegionSmallService;
-import org.springframework.context.annotation.Profile;
+import de.wwu.ercis.genericdwhapp.repositories.standard.RegionRepository;
+import de.wwu.ercis.genericdwhapp.services.standard.RegionService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Profile("alldb")
-public class RegionSmallSDJpaService implements RegionSmallService {
+public class RegionSDJpaService implements RegionService {
 
-    private final RegionSmallRepository regionSmallRepository;
+    private final RegionRepository regionSmallRepository;
 
-    public RegionSmallSDJpaService(RegionSmallRepository regionSmallRepository) {
+    public RegionSDJpaService(RegionRepository regionSmallRepository) {
         this.regionSmallRepository = regionSmallRepository;
     }
 
