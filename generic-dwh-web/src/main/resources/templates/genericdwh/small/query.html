@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'query')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main role="main" class="container">
+    <div class="jumbotron">
+        <h2>Query Generic DWH TPC-H Small</h2>
+        <p></p>
+        <p>Dimensions</p>
+        <select id="dimension" name="dimension">
+            <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
+            <option th:each="dimension : ${dimensions}" th:value="${dimension.id}" th:text="${dimension.name}">
+            </option>
+        </select>
+        <p></p>
+        <p>Reference Objects</p>
+        <select id="referenceObject" name="referenceObject">
+            <!--/*@thymesVar id="referenceObject" type="de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject"*/-->
+            <option th:each="referenceObject : ${referenceObjects}" th:value="${referenceObject.id}" th:text="${referenceObject.name}">
+            </option>
+        </select>
+
+        <p></p>
+        <p>Ratios</p>
+        <select id="ratio" name="ratio">
+            <!--/*@thymesVar id="referenceObject" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio"*/-->
+            <option th:each="ratio : ${ratios}" th:value="${ratio.id}" th:text="${ratio.name}">
+            </option>
+        </select>
+
+        <p></p>
+        <p></p>
+        <p></p>
+        <button type="button" class="btn btn-primary">Submit Query</button>
+
+    </div>
+</main>
+</body>
+</html>
