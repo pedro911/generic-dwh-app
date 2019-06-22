@@ -13,10 +13,8 @@ public class MultiTenancyInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler)
             throws Exception {
         Map<String, Object> pathVars = (Map<String, Object>) req.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        if (pathVars!=null){
-            if (pathVars.containsKey("db")) {
-                req.setAttribute("db", pathVars.get("db"));
-            }
+        if (pathVars!=null && pathVars.containsKey("db")){
+            req.setAttribute("db", pathVars.get("db"));
         }
         return true;
     }

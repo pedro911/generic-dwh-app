@@ -12,14 +12,9 @@ public class SnowflakeSchemaController {
         return "snowflakeschema/index";
     }
 
-    @RequestMapping("/starschema/small/query")
+    @RequestMapping("/starschema/query/{db}")
     public String returnSmallQuery(){
-        return "starschema/small/query";
-    }
-
-    @RequestMapping("/starschema/1gb/query")
-    public String return1gbQuery(){
-        return "starschema/1gb/query";
+        return "starschema/query";
     }
 
 

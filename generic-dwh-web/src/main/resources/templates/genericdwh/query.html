@@ -16,6 +16,26 @@
             <option th:each="dimension : ${dimensions}" th:value="${dimension.id}" th:text="${dimension.name}">
             </option>
         </select>
+        <div>
+            <h2>Add a new dimension combination</h2>
+            <form role="form" th:action="@{/genericdwh/add_dimension_combination(db=${db})}" th:object="${dimensionCombination}" method="post">
+                <div class="form-group">
+                    <label for="dimensionCombinationComponent">Component Dimension</label>
+                    <select id="dimensionCombinationComponent" name="dimensionCombinationComponent">
+                        <option th:each="dimension : ${dimensions}" th:value="${dimension.id}" th:text="${dimension.name}">
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dimensionCombinationSubordinate">Subordinate Dimension</label>
+                    <select id="dimensionCombinationSubordinate" name="dimensionCombinationSubordinate">
+                        <option th:each="dimension : ${dimensions}" th:value="${dimension.id}" th:text="${dimension.name}">
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
         <p></p>
         <p>Reference Objects</p>
         <select id="referenceObject" name="referenceObject">

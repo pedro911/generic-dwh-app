@@ -67,6 +67,13 @@ public class GenericDWHController {
         return "genericdwh/list_data";
     }
 
-
-
+/*    not working yet TODO
+    @RequestMapping(value = "/genericdwh/add_dimension_combination/{db}", method = RequestMethod.POST)
+    @Transactional
+    public String addDimensionCombination(@ModelAttribute DimensionCombination dimensionCombination,
+                                          @PathVariable String db, Model model){
+        model.addAttribute("db", db);
+        dimensionCombinationService.save(dimensionCombination);
+        return "redirect:/genericdwh/query/{db}";
+    }*/
 }
