@@ -3,6 +3,7 @@ package de.wwu.ercis.genericdwhapp.controllers;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -36,9 +37,9 @@ public class GenericDWHController {
         return "genericdwh/index";
     }
 
-
-    @RequestMapping("/genericdwh/small/query")
-    public String returnSmallQuery(Model model){
+    @RequestMapping("/genericdwh/query/{db}")
+    public String returnQuery(@PathVariable String db, Model model){
+        model.addAttribute("db", db);
         model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
         model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
@@ -48,12 +49,24 @@ public class GenericDWHController {
         model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
         model.addAttribute("ratiosCombinations", ratioCombinationService.findByOrderByCombinationIdAsc());
         model.addAttribute("facts", factService.findByOrderByRatioIdAsc());
-        return "genericdwh/small/query";
+        return "genericdwh/query";
     }
 
-    @RequestMapping("/genericdwh/1gb/query")
-    public String return1gbQuery(){
-        return "genericdwh/1gb/query";
+    @RequestMapping("/genericdwh/list_data/{db}")
+    public String listAllData(@PathVariable String db, Model model){
+        model.addAttribute("db", db);
+        model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
+        model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
+        model.addAttribute("referenceObjects", referenceObjectService.findByOrderByIdAsc());
+        model.addAttribute("referenceObjectsCombinations", referenceObjectCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByParentIdAsc());
+        model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
+        model.addAttribute("ratiosCombinations", ratioCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("facts", factService.findByOrderByRatioIdAsc());
+        return "genericdwh/list_data";
     }
+
+
 
 }
