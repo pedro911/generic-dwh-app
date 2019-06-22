@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'query')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main role="main" class="container">
+    <div class="jumbotron">
+        <h2>Query Star Schema TPC-H </h2>
+        DB Connection: <a th:text="${db}"></a>
+        <p></p>
+
+    </div>
+</main>
+</body>
+</html>

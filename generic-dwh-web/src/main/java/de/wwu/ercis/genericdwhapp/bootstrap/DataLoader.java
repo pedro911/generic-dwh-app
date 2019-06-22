@@ -47,9 +47,8 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Loading initial data from slides into H2 in memory db...");
         System.out.println("########################################################");
         log.debug("init");
-        // it works only to in default profile with H2 In memory DB
-        // don't use with alldb profile, it will duplicate data and get messy!
-        loadSlideData();
+
+        //loadSlideData();
 
         System.out.println("##########################################################");
         System.out.println("......................................................End!");

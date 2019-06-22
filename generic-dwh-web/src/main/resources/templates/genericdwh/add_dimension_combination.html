@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'main')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main role="main" class="container">
+    <div class="jumbotron">
+        <h2>Query Generic DWH TPC-H </h2>
+        DB Connection: <a th:text="${db}"></a>
+        <p></p>
+
+
+
+        <button type="button" class="btn btn-primary">Submit Query</button>
+
+    </div>
+</main>
+
+</body>
+</html>
