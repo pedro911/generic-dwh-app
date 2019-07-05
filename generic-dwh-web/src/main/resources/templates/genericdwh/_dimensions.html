@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="col-sm-12 col-md-6">
+    <div class="card" th:fragment="dimensions">
+        <h5 class="card-header">Dimensions</h5>
+        <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionHierarchy"*/-->
+        <a th:each="dimensionHierarchy: ${dimensionsHierarchies}">
+            <div class="col-sm-4 col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
+                        <a th:text="${dimensionHierarchy.parent.name}"/>
+                        <div class="card-body">
+                            <!--                        <li th:each="dimension : ${dimensions}" th:text="${dimension.name}"></li>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
