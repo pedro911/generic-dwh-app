@@ -1,6 +1,5 @@
 <!doctype html>
 <html th:fragment="layout (template, menu)">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -39,9 +38,9 @@
                     <i class="icon ion-md-filing"></i>
                     TPC-H Standard</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
-                    <a class="dropdown-item" th:href="@{/tpch_std}">DB Model</a>
-                    <a class="dropdown-item" th:href="@{/tpch_std/query/tpch_std_small}">Small</a>
-                    <a class="dropdown-item" th:href="@{/tpch_std/query/tpch_std_onegb}">1 GB</a>
+                    <a class="dropdown-item" th:href="@{/tpchstandard}">DB Model</a>
+                    <a class="dropdown-item" th:href="@{/tpchstandard/query/tpch_std_small}">Small</a>
+                    <a class="dropdown-item" th:href="@{/tpchstandard/query/tpch_std_onegb}">1 GB</a>
                     <a class="dropdown-item" th:href="@{/oups}">10 GB</a>
                     <a class="dropdown-item" th:href="@{/oups}">100 GB</a>
                 </div>
@@ -89,19 +88,15 @@
                     Credits</a>
             </li>
         </ul>
-<!--        <form class="form-inline mt-2 mt-md-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>-->
     </div>
 </nav>
-
   <div class="container-fluid">
       <div class="container xd-container">
           <th:block th:include="${template}"/>
         <div class="container">
           <div class="row">
             <div class="col-12 text-center">
+                <hr>
               <a href="https://www.ercis.org/">
                   <img src="../static/resources/images/ercis_logo.png" th:src="@{/resources/images/ercis_logo.png}"
                                                     alt="ERCIS - WWU - Muenster"/></a>
@@ -116,6 +111,5 @@
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-
 </body>
 </html>

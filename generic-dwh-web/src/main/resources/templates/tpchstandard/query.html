@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'query')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main role="main" class="container">
+    <div class="jumbotron">
+        <h2>Query TPC-H Standard</h2>
+        DB Connection: <a th:text="${db}"></a>
+        <p></p>
+        <p>Regions</p>
+        <select id="region" name="region">
+            <!--/*@thymesVar id="nation" type="de.wwu.ercis.genericdwhapp.model.tpchstandard.RegionEntity"*/-->
+            <option th:each="region : ${regions}" th:value="${region.RRegionkey}" th:text="${region.RName}"></option>
+        </select>
+        <p></p>
+        <p>Nations</p>
+        <select id="referenceObject" name="referenceObject">
+            <!--/*@thymesVar id="nation" type="de.wwu.ercis.genericdwhapp.model.tpchstandard.NationEntity"*/-->
+            <option th:each="nation : ${nations}" th:value="${nation.NNationkey}" th:text="${nation.NName}"></option>
+        </select>
+
+        <p></p>
+        <p></p>
+        <p></p>
+        <button type="button" class="btn btn-primary">Submit Query</button>
+
+    </div>
+</main>
+
+</body>
+</html>
