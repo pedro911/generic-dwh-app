@@ -1,26 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-
-<div class="col-sm-12 col-md-6">
-    <div class="card" th:fragment="dimensions">
-        <h5 class="card-header">Dimensions</h5>
-        <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionHierarchy"*/-->
-        <a th:each="dimensionHierarchy: ${dimensionsHierarchies}">
-            <div class="col-sm-4 col-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
-                        <a th:text="${dimensionHierarchy.parent.name}"/>
-                        <div class="card-body">
-                            <!--                        <li th:each="dimension : ${dimensions}" th:text="${dimension.name}"></li>-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
+<div class="col-sm-4 col-md-3" th:fragment="dimensions">
+    <!--/*@thymesVar id="dimension" type="de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionRoot"*/-->
+    <div class="card border-success mb-3">
+        <ul>
+            <li th:each="dimensionRoot : ${dimensionRoots}">
+                <span th:if="${'null' == (dimensionRoot.parentId)}" th:text="${dimensionRoot.id}">Root Dimension</span>
+                <input type="checkbox" th:if="${'null' != (dimensionRoot.parentId)}" th:text=" ' ' + ${dimensionRoot.id}">
+                <section th:include="genericdwh/_dimensions.html :: dimensions" th:with="dimensionRoots=${dimensionRoot.childrenItems}"></section>
+            </li>
+        </ul>
     </div>
 </div>
-
 </body>
 </html>

@@ -12,4 +12,6 @@ public interface DimensionService extends CrudService<Dimension, Long> {
 
     List<Dimension> findAll(Sort sort);
 
+    List<Dimension> findByRoot();
+
 }

@@ -37,8 +37,11 @@ public class QueryController {
     public String returnQuery(@PathVariable String db, Model model){
         model.addAttribute("db", db);
         model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
+        //model.addAttribute("dimensions",dimensionService.findByRoot());
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
         model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
+        //model.addAttribute("dimensionsHierarchies",dimensionService.findByRoot());
+        model.addAttribute("dimensionRoots",dimensionHierarchyService.findAllByRoot());
         model.addAttribute("referenceObjects", referenceObjectService.findByOrderByIdAsc());
         model.addAttribute("referenceObjectsCombinations", referenceObjectCombinationService.findByOrderByCombinationIdAsc());
         model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByParentIdAsc());
