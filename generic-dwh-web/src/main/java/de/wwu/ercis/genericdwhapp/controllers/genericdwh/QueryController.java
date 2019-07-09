@@ -40,6 +40,7 @@ public class QueryController {
         //model.addAttribute("dimensions",dimensionService.findByRoot());
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
         model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
+        //model.addAttribute("dimensionsOnlyRoots",dimensionHierarchyService.returnOnlyRoots());
         //model.addAttribute("dimensionsHierarchies",dimensionService.findByRoot());
         model.addAttribute("dimensionRoots",dimensionHierarchyService.findAllByRoot());
         model.addAttribute("referenceObjects", referenceObjectService.findByOrderByIdAsc());

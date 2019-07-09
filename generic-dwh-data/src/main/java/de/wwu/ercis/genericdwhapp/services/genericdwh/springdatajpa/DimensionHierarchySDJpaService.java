@@ -1,6 +1,5 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionHierarchy;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionRoot;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionHierarchyRepository;
@@ -56,67 +55,55 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
     }
 
     @Override
-    public List<DimensionRoot> findAllByRoot() {
-        List<DimensionHierarchy> root_dimensions_hierarchy = new ArrayList<>();
-        List<Dimension> root_Hierarchies = dimensionRepository.findByRoot();
-        DimensionHierarchy dimensionHierarchyResult = new DimensionHierarchy();
-
+    public ArrayList<DimensionRoot> findAllByRoot() {
         // input
-        ArrayList<DimensionHierarchy> pairs = this.findByOrderByParentIdAsc();
+        ArrayList<DimensionHierarchy> dimensionHierarchies = this.findByOrderByParentIdAsc();
 
         // Arrange - String corresponds to the Id
-        Map<Long, DimensionRoot> hm = new HashMap<>();
-        // you are using MegaMenuDTO as Linked list with next and before link
+        Map<Long, DimensionRoot> dimensionRoots = new HashMap<>();
+
         // populate a Map
-        for(DimensionHierarchy p:pairs){
-            log.debug("parent name ---- ");
-            System.out.println(p.getParent().getName());
+        for(DimensionHierarchy dh:dimensionHierarchies){
             //  ----- Child -----
-            DimensionRoot mmdChild;
-            if(hm.containsKey(p.getChildId())){
-                log.debug("child id ----");
-                System.out.println(p.getChildId());
-                mmdChild = hm.get(p.getChildId());
+            DimensionRoot dimensionChild;
+            if(dimensionRoots.containsKey(dh.getChildId())){
+                dimensionChild = dimensionRoots.get(dh.getChildId());
             }
             else{
-                mmdChild = new DimensionRoot();
-                hm.put(p.getChildId(),mmdChild);
-                log.debug("mmd child ----");
-                System.out.println(p.getChildId());
-                log.debug("mmd parent ID ");
-                System.out.println(p.getParentId());
+                dimensionChild = new DimensionRoot();
+                dimensionRoots.put(dh.getChildId(),dimensionChild);
             }
-            mmdChild.setId(p.getChildId().toString());
-            mmdChild.setParentId(p.getParent().toString());
+            dimensionChild.setId(dh.getChildId().toString());
+            dimensionChild.setParentId(dh.getParent().toString());
+            dimensionChild.setName(dh.getChild().getName());
             // no need to set ChildrenItems list because the constructor created a new empty list
 
             // ------ Parent ----
-            DimensionRoot mmdParent ;
-            if(hm.containsKey(p.getParentId())){
-                mmdParent = hm.get(p.getParentId());
+            DimensionRoot dimensionParent ;
+            if(dimensionRoots.containsKey(dh.getParentId())){
+                dimensionParent = dimensionRoots.get(dh.getParentId());
             }
             else{
-                mmdParent = new DimensionRoot();
-                hm.put(p.getParentId(),mmdParent);
+                dimensionParent = new DimensionRoot();
+                dimensionRoots.put(dh.getParentId(),dimensionParent);
             }
-            mmdParent.setId(p.getParentId().toString());
-            mmdParent.setParentId("null");
-            mmdParent.addChildrenItem(mmdChild);
+            dimensionParent.setId(dh.getParentId().toString());
+            dimensionParent.setParentId("null");
+            dimensionParent.setName(dh.getParent().getName());
+            dimensionParent.addChildrenItem(dimensionChild);
         }
 
         // Get the root
-        List<DimensionRoot> DX = new ArrayList<DimensionRoot>();
-        for(DimensionRoot mmd : hm.values()){
-            if(mmd.getParentId().equals("null"))
-                DX.add(mmd);
+        ArrayList<DimensionRoot> dimensionRootsResult = new ArrayList<DimensionRoot>();
+        for(DimensionRoot dr : dimensionRoots.values()){
+            if(dr.getParentId().equals("null"))
+                dimensionRootsResult.add(dr);
         }
         // Print
-        for(DimensionRoot mmd: DX){
-            System.out.println("DX contains "+DX.size()+" that are : "+ mmd);
-        }
-
-        return DX;
+/*        for(DimensionRoot dr: dimensionRootsResult){
+            System.out.println("dimensionRootsResult contains "+dimensionRootsResult.size()+" that are : "+ dr);
+        }*/
+        return dimensionRootsResult;
     }
-
 
 }

@@ -2,21 +2,24 @@ package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class DimensionRoot {
 
     private String id;
+    private String name;
     private String parentId;
-    private List<DimensionRoot> childrenItems;
+    private ArrayList<DimensionRoot> childrenItems;
 
     public DimensionRoot() {
         this.id = "";
         this.parentId = "";
+        this.name = "";
         this.childrenItems = new ArrayList<DimensionRoot>();
     }
 
@@ -25,12 +28,4 @@ public class DimensionRoot {
             this.childrenItems.add(childrenItem);
     }
 
-    @Override
-    public String toString() {
-        return "DimensionRoot{" +
-                "id='" + id + '\'' +
-                ", parentId='" + parentId + '\'' +
-                ", childrenItems=" + childrenItems +
-                '}';
-    }
 }
