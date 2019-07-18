@@ -38,7 +38,8 @@ public class QueryController {
         model.addAttribute("db", db);
         model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
         //model.addAttribute("dimensions",dimensionService.findByRoot());
-        model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
+        //model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
+        model.addAttribute("dimensionsCombinations", dimensionCombinationService.findDimensionsByCombinationId());
         model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
         //model.addAttribute("dimensionsOnlyRoots",dimensionHierarchyService.returnOnlyRoots());
         //model.addAttribute("dimensionsHierarchies",dimensionService.findByRoot());
@@ -48,7 +49,7 @@ public class QueryController {
         model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByParentIdAsc());
         model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
         model.addAttribute("ratiosCombinations", ratioCombinationService.findByOrderByCombinationIdAsc());
-        model.addAttribute("facts", factService.findByOrderByRatioIdAsc());
+        //model.addAttribute("facts", factService.findByOrderByRatioIdAsc());
         return "genericdwh/query";
     }
 }

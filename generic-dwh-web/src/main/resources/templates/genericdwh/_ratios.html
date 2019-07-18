@@ -1,10 +1,22 @@
-<div class="col-md-12">
-    <div class="card" th:fragment="ratios">
-        <h5 class="card-header">Ratios</h5>
-        <div class="card-body">
-            <h5 class="card-title">Available combinations</h5>
-            <p class="card-text">insert</p>
-
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="ratios" >
+    <!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
+    <div class="col-md-12">
+        <div class="card border-dark mb-3" th:each="dimension : ${dimensionsCombinations}">
+            <input hidden th:name="dCombinations" th:value="${dimension.id}"/>
+            <div class="card-header">Grouped by:
+                <span th:text="${dimension.name}" >
+                </span>
+            </div>
+            <div class="card-body">
+                <span th:each="ratio : ${ratios} " th:remove="tag">
+                    <input type="checkbox" th:text="'  ' + ${ratio.name}" th:name="ratioChecked" th:value="${ratio.id}"><br/>
+                </span>
+            </div>
         </div>
     </div>
-</div>
+</section>
+</body>
+</html>

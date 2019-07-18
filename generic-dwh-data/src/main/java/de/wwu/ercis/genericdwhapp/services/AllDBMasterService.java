@@ -16,35 +16,39 @@ public class AllDBMasterService {
         genericdwh_slides.setUsername(user);
         genericdwh_slides.setPassword(pass);
 
-        DriverManagerDataSource genericdwh_small = new DriverManagerDataSource();
-        genericdwh_small.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_small");
-        genericdwh_small.setUsername(user);
-        genericdwh_small.setPassword(pass);
-
-        DriverManagerDataSource tpch_std_small = new DriverManagerDataSource();
-        tpch_std_small.setUrl("jdbc:mysql://localhost:3306/tpch_std_small");
-        tpch_std_small.setUsername(user);
-        tpch_std_small.setPassword(pass);
+        DriverManagerDataSource tpch_std_mini = new DriverManagerDataSource();
+        tpch_std_mini.setUrl("jdbc:mysql://localhost:3306/tpch_std_mini");
+        tpch_std_mini.setUsername(user);
+        tpch_std_mini.setPassword(pass);
 
         DriverManagerDataSource tpch_std_onegb = new DriverManagerDataSource();
         tpch_std_onegb.setUrl("jdbc:mysql://localhost:3306/tpch1");
         tpch_std_onegb.setUsername(user);
         tpch_std_onegb.setPassword(pass);
 
-        DriverManagerDataSource tpch_star_small = new DriverManagerDataSource();
-        tpch_star_small.setUrl("jdbc:mysql://localhost:3306/tpch_small_star");
-        tpch_star_small.setUsername(user);
-        tpch_star_small.setPassword(pass);
+        DriverManagerDataSource tpch_gdwh_mini = new DriverManagerDataSource();
+        tpch_gdwh_mini.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_mini");
+        tpch_gdwh_mini.setUsername(user);
+        tpch_gdwh_mini.setPassword(pass);
+
+        DriverManagerDataSource tpch_star_mini = new DriverManagerDataSource();
+        tpch_star_mini.setUrl("jdbc:mysql://localhost:3306/tpch_star_mini");
+        tpch_star_mini.setUsername(user);
+        tpch_star_mini.setPassword(pass);
 
         //TODO
         //add other dbs here
 
         HashMap hashMap = new HashMap();
-        hashMap.put("tpch_star_small", tpch_star_small);
-        hashMap.put("tpch_std_onegb", tpch_std_onegb);
-        hashMap.put("tpch_std_small", tpch_std_small);
         hashMap.put("genericdwh_slides", genericdwh_slides);
-        hashMap.put("genericdwh_small", genericdwh_small);
+
+        hashMap.put("tpch_std_mini", tpch_std_mini);
+        hashMap.put("tpch_std_onegb", tpch_std_onegb);
+
+        hashMap.put("tpch_gdwh_mini", tpch_gdwh_mini);
+
+        hashMap.put("tpch_star_mini", tpch_star_mini);
+
         return hashMap;
 
     }

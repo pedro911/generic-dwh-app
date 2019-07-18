@@ -1,9 +1,6 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @IdClass(FactPK.class)
 @Table(name = "fact")
 public class Fact {
@@ -33,7 +31,7 @@ public class Fact {
     private Ratio ratio;
 
     @Column(name = "value")
-    private double value;
+    private Double value;
 
     public Fact(Long ratioId, Long referenceObjectId, double value) {
         this.ratioId = ratioId;

@@ -1,6 +1,8 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.FactRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,16 @@ public class FactSDJpaService implements FactService {
     @Override
     public List<Fact> findByOrderByRatioIdAsc() {
         return factRepository.findByOrderByRatioIdAsc();
+    }
+
+    @Override
+    public List<Fact> findAllByRatioIdAndAndReferenceObjectId(Long ratioId, Long referenceObjectID) {
+
+        return factRepository.findAllByRatioIdAndAndReferenceObjectId(ratioId,referenceObjectID);
+    }
+
+    @Override
+    public Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio) {
+        return factRepository.findByReferenceObjectAndRatio(referenceObject, ratio).orElse(null);
     }
 }

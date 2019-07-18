@@ -1,11 +1,13 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionCombination;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionCombinationRepository;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionCombinationService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,5 +53,16 @@ public class DimensionCombinationSDJpaService implements DimensionCombinationSer
     @Override
     public List<DimensionCombination> findByOrderByCombinationIdAsc() {
         return dimensionCombinationRepository.findByOrderByCombinationIdAsc();
+    }
+
+    @Override
+    public List<Dimension> findDimensionsByCombinationId() {
+        List<Dimension> result = new ArrayList<>();
+        List<Long> ids = dimensionCombinationRepository.findDimensionsByCombinationId();
+        for(Long s : ids ){
+            Dimension d = dimensionRepository.findById(s).orElse(null);
+            result.add(d);
+        }
+        return result;
     }
 }

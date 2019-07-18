@@ -9,8 +9,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form class="customizing" action="" method="post">
-                <input type="hidden" name="combinations[]" value="">
+            <form class="customizing" th:action="@{|/genericdwh/results/${db}|}" method="get">
+                <!--<input type="hidden" name="combinations[]" value="">-->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-success" role="alert">
@@ -32,10 +32,15 @@
                         <br th:replace="genericdwh/_filters.html :: filters"/>
                     </div>
                 </div>
-                <p></p>
+
                 <div class="row">
                     <div class="col-sm-6 col-md-4">
-                        <br th:replace="genericdwh/_ratios.html :: ratios"/>
+                        <div class="card">
+                            <div class="card-header">Ratios</div>
+                            <div class="card-body">
+                                <span class="row" th:include="genericdwh/_ratios.html :: ratios"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-sm-6 col-md-8">
@@ -43,8 +48,8 @@
                             <div class="card-header">Dimensions</div>
                             <div class="card-body">
                                 <div class="card-columns">
-                                    <section th:include="genericdwh/_dimensions.html :: dimensions" th:with="roots=${dimensionRoots}">
-                                    </section>
+                                    <span th:include="genericdwh/_dimensions.html :: dimensions" th:with="roots=${dimensionRoots}">
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -62,185 +67,13 @@
                     <hr>
 
                     <div class="row">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block" data-action="{{ path('preview') }}">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">
                             Preview
                         </button>
                     </div>
 
                 </div>
-                    <script type="text/javascript">
-                        $(function() {
 
-                            $(document).on('click', 'form.customizing [type=submit][data-action]', function() {
-                                $(this).closest('form').attr('action', $(this).data('action'));
-                            });
-
-                            $(document).on('submit', 'form.customizing', function() {
-                                var is_valid = validate_form();
-                                if (!is_valid) {
-                                    return false;
-                                }
-                            });
-
-                            $(document).on('click', '.add-filter', function() {
-                                var uid = 'uid'+Math.floor((1 + Math.random()) * 0x10000).toString(16);
-                                var type = $(this).attr('class').replace(/.*?([a-z\-]+\-filter\-type).*?/, '$1');
-
-                                var $li = $('<li/>', { 'data-uid': uid });
-                                $('<a/>', { class: 'glyphicon glyphicon-remove remove-filter', href: '#', title: 'Remove filter' }).after(' ').appendTo($li);
-                                var $select = $('<select/>', { class: 'filter-dimension-select '+type, name: 'filters['+uid+'][dimension]' }).after(' ').appendTo($li);
-                                $('<option/>').appendTo($select);
-
-                                var last_root_id = null;
-                                var $optgroup = null;
-                                $('li.dimension').each(function() {
-                                    var $this = $(this);
-                                    var root_id = $this.data('root-id');
-                                    if (root_id != last_root_id) {
-                                        $optgroup = $('<optgroup/>', { label: $this.data('root-name') }).appendTo($select);
-                                        last_root_id = root_id;
-                                    }
-                                    $('<option/>', { value: $this.data('id') }).text($this.data('name')).appendTo($optgroup);
-                                });
-
-                                $(this).closest('.filters').find('ul.defined-filters').append($li);
-                                return false;
-                            });
-
-                            $(document).on('change', '.filter-dimension-select.single-object-filter-type', function() {
-                                var uid = $(this).closest('li').data('uid');
-
-                                var $container = $(this).parent();
-                                $(this).nextAll().remove();
-
-                                $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
-
-                                $.ajax({
-                                    url: '{{ path('fetch_reference_objects') }}',
-                                    data: { dimension_id: $(this).val() },
-                                    complete: function(jqXHR, textStatus) {
-                                        $container.find('.ajax-spinner').remove();
-                                        var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_object]' });
-                                        $.each(jqXHR.responseJSON, function(i, item) {
-                                            $('<option/>', { value: item.id }).text(item.name).appendTo($select);
-                                        });
-                                        $select.after(' ').appendTo($container);
-                                    } // complete
-                                });
-                            });
-
-                            $(document).on('change', '.filter-dimension-select.multiple-objects-filter-type', function() {
-                                var uid = $(this).closest('li').data('uid');
-
-                                var $container = $(this).parent();
-                                $(this).nextAll().remove();
-
-                                $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
-
-                                $.ajax({
-                                    url: '{{ path('fetch_reference_objects') }}',
-                                    data: { dimension_id: $(this).val() },
-                                    complete: function(jqXHR, textStatus) {
-                                        $container.find('.ajax-spinner').remove();
-                                        var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_objects][]', multiple: 'multiple' });
-                                        $.each(jqXHR.responseJSON, function(i, item) {
-                                            $('<option/>', { value: item.id }).text(item.name).appendTo($select);
-                                        });
-                                        $select.after(' ').appendTo($container);
-                                    } // complete
-                                });
-                            });
-
-                            $(document).on('click', '.clear-filters', function() {
-                                $(this).closest('.filters').find('.remove-filter').click();
-                                return false;
-                            });
-
-                            $(document).on('click', '.remove-filter', function() {
-                                $(this).closest('li').remove();
-                                validate_form();
-                                return false;
-                            });
-
-                            $(document).on('click', '.select-all-ratios, .select-all-dimensions', function() {
-                                $(this).closest('.panel-body').find('ul > li input[type=checkbox]:not(:checked)').each(function() {
-                                    $(this).click();
-                                });
-                                return false;
-                            })
-                            $(document).on('click', '.select-no-ratio, .select-no-dimension', function() {
-                                $(this).closest('.panel-body').find('ul > li input[type=checkbox]:checked').each(function() {
-                                    $(this).click();
-                                });
-                                return false;
-                            })
-
-                            $(document).on('change', 'li.ratio input[type=checkbox]', function() {
-                                $('input[name="combinations[]"]').val('');
-                                var ids = [];
-                                $('li.ratio input[type=checkbox]:checked').each(function() {
-                                    ids = ids.concat($(this).closest('li').data('combination-ids'));
-                                });
-                                ids = [...new Set(ids)];
-                                $('input[name="combinations[]"]').val(ids);
-                                validate_form();
-                            });
-
-                            $(document).on('change', 'li.dimension input[type=checkbox]', function() {
-                                validate_form();
-                            });
-
-                            validate_form = function() {
-                                var ratio_count = $('li.ratio input[type=checkbox]:checked').length;
-
-                                var item_counts = {};
-                                $('li.dimension input[type=checkbox]:checked').each(function() {
-                                    var name = $(this).closest('li').data('name');
-                                    var root_id = $(this).closest('li').data('root-id');
-                                    var root_name = $(this).closest('li').data('root-name');
-                                    var item_count = +$(this).closest('li').data('item-count');
-                                    if (root_id in item_counts) {
-                                        if (item_count > item_counts[root_id].item_count) {
-                                            item_counts[root_id].name = name;
-                                            item_counts[root_id].item_count = item_count;
-                                        }
-                                    } else {
-                                        item_counts[root_id] = { name: name, root_name: root_name, item_count: item_count };
-                                    }
-                                });
-                                var row_count = 1;
-                                $.each(item_counts, function(k, v) {
-                                    row_count *= v.item_count;
-                                });
-
-                                $('.result-estimation-info').empty();
-                                var is_valid = true;
-
-                                if (ratio_count == 0) {
-                                    is_valid = false;
-                                    $('.result-estimation-info').append($('<div/>', { class: 'alert alert-danger' }).html('{% trans %}You have to select at least one ratio.{% endtrans %}'));
-                                } else {
-                                    var info = '{% trans with { '%row_count%': ':row_count' } %}You have to expect approximately %row_count% data rows.{% endtrans %}'.replace(':row_count', (''+row_count).replace(/[0-9](?=(?:[0-9]{3})+(?![0-9]))/g, '$&,'));
-                                    $('.result-estimation-info').append($('<div/>', { class: 'alert alert-info' }).html(info));
-
-                                    if (row_count > 500) {
-                                        //$('.result-estimation-info').append($('<div/>', { class: 'alert alert-warning' }).html('{% trans %}That\'s a lot of data you have to expect to receive. You should uncheck some dimensional objects and/or specify additional filters.{% endtrans %}'));
-                                    }
-                                }
-
-                                if (is_valid) {
-                                    $('form.customizing [type=submit]').removeClass('disabled');
-                                } else {
-                                    $('form.customizing [type=submit]').addClass('disabled');
-                                }
-
-                                return is_valid;
-                            };
-
-                            validate_form();
-
-                        });
-                    </script>
             </form>
         </div>
     </div>

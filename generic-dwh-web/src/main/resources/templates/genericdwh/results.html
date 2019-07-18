@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'preview')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Fact"*/-->
+<div class="card mb-3">
+    <div class="card-header">Results <a class="alert-link" th:text="${db}"/></div>
+    <div class="card-body">
+        <div class="card-text">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>RO-Name </th>
+                    <th>Fact-Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="fact : ${results}" >
+                    <td th:text="${fact.referenceObject.name}"/>
+                    <td th:text="${#numbers.formatCurrency(fact.value)}" />
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<- Back
+
+</body>
+</html>

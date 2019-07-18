@@ -50,14 +50,15 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
     }
 
     @Override
-    public ArrayList<DimensionHierarchy> findByOrderByParentIdAsc() {
+    public List<DimensionHierarchy> findByOrderByParentIdAsc() {
         return dimensionHierarchyRepository.findByOrderByParentIdAsc();
     }
 
     @Override
-    public ArrayList<DimensionRoot> findAllByRoot() {
+    public List<DimensionRoot> findAllByRoot() {
+
         // input
-        ArrayList<DimensionHierarchy> dimensionHierarchies = this.findByOrderByParentIdAsc();
+        List<DimensionHierarchy> dimensionHierarchies = this.findByOrderByParentIdAsc();
 
         // Arrange - String corresponds to the Id
         Map<Long, DimensionRoot> dimensionRoots = new HashMap<>();
@@ -94,7 +95,7 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
         }
 
         // Get the root
-        ArrayList<DimensionRoot> dimensionRootsResult = new ArrayList<DimensionRoot>();
+        List<DimensionRoot> dimensionRootsResult = new ArrayList<DimensionRoot>();
         for(DimensionRoot dr : dimensionRoots.values()){
             if(dr.getParentId().equals("null"))
                 dimensionRootsResult.add(dr);

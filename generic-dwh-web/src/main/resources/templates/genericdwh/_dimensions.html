@@ -6,10 +6,13 @@
     <th:block th:each="hierarchyLevel : ${roots}">
         <span th:if="'null' == ${hierarchyLevel.parentId}" th:remove="tag">
             <div class="card border-dark mb-3">
-                <div class="card-header" th:text="${hierarchyLevel.name}" th:value="${hierarchyLevel.id}"></div>
+                <div class="card-header" th:text="${hierarchyLevel.name}" th:id="${hierarchyLevel.id}"></div>
                 <div class="card-body">
         </span>
-                <input type="checkbox" th:value="${hierarchyLevel.id}" th:text="'  ' + ${hierarchyLevel.name}">
+                <input type="checkbox" th:if="'null' != ${hierarchyLevel.parentId}"
+                       th:name="dimensionChecked"
+                       th:value="${hierarchyLevel.id}"
+                       th:text="'  ' + ${hierarchyLevel.name}">
                 <section th:include="genericdwh/_dimensions.html :: dimensions" th:with="roots=${hierarchyLevel.childrenItems}"/>
         <span th:if="'null' == ${hierarchyLevel.parentId}" th:remove="tag">
                 </div>

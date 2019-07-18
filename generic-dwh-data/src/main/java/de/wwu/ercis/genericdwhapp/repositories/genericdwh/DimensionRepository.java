@@ -22,4 +22,5 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
             nativeQuery = true)
     @Transactional(readOnly = true)
     List<Dimension> findByRoot();
+
 }
