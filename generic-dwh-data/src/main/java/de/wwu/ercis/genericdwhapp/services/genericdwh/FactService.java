@@ -11,8 +11,12 @@ public interface FactService extends CrudService<Fact, Long> {
 
     List<Fact> findByOrderByRatioIdAsc();
 
-    List<Fact> findAllByRatioIdAndAndReferenceObjectId(Long ratioId, Long referenceObjectID);
-
     Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio);
+
+    Fact findByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
+
+    Fact findByReferenceObjectId(Long id);
+
+    Fact findFirstByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
 
 }

@@ -53,13 +53,22 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<Fact> findAllByRatioIdAndAndReferenceObjectId(Long ratioId, Long referenceObjectID) {
-
-        return factRepository.findAllByRatioIdAndAndReferenceObjectId(ratioId,referenceObjectID);
+    public Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio) {
+        return factRepository.findByReferenceObjectAndRatio(referenceObject, ratio).orElse(null);
     }
 
     @Override
-    public Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio) {
-        return factRepository.findByReferenceObjectAndRatio(referenceObject, ratio).orElse(null);
+    public Fact findByReferenceObjectIdAndRatioId(Long roId, Long ratioId) {
+        return factRepository.findByReferenceObjectIdAndRatioId(roId, ratioId).orElse(null);
+    }
+
+    @Override
+    public Fact findByReferenceObjectId(Long id) {
+        return factRepository.findByReferenceObjectId(id).orElse(null);
+    }
+
+    @Override
+    public Fact findFirstByReferenceObjectIdAndRatioId(Long roId, Long ratioId) {
+        return factRepository.findFirstByReferenceObjectIdAndRatioId(roId, ratioId).orElse(null);
     }
 }

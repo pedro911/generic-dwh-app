@@ -1,9 +1,6 @@
 package de.wwu.ercis.genericdwhapp.controllers.genericdwh;
 
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -42,18 +39,18 @@ public class GenericDWHController {
         this.factService = factService;
     }
 
-    @RequestMapping({"/genericdwh", "/genericdwh/index", "/genericdwh/index.html","/genericdwh.html"})
-    public String getIndexPage(){
+    @RequestMapping({"/genericdwh", "/genericdwh/index", "/genericdwh/index.html", "/genericdwh.html"})
+    public String getIndexPage() {
         return "genericdwh/index";
     }
 
 
     @RequestMapping("/genericdwh/list_data/{db}")
-    public String listAllData(@PathVariable String db, Model model){
+    public String listAllData(@PathVariable String db, Model model) {
         model.addAttribute("db", db);
-        model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
+        model.addAttribute("dimensions", dimensionService.findByOrderByIdAsc());
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findByOrderByCombinationIdAsc());
-        model.addAttribute("dimensionsHierarchies",dimensionHierarchyService.findByOrderByParentIdAsc());
+        model.addAttribute("dimensionsHierarchies", dimensionHierarchyService.findByOrderByParentIdAsc());
         model.addAttribute("referenceObjects", referenceObjectService.findByOrderByIdAsc());
         model.addAttribute("referenceObjectsCombinations", referenceObjectCombinationService.findByOrderByCombinationIdAsc());
         model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByParentIdAsc());
@@ -67,66 +64,70 @@ public class GenericDWHController {
     public String processFindForm(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
                                   @RequestParam("dimensionChecked") List<String> dimensions,
-                                  @RequestParam("dCombinations") List<String> dCombinations){
+                                  @RequestParam("dCombinations") List<String> dCombinations) {
 
-        //many checks, if dimension is null, if ratios null, etc...
-        // if all selected, do joins etc...
-
-        log.debug("List of checked ratios");
+/*        log.debug("List of checked ratios");
         ratios.forEach(System.out::println);
 
         log.debug("List of checked dimensions - hierarchies");
         dimensions.forEach(System.out::println);
 
         log.debug("List of dimension Combinations the root WHERE IN() clause");
-        dCombinations.forEach(System.out::println);
+        dCombinations.forEach(System.out::println);*/
 
         model.addAttribute("db", db);
         Dimension dimension = new Dimension();
-
         Ratio ratio = new Ratio();
         Double value_sum = Double.valueOf(0);
         List<Fact> resultFinal = new ArrayList<Fact>();
-
-        for (String dimension_root:dCombinations){
-            Dimension dimensionRoot = dimensionService.findById(Long.parseLong(dimension_root));
-            for(String radio_id:ratios){
+        String modus = "";
+        long start = System.nanoTime();
+        // this uses referenceObjectCombination
+        // check error if selecting more than one ratio
+        for (String dimension_root : dCombinations) {
+            for (String radio_id : ratios) {
                 ratio = ratioService.findById(Long.parseLong(radio_id));
-                for(String dimension_id:dimensions){
+                for (String dimension_id : dimensions) {
                     dimension = dimensionService.findById(Long.parseLong(dimension_id));
-
-                    List<ReferenceObject> referenceObjectsRoots = referenceObjectService.findAllByDimensionIn(dimension);
-                    log.debug("List of reference objects from dimension");
-                    for (ReferenceObject referenceObjectsRoot : referenceObjectsRoots) {
-
-                        List<ReferenceObject> referenceObjectsFactValues = new ArrayList<>();
-
-                        Fact resultFact = new Fact();
-                        resultFact.setRatioId(ratio.getId());
-                        resultFact.setReferenceObjectId(referenceObjectsRoot.getId());
-                        resultFact.setReferenceObject(referenceObjectsRoot);
-                        resultFact.setRatio(ratio);
-
-                        referenceObjectsFactValues = referenceObjectService.findAllByDimensionInAndNameContaining(dimensionRoot,referenceObjectsRoot.getName());
-
-                        for (ReferenceObject ro2 : referenceObjectsFactValues) {
-                            Fact tempFact = factService.findByReferenceObjectAndRatio(ro2, ratio);
-                            value_sum = value_sum + tempFact.getValue();
+                    List<ReferenceObject> referenceObjectsResults = referenceObjectService.findAllByDimensionIn(dimension);
+                    if (null == factService.findFirstByReferenceObjectIdAndRatioId(referenceObjectsResults.get(0).getId(),Long.parseLong(radio_id))) {
+                        for (ReferenceObject referenceObjectResult : referenceObjectsResults) {
+                            Fact resultFact = new Fact();
+                            resultFact.setReferenceObject(referenceObjectResult);
+                            resultFact.setRatio(ratio);
+                            List<ReferenceObjectCombination> referenceObjectsFactValues = referenceObjectCombinationService.findAllBySubordinateId(referenceObjectResult.getId());
+                            for (ReferenceObjectCombination ro2 : referenceObjectsFactValues) {
+                                Fact tempFact = factService.findByReferenceObjectIdAndRatioId(ro2.getCombinationId(), ratio.getId());
+                                value_sum = value_sum + tempFact.getValue();
+                            }
+                            resultFact.setReferenceObjectId(referenceObjectResult.getId());
+                            resultFact.setRatioId(Long.parseLong(radio_id));
+                            resultFact.setValue(value_sum);
+                            resultFinal.add(resultFact);
+                            factService.save(resultFact);
+                            value_sum = Double.valueOf(0);
                         }
-                        log.debug("Value TOTAL");
-                        resultFact.setValue(value_sum);
-                        resultFinal.add(resultFact);
-                        System.out.println(resultFact.getValue());
-                        value_sum = Double.valueOf(0);
+                        if (modus.startsWith("R") && !modus.contains("and") ) modus = modus + " and New Facts inserted";
+                        else modus = "New Facts inserted";
                     }
-                    log.debug("Results contains:");
-                    resultFinal.forEach( fact -> System.out.println(fact.getReferenceObject().getName()));
+                    else {
+                        for (ReferenceObject referenceObjectResult : referenceObjectsResults) {
+                            Fact resultFact = factService.findByReferenceObjectIdAndRatioId(referenceObjectResult.getId(), Long.parseLong(radio_id));
+                            resultFinal.add(resultFact);
+                        }
+                        if (modus.startsWith("N") && !modus.contains("and") ) modus = modus + " and Returned Existing Facts";
+                        else modus = "Returned Existing Facts";
+                    }
                 }
             }
         }
+        long end = System.nanoTime();
+        double sec = (end - start) / 1e6;
 
         model.addAttribute("results", resultFinal);
+        model.addAttribute("timeElapsed", sec);
+        model.addAttribute("modus", modus);
+
         return "genericdwh/results";
     }
-
 }

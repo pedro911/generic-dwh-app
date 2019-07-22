@@ -5,12 +5,10 @@ import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Profile("default")
 public class DataLoader implements CommandLineRunner {
 
     private final DimensionService dimensionService;
@@ -43,17 +41,10 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("########################################################");
-        System.out.println("Loading initial data from slides into H2 in memory db...");
-        System.out.println("########################################################");
-        log.debug("init");
 
+        //only for tests using H2 In Memory
         //loadSlideData();
 
-        System.out.println("##########################################################");
-        System.out.println("......................................................End!");
-        System.out.println("##########################################################");
-        log.debug("end");
     }
 
     private void loadSlideData() {

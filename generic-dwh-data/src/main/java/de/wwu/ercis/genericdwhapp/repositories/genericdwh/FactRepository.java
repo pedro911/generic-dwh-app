@@ -16,9 +16,12 @@ public interface FactRepository extends JpaRepository<Fact, Long> {
 
     List<Fact> findByOrderByRatioIdAsc();
 
-    List<Fact> findAllByRatioIdAndAndReferenceObjectId(Long ratioId, Long referenceObjectID);
-
     Optional<Fact> findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio);
 
+    Optional<Fact> findByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
+
+    Optional<Fact> findByReferenceObjectId(Long id);
+
+    Optional<Fact> findFirstByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
 
 }
