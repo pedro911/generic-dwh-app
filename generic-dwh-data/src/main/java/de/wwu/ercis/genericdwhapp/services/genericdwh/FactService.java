@@ -19,4 +19,10 @@ public interface FactService extends CrudService<Fact, Long> {
 
     Fact findFirstByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
 
+    List<Fact> queryResults(List<String> ratios, List<String> dimensions, List<String> dCombinations);
+
+    String queryMethod();
+
+    List<Fact> findByDimensionIdAndRatioId(String dimensionId, String ratioId);
+
 }
