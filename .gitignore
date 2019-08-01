@@ -70,7 +70,7 @@ HELP.md
 # Maven
 ######################
 /log/
-/target/
+*/target/
 
 ######################
 # Gradle

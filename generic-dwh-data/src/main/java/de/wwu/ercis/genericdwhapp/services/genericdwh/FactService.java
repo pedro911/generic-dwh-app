@@ -9,20 +9,16 @@ import java.util.List;
 
 public interface FactService extends CrudService<Fact, Long> {
 
-    List<Fact> findByOrderByRatioIdAsc();
-
     Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio);
-
-    Fact findByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
-
-    Fact findByReferenceObjectId(Long id);
-
-    Fact findFirstByReferenceObjectIdAndRatioId(Long roId, Long ratioId);
 
     List<Fact> queryResults(List<String> ratios, List<String> dimensions, List<String> dCombinations);
 
     String queryMethod();
 
     List<Fact> findByDimensionIdAndRatioId(String dimensionId, String ratioId);
+
+    List<Fact> genericDWHResults(String dimensionId, String ratioId, String dimensionCombination);
+
+    List<Fact> findSpecial();
 
 }

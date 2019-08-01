@@ -7,10 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
-public interface ReferenceObjectRepository extends JpaRepository<ReferenceObject, Long>, ResultParser {
+public interface ReferenceObjectRepository extends JpaRepository<ReferenceObject, Long> {
 
     List<ReferenceObject> findByOrderByIdAsc();
 
@@ -20,6 +21,6 @@ public interface ReferenceObjectRepository extends JpaRepository<ReferenceObject
 
     List<ReferenceObject> findAllByDimensionInAndNameContaining(Dimension dimension, String name);
 
-
+    Optional<ReferenceObject> findFirstByDimension(Dimension dimension);
 
 }

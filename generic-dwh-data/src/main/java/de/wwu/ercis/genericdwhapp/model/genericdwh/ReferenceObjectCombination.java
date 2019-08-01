@@ -24,11 +24,11 @@ public class ReferenceObjectCombination {
     @Column(name = "subordinate_id", nullable = false)
     private Long subordinateId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "combination_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject combination;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subordinate_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject subordinate;
 

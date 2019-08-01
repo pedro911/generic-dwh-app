@@ -1,7 +1,6 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.ReferenceObjectRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectService;
@@ -53,14 +52,6 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     }
 
     @Override
-    public List<Fact> findSpecial(String query){
-
-        List<Fact> result = referenceObjectRepository.findSpecial(query);
-
-        return result;
-    }
-
-    @Override
     public List<ReferenceObject> findAllByDimensionIn(Dimension dimension) {
         return referenceObjectRepository.findAllByDimensionIn(dimension);
     }
@@ -73,5 +64,10 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     @Override
     public List<ReferenceObject> findAllByDimensionInAndNameContaining(Dimension dimension, String name) {
         return referenceObjectRepository.findAllByDimensionInAndNameContaining(dimension, name);
+    }
+
+    @Override
+    public ReferenceObject findFirstByDimension(Dimension dimension) {
+        return referenceObjectRepository.findFirstByDimension(dimension).orElse(null);
     }
 }

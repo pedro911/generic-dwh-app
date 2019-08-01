@@ -54,8 +54,18 @@ public class GenericDWHController {
         model.addAttribute("referenceObjectsHierarchies", referenceObjectHierarchyService.findByOrderByParentIdAsc());
         model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
         model.addAttribute("ratiosCombinations", ratioCombinationService.findByOrderByCombinationIdAsc());
-        model.addAttribute("facts", factService.findByOrderByRatioIdAsc());
+        model.addAttribute("facts", factService.findAll());
         return "genericdwh/list_data";
+    }
+
+    @RequestMapping("/genericdwh/query/{db}")
+    public String returnQuery(@PathVariable String db, Model model){
+        model.addAttribute("db", db);
+        model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
+        model.addAttribute("dimensionsCombinations", dimensionCombinationService.findDimensionsByCombinationId());
+        model.addAttribute("dimensionRoots",dimensionHierarchyService.findAllByRoot());
+        model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
+        return "genericdwh/query";
     }
 
     @GetMapping("/genericdwh/results/{db}")
@@ -67,6 +77,7 @@ public class GenericDWHController {
         model.addAttribute("db", db);
         long start = System.nanoTime();
         model.addAttribute("results", factService.queryResults(ratios,dimensions,dCombinations));
+        //model.addAttribute("results", factService.findSpecial());
         long end = System.nanoTime();
         double sec = (end - start) / 1e6;
         model.addAttribute("timeElapsed", sec);

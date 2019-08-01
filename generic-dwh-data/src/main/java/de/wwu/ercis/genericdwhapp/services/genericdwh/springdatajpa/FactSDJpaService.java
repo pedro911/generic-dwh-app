@@ -1,6 +1,9 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +49,7 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public Fact save(Fact object) {
-        return factRepository.save(object);
-    }
+    public Fact save(Fact object) { return factRepository.save(object);}
 
     @Override
     public void delete(Fact object) {
@@ -61,28 +62,8 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<Fact> findByOrderByRatioIdAsc() {
-        return factRepository.findByOrderByRatioIdAsc();
-    }
-
-    @Override
     public Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio) {
         return factRepository.findByReferenceObjectAndRatio(referenceObject, ratio).orElse(null);
-    }
-
-    @Override
-    public Fact findByReferenceObjectIdAndRatioId(Long roId, Long ratioId) {
-        return factRepository.findByReferenceObjectIdAndRatioId(roId, ratioId).orElse(null);
-    }
-
-    @Override
-    public Fact findByReferenceObjectId(Long id) {
-        return factRepository.findByReferenceObjectId(id).orElse(null);
-    }
-
-    @Override
-    public Fact findFirstByReferenceObjectIdAndRatioId(Long roId, Long ratioId) {
-        return factRepository.findFirstByReferenceObjectIdAndRatioId(roId, ratioId).orElse(null);
     }
 
     @Override
@@ -90,35 +71,20 @@ public class FactSDJpaService implements FactService {
 
         queryMethod="";
         Dimension dimension = new Dimension();
-        Ratio ratio = new Ratio();
-        Double value_sum = Double.valueOf(0);
         List<Fact> factsResult = new ArrayList<Fact>();
 
-        // uses referenceObjectCombination
+        // uses SQL custom query
         for (String dimension_root : dCombinations) {
             for (String radio_id : ratios) {
-                ratio = ratioRepository.findById(Long.parseLong(radio_id)).orElse(null);
+                Ratio ratioResult = ratioRepository.findById(Long.parseLong(radio_id)).orElse(null);
                 for (String dimension_id : dimensions) {
                     dimension = dimensionRepository.findById(Long.parseLong(dimension_id)).orElse(null);
-                    List<ReferenceObject> referenceObjectsResults = referenceObjectRepository.findAllByDimensionIn(dimension);
-                    if (null == this.findFirstByReferenceObjectIdAndRatioId(referenceObjectsResults.get(0).getId(),Long.parseLong(radio_id))) {
-                        for (ReferenceObject referenceObjectResult : referenceObjectsResults) {
-                            Fact resultFact = new Fact();
-                            List<ReferenceObjectCombination> referenceObjectsFactValues =
-                                    referenceObjectCombinationRepository.findAllBySubordinateId(referenceObjectResult.getId());
-                            for (ReferenceObjectCombination ro2 : referenceObjectsFactValues) {
-                                Fact tempFact = this.findByReferenceObjectIdAndRatioId(ro2.getCombinationId(), ratio.getId());
-                                value_sum = value_sum + tempFact.getValue();
-                            }
-                            resultFact.setReferenceObject(referenceObjectResult);
-                            resultFact.setRatio(ratio);
-                            resultFact.setReferenceObjectId(referenceObjectResult.getId());
-                            resultFact.setRatioId(Long.parseLong(radio_id));
-                            resultFact.setValue(value_sum);
-                            factsResult.add(resultFact);
-                            this.save(resultFact);
-                            value_sum = Double.valueOf(0);
-                        }
+                    //maybe find one or first, not all, but if it has filters, need to scan ALL ro_results to check which one(s) need to be inserted!
+                    //List<ReferenceObject> referenceObjectsResults = referenceObjectRepository.findAllByDimensionIn(dimension);
+                    ReferenceObject roResult = referenceObjectRepository.findFirstByDimension(dimension).orElse(null);
+                    if (null == this.findByReferenceObjectAndRatio(roResult,ratioResult)) {
+                        this.genericDWHResults(dimension_id, radio_id, dimension_root).forEach(factsResult::add);
+                        factsResult.forEach(fact -> factRepository.insertNewFact(fact.getReferenceObjectId(),fact.getRatioId(),fact.getValue()));
                         if (queryMethod.startsWith("R") && !queryMethod.contains("and"))
                             queryMethod = queryMethod + " and New Facts inserted";
                         else queryMethod = "New Facts inserted";
@@ -143,6 +109,25 @@ public class FactSDJpaService implements FactService {
     @Override
     public List<Fact> findByDimensionIdAndRatioId(String dimensionId, String ratioId) {
         return factRepository.findByDimensionIdAndRatioId(dimensionId, ratioId);
+    }
+
+    @Override
+    public List<Fact> genericDWHResults(String dimensionId, String ratioId, String dimensionCombination) {
+        return factRepository.genericDWHResults(dimensionId, ratioId, dimensionCombination);
+    }
+
+    @Override
+    public List<Fact> findSpecial() {
+        String query =
+                "SELECT _ro_result.subordinate_id, _fact.ratio_id, SUM(_fact.value)\n" +
+                        "FROM reference_object ro\n" +
+                        "INNER JOIN reference_object_combination _ro_result ON _ro_result.combination_id = ro.id\n" +
+                        "INNER JOIN reference_object _result ON _result.id = _ro_result.subordinate_id AND _result.dimension_id = 2\n" +
+                        "INNER JOIN fact _fact ON _fact.reference_object_id = ro.id AND _fact.ratio_id = 2\n" +
+                        "WHERE ro.dimension_id IN (14)\n" +
+                        "GROUP BY _result.id";
+
+        return factRepository.findSpecial(query);
     }
 
 }

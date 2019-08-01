@@ -2,12 +2,17 @@ package de.wwu.ercis.genericdwhapp.repositories.genericdwh;
 
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@Repository
 public class ResultParserImpl implements ResultParser {
 
     @PersistenceContext
@@ -18,6 +23,11 @@ public class ResultParserImpl implements ResultParser {
         List<Fact> facts = new ArrayList<>();
         Fact fact = new Fact();
         ReferenceObject referenceObject = new ReferenceObject();
+        TypedQuery<Fact> query = em.createQuery(q,Fact.class);
+
+        log.debug("print results");
+        System.out.println(query.getResultList());
+
         //facts = em.createNativeQuery(query).setHint(QueryHints.RESULT_TYPE, Fact.class).getResultList();
 
 /*
@@ -40,7 +50,7 @@ public class ResultParserImpl implements ResultParser {
         }
 */
 
-        return facts;
+        return query.getResultList();
     }
 
 

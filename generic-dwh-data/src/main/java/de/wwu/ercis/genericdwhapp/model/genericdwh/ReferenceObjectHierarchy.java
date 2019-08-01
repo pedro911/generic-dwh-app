@@ -24,11 +24,11 @@ public class ReferenceObjectHierarchy {
     @Column(name = "child_id", nullable = false)
     private Long childId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject parent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject child;
 
