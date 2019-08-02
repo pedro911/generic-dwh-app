@@ -76,8 +76,10 @@ public class GenericDWHController {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
-        model.addAttribute("results", factService.queryResults(ratios,dimensions,dCombinations));
-        //model.addAttribute("results", factService.findSpecial());
+        if(db.equals("tpch_gdwh_mini_dyn"))
+            model.addAttribute("results", factService.dynETLQuery(ratios,dimensions,dCombinations));
+        else
+            model.addAttribute("results", factService.stdQuery(ratios,dimensions,dCombinations));
         long end = System.nanoTime();
         double sec = (end - start) / 1e6;
         model.addAttribute("timeElapsed", sec);

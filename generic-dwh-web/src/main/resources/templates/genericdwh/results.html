@@ -29,7 +29,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="fact : ${results}" >
-                    <td th:text="${fact.referenceObject.dimension.name} + ' - '+  ${fact.referenceObject.name}"/>
+                    <td th:text="${fact.referenceObject.dimension.name} + ' - ' +  ${fact.referenceObject.name}"/>
                     <td th:text="${fact.ratio.name} + ': '+ ${#numbers.formatCurrency(fact.value)}" />
                 </tr>
                 </tbody>

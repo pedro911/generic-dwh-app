@@ -1,10 +1,8 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
-import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.*;
+import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionHierarchyService;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,17 +21,23 @@ public class FactSDJpaService implements FactService {
     private final DimensionRepository dimensionRepository;
     private final ReferenceObjectRepository referenceObjectRepository;
     private final ReferenceObjectCombinationRepository referenceObjectCombinationRepository;
+    private final DimensionHierarchyRepository dimensionHierarchyRepository;
+    private final DimensionHierarchyService dimensionHierarchyService;
 
     private String queryMethod ="";
 
     public FactSDJpaService(FactRepository factRepository, RatioRepository ratioRepository,
                             DimensionRepository dimensionRepository, ReferenceObjectRepository referenceObjectRepository,
-                            ReferenceObjectCombinationRepository referenceObjectCombinationRepository) {
+                            ReferenceObjectCombinationRepository referenceObjectCombinationRepository,
+                            DimensionHierarchyRepository dimensionHierarchyRepository,
+                            DimensionHierarchyService dimensionHierarchyService) {
         this.factRepository = factRepository;
         this.ratioRepository = ratioRepository;
         this.dimensionRepository = dimensionRepository;
         this.referenceObjectRepository = referenceObjectRepository;
         this.referenceObjectCombinationRepository = referenceObjectCombinationRepository;
+        this.dimensionHierarchyRepository = dimensionHierarchyRepository;
+        this.dimensionHierarchyService = dimensionHierarchyService;
     }
 
     @Override
@@ -67,21 +71,20 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<Fact> queryResults(List<String> ratios, List<String> dimensions, List<String> dCombinations) {
+    public List<Fact> dynETLQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations) {
 
         queryMethod="";
-        Dimension dimension = new Dimension();
+        Dimension dimensionResult = new Dimension();
+        Ratio ratioResult = new Ratio();
         List<Fact> factsResult = new ArrayList<Fact>();
 
         // uses SQL custom query
         for (String dimension_root : dCombinations) {
             for (String radio_id : ratios) {
-                Ratio ratioResult = ratioRepository.findById(Long.parseLong(radio_id)).orElse(null);
+                ratioResult.setId(Long.parseLong(radio_id));
                 for (String dimension_id : dimensions) {
-                    dimension = dimensionRepository.findById(Long.parseLong(dimension_id)).orElse(null);
-                    //maybe find one or first, not all, but if it has filters, need to scan ALL ro_results to check which one(s) need to be inserted!
-                    //List<ReferenceObject> referenceObjectsResults = referenceObjectRepository.findAllByDimensionIn(dimension);
-                    ReferenceObject roResult = referenceObjectRepository.findFirstByDimension(dimension).orElse(null);
+                    dimensionResult.setId(Long.parseLong(dimension_id));
+                    ReferenceObject roResult = referenceObjectRepository.findFirstByDimension(dimensionResult).orElse(null);
                     if (null == this.findByReferenceObjectAndRatio(roResult,ratioResult)) {
                         this.genericDWHResults(dimension_id, radio_id, dimension_root).forEach(factsResult::add);
                         factsResult.forEach(fact -> factRepository.insertNewFact(fact.getReferenceObjectId(),fact.getRatioId(),fact.getValue()));
@@ -90,7 +93,7 @@ public class FactSDJpaService implements FactService {
                         else queryMethod = "New Facts inserted";
                     }
                     else {
-                        findByDimensionIdAndRatioId(dimension_id, radio_id).forEach(factsResult::add);
+                        this.findByDimensionIdAndRatioId(dimension_id, radio_id).forEach(factsResult::add);
                         if (queryMethod.startsWith("N") && !queryMethod.contains("and"))
                             queryMethod = queryMethod + " and Returned Existing Facts";
                         else queryMethod = "Returned Existing Facts";
@@ -98,6 +101,24 @@ public class FactSDJpaService implements FactService {
                 }
             }
         }
+
+        if (dimensions.size()>1){
+            log.debug("dimensions size:" +dimensions.size());
+            for(int i=0;i<dimensions.size();i++){
+                List<DimensionRoot> dimensionRoots = dimensionHierarchyService.findAllByParentId(Long.parseLong(dimensions.get(i)));
+                for (String ratio_id : ratios){
+                    for (DimensionRoot dr : dimensionRoots){
+                        if (dr.getParentId() == "null"){
+                            System.out.println(dr.getName());
+                            System.out.println("root");
+                        }
+                        else System.out.println("child");
+                    }
+                    System.out.println(dimensions.get(i));
+                }
+            }
+        }
+
         return factsResult;
     }
 
@@ -117,17 +138,20 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<Fact> findSpecial() {
-        String query =
-                "SELECT _ro_result.subordinate_id, _fact.ratio_id, SUM(_fact.value)\n" +
-                        "FROM reference_object ro\n" +
-                        "INNER JOIN reference_object_combination _ro_result ON _ro_result.combination_id = ro.id\n" +
-                        "INNER JOIN reference_object _result ON _result.id = _ro_result.subordinate_id AND _result.dimension_id = 2\n" +
-                        "INNER JOIN fact _fact ON _fact.reference_object_id = ro.id AND _fact.ratio_id = 2\n" +
-                        "WHERE ro.dimension_id IN (14)\n" +
-                        "GROUP BY _result.id";
+    public List<Fact> stdQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations) {
 
-        return factRepository.findSpecial(query);
+        queryMethod = "Only Reading.";
+
+        List<Fact> factsResult = new ArrayList<Fact>();
+
+        for (String dimension_root : dCombinations) {
+            for (String radio_id : ratios) {
+                for (String dimension_id : dimensions) {
+                    this.genericDWHResults(dimension_id, radio_id, dimension_root).forEach(factsResult::add);
+                }
+            }
+        }
+        return factsResult;
     }
 
 }

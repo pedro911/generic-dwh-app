@@ -36,7 +36,7 @@ public interface FactRepository extends JpaRepository<Fact, Long>, ResultParser 
                                  @Param("dimensionCombination") String dimensionCombination);
 
     @Modifying
-    @Query(value = "INSERT INTO fact values (:roId,:ratioId,:fvalue)", nativeQuery = true)
+    @Query(value = "INSERT IGNORE INTO fact values (:roId,:ratioId,:fvalue)", nativeQuery = true)
     void insertNewFact(@Param("roId") Long roId, @Param("ratioId") Long ratioId,
                        @Param("fvalue") Double fvalue);
 }

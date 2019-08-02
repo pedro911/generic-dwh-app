@@ -12,4 +12,6 @@ public interface DimensionHierarchyService extends CrudService<DimensionHierarch
 
     List<DimensionRoot> findAllByRoot();
 
+    List<DimensionRoot> findAllByParentId(Long id);
+
 }

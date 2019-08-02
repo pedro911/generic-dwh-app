@@ -11,14 +11,14 @@ public interface FactService extends CrudService<Fact, Long> {
 
     Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio);
 
-    List<Fact> queryResults(List<String> ratios, List<String> dimensions, List<String> dCombinations);
+    List<Fact> dynETLQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations);
+
+    List<Fact> stdQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations);
 
     String queryMethod();
 
     List<Fact> findByDimensionIdAndRatioId(String dimensionId, String ratioId);
 
     List<Fact> genericDWHResults(String dimensionId, String ratioId, String dimensionCombination);
-
-    List<Fact> findSpecial();
 
 }

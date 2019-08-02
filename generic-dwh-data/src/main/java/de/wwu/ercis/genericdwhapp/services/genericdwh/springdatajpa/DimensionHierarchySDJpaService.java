@@ -107,4 +107,57 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
         return dimensionRootsResult;
     }
 
+    @Override
+    public List<DimensionRoot> findAllByParentId(Long id) {
+        // input
+        List<DimensionHierarchy> dimensionHierarchies = dimensionHierarchyRepository.findAllByParentId(id);
+
+        // Arrange - String corresponds to the Id
+        Map<Long, DimensionRoot> dimensionRoots = new HashMap<>();
+
+        // populate a Map
+        for(DimensionHierarchy dh:dimensionHierarchies){
+            //  ----- Child -----
+            DimensionRoot dimensionChild;
+            if(dimensionRoots.containsKey(dh.getChildId())){
+                dimensionChild = dimensionRoots.get(dh.getChildId());
+            }
+            else{
+                dimensionChild = new DimensionRoot();
+                dimensionRoots.put(dh.getChildId(),dimensionChild);
+            }
+            dimensionChild.setId(dh.getChildId().toString());
+            dimensionChild.setParentId(dh.getParent().toString());
+            dimensionChild.setName(dh.getChild().getName());
+            // no need to set ChildrenItems list because the constructor created a new empty list
+
+            // ------ Parent ----
+            DimensionRoot dimensionParent ;
+            if(dimensionRoots.containsKey(dh.getParentId())){
+                dimensionParent = dimensionRoots.get(dh.getParentId());
+            }
+            else{
+                dimensionParent = new DimensionRoot();
+                dimensionRoots.put(dh.getParentId(),dimensionParent);
+            }
+            dimensionParent.setId(dh.getParentId().toString());
+            dimensionParent.setParentId("null");
+            dimensionParent.setName(dh.getParent().getName());
+            dimensionParent.addChildrenItem(dimensionChild);
+        }
+
+        // Get the root
+        List<DimensionRoot> dimensionRootsResult = new ArrayList<DimensionRoot>();
+        for(DimensionRoot dr : dimensionRoots.values()){
+            if(dr.getParentId().equals("null"))
+                dimensionRootsResult.add(dr);
+        }
+        // Print
+        for(DimensionRoot dr: dimensionRootsResult){
+            System.out.println("dimensionRootsResult contains "+dimensionRootsResult.size()+" that are : "+ dr);
+        }
+        return dimensionRootsResult;
+    }
+
+
 }
