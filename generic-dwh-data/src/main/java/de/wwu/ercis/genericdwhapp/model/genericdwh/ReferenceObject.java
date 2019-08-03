@@ -27,7 +27,7 @@ public class ReferenceObject extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dimension_id")
     private Dimension dimension;
 
@@ -37,19 +37,16 @@ public class ReferenceObject extends BaseEntity {
     @Column(name = "is_time", columnDefinition = "tinyint(1)")
     private boolean is_time;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination", fetch = FetchType.LAZY)
     private Set<ReferenceObjectCombination> referenceObjectCombinationsByCombinations = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate", fetch = FetchType.LAZY)
     private Set<ReferenceObjectCombination> referenceObjectCombinationsBySubordinates = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.LAZY)
     private Set<ReferenceObjectHierarchy> referenceObjectHierarchiesByParents = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "child")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "child", fetch = FetchType.LAZY)
     private Set<ReferenceObjectHierarchy> referenceObjectHierarchiesByChildren = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referenceObject")
-    private Set<Fact> facts = new HashSet<>();
 
 }

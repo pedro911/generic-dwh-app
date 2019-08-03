@@ -8,4 +8,6 @@ import java.util.List;
 public interface ReferenceObjectCombinationService extends CrudService<ReferenceObjectCombination, Long> {
 
     List<ReferenceObjectCombination> findByOrderByCombinationIdAsc();
+
+    List<ReferenceObjectCombination> findAllBySubordinateId(Long id);
 }

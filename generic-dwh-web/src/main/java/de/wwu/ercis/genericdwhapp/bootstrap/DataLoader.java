@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Profile("default")
+@Profile("h2db")
 public class DataLoader implements CommandLineRunner {
 
     private final DimensionService dimensionService;
@@ -43,17 +43,10 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("########################################################");
-        System.out.println("Loading initial data from slides into H2 in memory db...");
-        System.out.println("########################################################");
-        log.debug("init");
 
+        //only for tests using H2 DB In Memory
         //loadSlideData();
 
-        System.out.println("##########################################################");
-        System.out.println("......................................................End!");
-        System.out.println("##########################################################");
-        log.debug("end");
     }
 
     private void loadSlideData() {

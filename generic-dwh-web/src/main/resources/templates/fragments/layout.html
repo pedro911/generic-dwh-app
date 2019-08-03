@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" >
     <link rel="stylesheet" th:href="@{/resources/css/genericdwh.css}"/>
 
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
 </head>
 
 <body>
@@ -39,7 +43,7 @@
                     TPC-H Standard</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
                     <a class="dropdown-item" th:href="@{/tpchstandard}">DB Model</a>
-                    <a class="dropdown-item" th:href="@{/tpchstandard/query/tpch_std_small}">Small</a>
+                    <a class="dropdown-item" th:href="@{/tpchstandard/query/tpch_std_mini}">Mini</a>
                     <a class="dropdown-item" th:href="@{/tpchstandard/query/tpch_std_onegb}">1 GB</a>
                     <a class="dropdown-item" th:href="@{/oups}">10 GB</a>
                     <a class="dropdown-item" th:href="@{/oups}">100 GB</a>
@@ -49,14 +53,36 @@
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="icon ion-md-color-wand"></i>
                     Generic DWH</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown08">
-                    <a class="dropdown-item" th:href="@{/genericdwh}">DB Model</a>
-                    <a class="dropdown-item" th:href="@{/genericdwh/list_data/genericdwh_slides}">Data from Slides</a>
-                    <a class="dropdown-item" th:href="@{/genericdwh/query/genericdwh_small}">Small </a>
-                    <a class="dropdown-item" th:href="@{/oups}">1GB </a>
-                    <a class="dropdown-item" th:href="@{/oups}">10GB </a>
-                    <a class="dropdown-item" th:href="@{/oups}">100GB </a>
-                </div>
+                <ul class="dropdown-menu" aria-labelledby="dropdown08">
+                    <li><a class="dropdown-item" th:href="@{/genericdwh}">DB Model</a></li>
+                    <li><a class="dropdown-item" th:href="@{/genericdwh/list_data/genericdwh_slides}">Data from Slides</a></li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">Mini</a>
+                        <ul class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_dyn}">Dynamic ETL</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_ncb}">No Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_acb}">All Combinations</a>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">Small</a>
+                        <ul class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_dyn}">Dynamic ETL</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_ncb}">No Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_acb}">All Combinations</a>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">1GB </a>
+                        <ul class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_1gb_dyn}">Dynamic ETL</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_1gb_ncb}">No Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_1gb_acb}">All Combinations</a>
+                        </ul>
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/oups}">10GB </a></li>
+                    <li><a class="dropdown-item" th:href="@{/oups}">100GB </a></li>
+                </ul>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -64,7 +90,7 @@
                     Star Schema</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown08">
                     <a class="dropdown-item" th:href="@{/starschema}">DB Model</a>
-                    <a class="dropdown-item" th:href="@{/starschema/query/tpch_star_small}">Small </a>
+                    <a class="dropdown-item" th:href="@{/starschema/query/tpch_star_mini}">Mini</a>
                     <a class="dropdown-item" th:href="@{/oups}">1GB </a>
                     <a class="dropdown-item" th:href="@{/oups}">10GB </a>
                     <a class="dropdown-item" th:href="@{/oups}">100GB </a>
@@ -108,8 +134,6 @@
       </div>
   </div>
 
-<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
 </body>
 </html>

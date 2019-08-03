@@ -23,7 +23,6 @@ public class DimensionSDJpaService implements DimensionService {
 
     @Override
     public Set<Dimension> findAll() {
-        log.debug("Test log from lombok slf4j");
         Set<Dimension> dimensions = new HashSet<>();
         dimensionRepository.findAll().forEach(dimensions::add);
         return dimensions;
@@ -55,6 +54,15 @@ public class DimensionSDJpaService implements DimensionService {
     @Override
     public List<Dimension> findAll(Sort sort) {
         return dimensionRepository.findAll(sort);
+    }
+
+    @Override
+    public List<Dimension> findByRoot() {
+        //maybe: first find roots (ok), then add all hierarchies from that root
+        //or with sql?! getChildId from root, check if exits childId = parentId, if yes add to list?!
+        //or implement method on hierarchies, with this list find next parents/childs
+
+        return dimensionRepository.findByRoot();
     }
 
 }

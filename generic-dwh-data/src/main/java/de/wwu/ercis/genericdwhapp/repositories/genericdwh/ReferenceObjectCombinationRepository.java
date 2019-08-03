@@ -13,4 +13,6 @@ public interface ReferenceObjectCombinationRepository extends JpaRepository<Refe
 
     List<ReferenceObjectCombination> findByOrderByCombinationIdAsc();
 
+    List<ReferenceObjectCombination> findAllBySubordinateId(Long id);
+
 }

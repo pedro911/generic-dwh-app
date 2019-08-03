@@ -1,5 +1,6 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.ReferenceObjectRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectService;
@@ -48,5 +49,25 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     @Override
     public List<ReferenceObject> findByOrderByIdAsc() {
         return referenceObjectRepository.findByOrderByIdAsc();
+    }
+
+    @Override
+    public List<ReferenceObject> findAllByDimensionIn(Dimension dimension) {
+        return referenceObjectRepository.findAllByDimensionIn(dimension);
+    }
+
+    @Override
+    public List<ReferenceObject> findAllByNameContaining(String name) {
+        return referenceObjectRepository.findAllByNameContaining(name.toUpperCase());
+    }
+
+    @Override
+    public List<ReferenceObject> findAllByDimensionInAndNameContaining(Dimension dimension, String name) {
+        return referenceObjectRepository.findAllByDimensionInAndNameContaining(dimension, name);
+    }
+
+    @Override
+    public ReferenceObject findFirstByDimension(Dimension dimension) {
+        return referenceObjectRepository.findFirstByDimension(dimension).orElse(null);
     }
 }
