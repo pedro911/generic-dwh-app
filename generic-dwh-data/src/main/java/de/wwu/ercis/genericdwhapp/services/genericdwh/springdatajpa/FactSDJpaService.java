@@ -1,6 +1,9 @@
 package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionHierarchyService;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
@@ -101,24 +104,6 @@ public class FactSDJpaService implements FactService {
                 }
             }
         }
-
-        if (dimensions.size()>1){
-            log.debug("dimensions size:" +dimensions.size());
-            for(int i=0;i<dimensions.size();i++){
-                List<DimensionRoot> dimensionRoots = dimensionHierarchyService.findAllByParentId(Long.parseLong(dimensions.get(i)));
-                for (String ratio_id : ratios){
-                    for (DimensionRoot dr : dimensionRoots){
-                        if (dr.getParentId() == "null"){
-                            System.out.println(dr.getName());
-                            System.out.println("root");
-                        }
-                        else System.out.println("child");
-                    }
-                    System.out.println(dimensions.get(i));
-                }
-            }
-        }
-
         return factsResult;
     }
 

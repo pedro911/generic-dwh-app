@@ -76,7 +76,7 @@ public class GenericDWHController {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
-        if(db.equals("tpch_gdwh_mini_dyn"))
+        if(db.endsWith("dyn"))
             model.addAttribute("results", factService.dynETLQuery(ratios,dimensions,dCombinations));
         else
             model.addAttribute("results", factService.stdQuery(ratios,dimensions,dCombinations));
