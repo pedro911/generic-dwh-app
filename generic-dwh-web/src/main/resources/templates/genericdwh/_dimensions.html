@@ -9,7 +9,7 @@
                 <div class="card-header" th:text="${hierarchyLevel.name}" th:id="${hierarchyLevel.id}"></div>
                 <div class="card-body">
         </span>
-                <input type="checkbox" th:if="'null' != ${hierarchyLevel.parentId}"
+                <input class="dimension" type="checkbox" th:if="'null' != ${hierarchyLevel.parentId}"
                        th:name="dimensionChecked"
                        th:value="${hierarchyLevel.id}"
                        th:text="'  ' + ${hierarchyLevel.name}">

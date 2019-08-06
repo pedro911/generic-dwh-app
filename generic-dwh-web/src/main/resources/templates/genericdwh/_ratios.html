@@ -6,18 +6,16 @@
     <div class="col-md-12">
         <div class="card border-dark mb-3" th:each="dimension : ${dimensionsCombinations}">
             <div class="card-header">Grouped by:
-                <span th:text="${dimension.name}" >
-                </span>
+                <span th:text="${dimension.name}"></span>
+                <input hidden th:name="dCombinations" th:value="${dimension.id}" />
             </div>
             <div class="card-body">
-                <input hidden th:name="dCombinations" th:value="${dimension.id}" th:checked="${ratioChecked}" />
-
-                <span th:each="ratio : ${ratioRoots}">
-                    <span th:each="r : ${ratio.childrenItems}" th:if="${ratio.id} == ${dimension.id}">
-                        <input type="checkbox" th:text="'  ' + ${r.name}" th:name="ratioChecked" th:value="${r.id}"><br/>
+                <span th:each="ratio : ${ratioRoots}" th:remove="tag">
+                    <span th:each="r : ${ratio.childrenItems}" th:if="${ratio.id} == ${dimension.id}" th:remove="tag">
+                        <input type="checkbox" th:text="'  ' + ${r.name}" th:name="ratioChecked" th:value="${r.id}">
+                        <br/>
                     </span>
                 </span>
-
             </div>
         </div>
     </div>
