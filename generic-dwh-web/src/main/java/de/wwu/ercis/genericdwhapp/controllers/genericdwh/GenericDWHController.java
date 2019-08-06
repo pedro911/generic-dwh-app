@@ -64,7 +64,8 @@ public class GenericDWHController {
         model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findDimensionsByCombinationId());
         model.addAttribute("dimensionRoots",dimensionHierarchyService.findAllByRoot());
-        model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
+        model.addAttribute("ratioRoots", ratioService.findAllByRoot());
+        //model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
         return "genericdwh/query";
     }
 

@@ -78,28 +78,31 @@ public class FactSDJpaService implements FactService {
 
         queryMethod="";
         Dimension dimensionResult = new Dimension();
-        Ratio ratioResult = new Ratio();
+        Ratio ratioResult;
         List<Fact> factsResult = new ArrayList<Fact>();
 
         // uses SQL custom query
         for (String dimension_root : dCombinations) {
+            List<Ratio> ratioList = ratioRepository.findByDimensionCombinationId(Long.parseLong(dimension_root));
             for (String radio_id : ratios) {
-                ratioResult.setId(Long.parseLong(radio_id));
-                for (String dimension_id : dimensions) {
-                    dimensionResult.setId(Long.parseLong(dimension_id));
-                    ReferenceObject roResult = referenceObjectRepository.findFirstByDimension(dimensionResult).orElse(null);
-                    if (null == this.findByReferenceObjectAndRatio(roResult,ratioResult)) {
-                        this.genericDWHResults(dimension_id, radio_id, dimension_root).forEach(factsResult::add);
-                        factsResult.forEach(fact -> factRepository.insertNewFact(fact.getReferenceObjectId(),fact.getRatioId(),fact.getValue()));
-                        if (queryMethod.startsWith("R") && !queryMethod.contains("and"))
-                            queryMethod = queryMethod + " and New Facts inserted";
-                        else queryMethod = "New Facts inserted";
-                    }
-                    else {
-                        this.findByDimensionIdAndRatioId(dimension_id, radio_id).forEach(factsResult::add);
-                        if (queryMethod.startsWith("N") && !queryMethod.contains("and"))
-                            queryMethod = queryMethod + " and Returned Existing Facts";
-                        else queryMethod = "Returned Existing Facts";
+                ratioResult = ratioRepository.findById((Long.parseLong(radio_id))).orElse(null);
+                if (ratioList.contains(ratioResult)){
+                    for (String dimension_id : dimensions) {
+                        dimensionResult.setId(Long.parseLong(dimension_id));
+                        ReferenceObject roResult = referenceObjectRepository.findFirstByDimension(dimensionResult).orElse(null);
+                        if (null == this.findByReferenceObjectAndRatio(roResult,ratioResult)  ) {
+                            this.genericDWHResults(dimension_id, radio_id, dimension_root).forEach(factsResult::add);
+                            factsResult.forEach(fact -> factRepository.insertNewFact(fact.getReferenceObjectId(),fact.getRatioId(),fact.getValue()));
+                            if (queryMethod.startsWith("R") && !queryMethod.contains("and"))
+                                queryMethod = queryMethod + " and New Facts inserted";
+                            else queryMethod = "New Facts inserted";
+                        }
+                        else {
+                            this.findByDimensionIdAndRatioId(dimension_id, radio_id).forEach(factsResult::add);
+                            if (queryMethod.startsWith("N") && !queryMethod.contains("and"))
+                                queryMethod = queryMethod + " and Returned Existing Facts";
+                            else queryMethod = "Returned Existing Facts";
+                        }
                     }
                 }
             }
