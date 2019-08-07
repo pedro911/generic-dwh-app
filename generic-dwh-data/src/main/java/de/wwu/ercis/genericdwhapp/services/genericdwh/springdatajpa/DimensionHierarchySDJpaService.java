@@ -6,9 +6,13 @@ import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionHierarchyRepo
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionHierarchyService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -23,9 +27,16 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
     }
 
     @Override
-    public Set<DimensionHierarchy> findAll() {
-        Set<DimensionHierarchy> dimensionHierarchies = new HashSet<>();
+    public List<DimensionHierarchy> findAll() {
+        List<DimensionHierarchy> dimensionHierarchies = new ArrayList<>();
         dimensionHierarchyRepository.findAll().forEach(dimensionHierarchies::add);
+        return dimensionHierarchies;
+    }
+
+    @Override
+    public List<DimensionHierarchy> findAllSort(Sort sort) {
+        List<DimensionHierarchy> dimensionHierarchies = new ArrayList<>();
+        dimensionHierarchyRepository.findAll(sort).forEach(dimensionHierarchies::add);
         return dimensionHierarchies;
     }
 
@@ -37,16 +48,6 @@ public class DimensionHierarchySDJpaService implements DimensionHierarchyService
     @Override
     public DimensionHierarchy save(DimensionHierarchy object) {
         return dimensionHierarchyRepository.save(object);
-    }
-
-    @Override
-    public void delete(DimensionHierarchy object) {
-        dimensionHierarchyRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        dimensionHierarchyRepository.deleteById(aLong);
     }
 
     @Override

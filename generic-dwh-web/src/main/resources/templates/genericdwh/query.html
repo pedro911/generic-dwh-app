@@ -19,14 +19,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-info">
-                            You have to select at least one ratio and, tendencially, some dimensional objects.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <!--<br th:replace="genericdwh/_filters.html :: filters"/>-->
                     </div>
@@ -58,13 +50,11 @@
                 </div>
 
                 <div class="row">
-
                     <div class="col-md-12">
                         <br/>
-                        <div class="form-check">
+                        <div class="validation-msg">
                         </div>
                     </div>
-
                 </div>
 
                 <hr>
@@ -86,16 +76,16 @@
                         });
 
                         $(document).on('change', $('[name="ratioChecked"]'), function() {
-                            $('.form-check').empty();
+                            $('.validation-msg').empty();
                             validate_form();
                         });
 
                         $(document).on('change', $('[name="dimensionChecked"]'), function() {
-                            $('.form-check').empty();
+                            $('.validation-msg').empty();
                             validate_form();
                         });
 
-                        $('.form-check').empty();
+                        $('.validation-msg').empty();
                         var is_valid = true;
 
                         validate_form = function() {
@@ -105,7 +95,7 @@
 
                             if (ratio_count == 0 || dimension_count ==0) {
                                 is_valid = false;
-                                $('.form-check').append($('<div/>', { class: 'alert alert-danger' }).html('You have to select at least one ratio and one dimension.'));
+                                $('.validation-msg').append($('<div/>', { class: 'alert alert-danger' }).html('You have to select at least one ratio and one dimension.'));
                             } else {
                                 var is_valid = true;
                             }

@@ -6,9 +6,13 @@ import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionCombinationRe
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.RatioRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.RatioService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -23,9 +27,16 @@ public class RatioSDJpaService implements RatioService {
     }
 
     @Override
-    public Set<Ratio> findAll() {
-        Set<Ratio> ratios = new HashSet<>();
+    public List<Ratio> findAll() {
+        List<Ratio> ratios = new ArrayList<>();
         ratioRepository.findAll().forEach(ratios::add);
+        return ratios;
+    }
+
+    @Override
+    public List<Ratio> findAllSort(Sort sort) {
+        List<Ratio> ratios = new ArrayList<>();
+        ratioRepository.findAll(sort).forEach(ratios::add);
         return ratios;
     }
 
@@ -37,16 +48,6 @@ public class RatioSDJpaService implements RatioService {
     @Override
     public Ratio save(Ratio object) {
         return ratioRepository.save(object);
-    }
-
-    @Override
-    public void delete(Ratio object) {
-        ratioRepository.save(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        ratioRepository.deleteById(aLong);
     }
 
     @Override

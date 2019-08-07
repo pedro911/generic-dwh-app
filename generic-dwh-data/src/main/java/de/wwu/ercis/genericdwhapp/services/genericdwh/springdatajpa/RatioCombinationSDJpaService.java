@@ -3,11 +3,11 @@ package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.RatioCombination;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.RatioCombinationRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.RatioCombinationService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class RatioCombinationSDJpaService implements RatioCombinationService {
@@ -19,9 +19,16 @@ public class RatioCombinationSDJpaService implements RatioCombinationService {
     }
 
     @Override
-    public Set<RatioCombination> findAll() {
-        Set<RatioCombination> ratioCombinations = new HashSet<>();
+    public List<RatioCombination> findAll() {
+        List<RatioCombination> ratioCombinations = new ArrayList<>();
         ratioCombinationRepository.findAll().forEach(ratioCombinations::add);
+        return ratioCombinations;
+    }
+
+    @Override
+    public List<RatioCombination> findAllSort(Sort sort) {
+        List<RatioCombination> ratioCombinations = new ArrayList<>();
+        ratioCombinationRepository.findAll(sort).forEach(ratioCombinations::add);
         return ratioCombinations;
     }
 
@@ -33,16 +40,6 @@ public class RatioCombinationSDJpaService implements RatioCombinationService {
     @Override
     public RatioCombination save(RatioCombination object) {
         return ratioCombinationRepository.save(object);
-    }
-
-    @Override
-    public void delete(RatioCombination object) {
-        ratioCombinationRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        ratioCombinationRepository.deleteById(aLong);
     }
 
     @Override

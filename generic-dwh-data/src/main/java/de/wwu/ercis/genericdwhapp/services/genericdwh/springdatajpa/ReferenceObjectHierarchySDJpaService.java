@@ -3,11 +3,11 @@ package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObjectHierarchy;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.ReferenceObjectHierarchyRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectHierarchyService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ReferenceObjectHierarchySDJpaService implements ReferenceObjectHierarchyService {
@@ -19,9 +19,16 @@ public class ReferenceObjectHierarchySDJpaService implements ReferenceObjectHier
     }
 
     @Override
-    public Set<ReferenceObjectHierarchy> findAll() {
-        Set<ReferenceObjectHierarchy> referenceObjectHierarchies = new HashSet<>();
+    public List<ReferenceObjectHierarchy> findAll() {
+        List<ReferenceObjectHierarchy> referenceObjectHierarchies = new ArrayList<>();
         referenceObjectHierarchyRepository.findAll().forEach(referenceObjectHierarchies::add);
+        return referenceObjectHierarchies;
+    }
+
+    @Override
+    public List<ReferenceObjectHierarchy> findAllSort(Sort sort) {
+        List<ReferenceObjectHierarchy> referenceObjectHierarchies = new ArrayList<>();
+        referenceObjectHierarchyRepository.findAll(sort).forEach(referenceObjectHierarchies::add);
         return referenceObjectHierarchies;
     }
 
@@ -33,16 +40,6 @@ public class ReferenceObjectHierarchySDJpaService implements ReferenceObjectHier
     @Override
     public ReferenceObjectHierarchy save(ReferenceObjectHierarchy object) {
         return referenceObjectHierarchyRepository.save(object);
-    }
-
-    @Override
-    public void delete(ReferenceObjectHierarchy object) {
-        referenceObjectHierarchyRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        referenceObjectHierarchyRepository.deleteById(aLong);
     }
 
     @Override
