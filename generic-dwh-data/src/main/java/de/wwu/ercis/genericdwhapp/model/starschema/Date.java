@@ -21,7 +21,7 @@ public class Date {
     private Integer id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "date")
-    private List<Fact> facts = new ArrayList<>();
+    private List<StarSchemaFact> starSchemaFacts = new ArrayList<>();
 
     @Basic
     @Column(name = "YEAR_NUMBER", nullable = true)

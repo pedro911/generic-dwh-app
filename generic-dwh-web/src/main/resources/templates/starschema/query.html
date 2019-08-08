@@ -30,9 +30,9 @@
                         <div class="card">
                             <div class="card-header">Measures </div>
                             <div class="card-body">
-                                <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="turnover"><br/>
-                                <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="cost"><br/>
-                                <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="profit"><br/>
+                                <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="'turnover'"><br/>
+                                <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="'cost'"><br/>
+                                <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="'profit'"><br/>
 
                             </div>
                         </div>
@@ -47,9 +47,9 @@
                                         <div class="card-header" th:text="'Customers'" th:id="customers"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="c_region" th:text="' Region'"><br/>
+                                                   th:value="'r_name'" th:text="' Region'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="c_nation" th:text="' Nation'"><br/>
+                                                   th:value="'n_name'" th:text="' Nation'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="c_mktsegment" th:text="' Market Segment'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"

@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.starschema.Customer"*/-->
+<!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.starschema.FactResult"*/-->
 
 <div class="card mb-3">
     <div class="card-header">
@@ -23,14 +23,14 @@
             <table class="table table-striped table-sm">
                 <thead>
                 <tr>
-                    <th>Customer Name </th>
-                    <th>Nation </th>
+                    <th>Ref. Object Name </th>
+                    <th>Fact Value </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="customer : ${customers}" >
-                    <td th:text="${customer.name}"/>
-                    <td th:text="${customer.nation}" />
+                <tr th:each="factResult : ${starSchemaFacts}" >
+                    <td th:text="${factResult.dimension} + ' - ' + ${factResult.name}"/>
+                    <td th:text="${factResult.ratio} +': '+ ${#numbers.formatDecimal(factResult.value, 2, 'COMMA', 2, 'POINT')}" />
                 </tr>
                 </tbody>
             </table>

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface FactRepository extends JpaRepository<Fact, Long>, ResultParser {
+public interface FactRepository extends JpaRepository<Fact, Long> {
 
     Optional<Fact> findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio);
 

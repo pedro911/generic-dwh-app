@@ -20,7 +20,7 @@ public class Supplier {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplier")
-    private List<Fact> facts = new ArrayList<>();
+    private List<StarSchemaFact> starSchemaFacts = new ArrayList<>();
 
     @Basic
     @Column(name = "S_COMMENT", nullable = true, length = 102)

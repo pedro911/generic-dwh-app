@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "fact")
-public class Fact {
+public class StarSchemaFact {
 
     @Id
     @Column(name = "PK_FACT", nullable = false)

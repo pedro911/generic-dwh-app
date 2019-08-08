@@ -25,7 +25,7 @@ public class Lineorder {
     private int lineNumber;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lineorder")
-    private List<Fact> facts = new ArrayList<>();
+    private List<StarSchemaFact> starSchemaFacts = new ArrayList<>();
 
     @Basic
     @Column(name = "O_CUSTKEY", nullable = true)

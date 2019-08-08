@@ -20,7 +20,7 @@ public class Part {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "part")
-    private List<Fact> facts = new ArrayList<>();
+    private List<StarSchemaFact> starSchemaFacts = new ArrayList<>();
 
     @Basic
     @Column(name = "P_NAME", nullable = true, length = 55)

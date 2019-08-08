@@ -1,6 +1,7 @@
 package de.wwu.ercis.genericdwhapp.controllers.starschema;
 
 import de.wwu.ercis.genericdwhapp.services.starchema.CustomerService;
+import de.wwu.ercis.genericdwhapp.services.starchema.StarSchemaFactService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +17,12 @@ import java.util.List;
 public class StarSchemaController {
 
     private final CustomerService customerService;
+    private final StarSchemaFactService starSchemaFactService;
 
-    public StarSchemaController(CustomerService customerService) {
+
+    public StarSchemaController(CustomerService customerService, StarSchemaFactService starSchemaFactService) {
         this.customerService = customerService;
+        this.starSchemaFactService = starSchemaFactService;
     }
 
 
@@ -33,12 +37,12 @@ public class StarSchemaController {
                                   @RequestParam("ratioChecked") List<String> ratios,
                                   @RequestParam("dimensionChecked") List<String> dimensions){
 
-        model.addAttribute("customers", customerService.findAll());
-        model.addAttribute("db", db);
         long start = System.nanoTime();
+        model.addAttribute("starSchemaFacts", starSchemaFactService.facts(dimensions, ratios));
         long end = System.nanoTime();
         double sec = (end - start) / 1e6;
         model.addAttribute("timeElapsed", sec);
+        model.addAttribute("db", db);
 
         return "starschema/results";
     }
