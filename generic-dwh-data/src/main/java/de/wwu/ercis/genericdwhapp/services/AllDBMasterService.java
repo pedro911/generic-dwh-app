@@ -76,6 +76,11 @@ public class AllDBMasterService {
         tpch_star_mini.setUsername(user);
         tpch_star_mini.setPassword(pass);
 
+        DriverManagerDataSource tpch_star_small = new DriverManagerDataSource();
+        tpch_star_small.setUrl("jdbc:mysql://localhost:3306/tpch_star_small");
+        tpch_star_small.setUsername(user);
+        tpch_star_small.setPassword(pass);
+
         //TODO
         //add other dbs here
 
@@ -98,6 +103,7 @@ public class AllDBMasterService {
         hashMap.put("tpch_gdwh_1gb_acb", tpch_gdwh_1gb_acb);
 
         hashMap.put("tpch_star_mini", tpch_star_mini);
+        hashMap.put("tpch_star_small", tpch_star_small);
 
         return hashMap;
 
