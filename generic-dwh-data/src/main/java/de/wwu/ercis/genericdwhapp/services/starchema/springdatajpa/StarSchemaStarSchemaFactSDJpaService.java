@@ -46,9 +46,10 @@ public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactServi
 
         for (String ratio: ratios){
             for (String dimension: dimensions) {
-                String query = "SELECT " + dimension + " as 'name', SUM(" + ratio + ") as 'value' FROM dim_customer c\n" +
-                        "INNER JOIN fact f ON f.FK_CUSTOMER = c.PK_CUSTKEY\n" +
-                        "GROUP BY " + dimension + " ";
+                String query = "SELECT " + dimension + " as 'name', SUM(" + ratio + ") as 'value' FROM fact f\n" +
+                        "INNER JOIN dim_customer c ON c.PK_CUSTKEY = f.FK_CUSTOMER\n" +
+                        "GROUP BY " + dimension + "\n"+
+                        "ORDER BY " + dimension + " ";
                 starSchemaFactRepository.starQuery(query,dimension,ratio).forEach(factResults::add);
             }
         }

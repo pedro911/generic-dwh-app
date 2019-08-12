@@ -28,11 +28,12 @@
 
                     <div class="col-sm-6 col-md-4">
                         <div class="card">
-                            <div class="card-header">Measures </div>
+                            <div class="card-header">Ratios </div>
                             <div class="card-body">
-                                <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="'turnover'"><br/>
-                                <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="'cost'"><br/>
                                 <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="'profit'"><br/>
+                                <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="'turnover'"><br/>
+                                <input type="checkbox" th:text="' Product Price'" th:name="ratioChecked" th:value="'l_extendedprice'"><br/>
+                                <input type="checkbox" th:text="' Purchase Amount'" th:name="ratioChecked" th:value="'l_quantity'"><br/>
 
                             </div>
                         </div>
@@ -56,17 +57,37 @@
                                                    th:value="c_name" th:text="' Customer Name'"><br/>
                                         </div>
                                     </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Suppliers'" th:id="suppliers"></div>
+<!--                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Orders'" th:id="orders"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="s_region" th:text="' Region'"><br/>
+                                                   th:value="p_orderpriority" th:text="' Order Priority'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="s_nation" th:text="' Nation'"><br/>
+                                                   th:value="o_orderstatus" th:text="' Order Status'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="s_name" th:text="' Supplier Name'"><br/>
+                                                   th:value="o_orderkey" th:text="' Order Number'"><br/>
                                         </div>
                                     </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Products'" th:id="products"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_type" th:text="' Product Type'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_brand" th:text="' Product Brand'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_name" th:text="' Product Name'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Date'" th:id="date"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="year_number" th:text="' Year'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="month_number" th:text="' Month'"><br/>
+                                        </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>

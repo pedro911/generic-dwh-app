@@ -18,12 +18,28 @@ public class ResultParserImpl implements ResultParser {
 
     @Override
     public List<FactResult> starQuery(String q, String dimension, String ratio) {
-        List<Object[]> objects = new ArrayList<>();
-        objects = em.createNativeQuery(q).getResultList();
+        List<Object[]> objects = em.createNativeQuery(q).getResultList();
         List<FactResult> factResults = new ArrayList<>();
 
-        if (dimension.equals("r_name")) dimension = "Region";
-        if (dimension.equals("n_name")) dimension = "Nation";
+        switch (dimension){
+            case "r_name": dimension = "Region";
+                break;
+            case "n_name": dimension = "Nation";
+                break;
+            case "c_mktsegment": dimension = "Market Segment";
+                break;
+            case "c_name": dimension = "Customer Name";
+                break;
+            default: dimension = "Dimension Not Found";
+                break;
+        }
+
+        switch (ratio){
+            case "l_extendedprice": ratio = "Product Price";
+                break;
+            case "l_quantity": ratio = "Purchase Amount";
+                break;
+        }
 
         for (Object[] obj :objects){
             FactResult factResult = new FactResult();
@@ -33,14 +49,6 @@ public class ResultParserImpl implements ResultParser {
             factResult.setValue(Double.valueOf(String.valueOf(obj[1])));
             factResults.add(factResult);
         }
-
-/*        for (int i=0; i<factResults.size(); i++){
-            Object[] row = factResults.get(i);
-            row = append(row, dimension);
-            row = append(row, ratio);
-            System.out.println("Element "+i+ Arrays.toString(row));
-        }*/
-
 
         //facts = em.createNativeQuery(query).setHint(QueryHints.RESULT_TYPE, Fact.class).getResultList();
 
@@ -66,13 +74,6 @@ public class ResultParserImpl implements ResultParser {
 
         return factResults;
     }
-
-/*    static <T> T[] append(T[] arr, T element) {
-        final int N = arr.length;
-        arr = Arrays.copyOf(arr, N + 1);
-        arr[N] = element;
-        return arr;
-    }*/
 
 
 }
