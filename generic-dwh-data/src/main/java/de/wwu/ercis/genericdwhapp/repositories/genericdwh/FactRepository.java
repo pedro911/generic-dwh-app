@@ -21,7 +21,8 @@ public interface FactRepository extends JpaRepository<Fact, Long> {
 
     @Query(value = "SELECT f.reference_object_id, f.ratio_id, f.value FROM fact f \n" +
             "INNER JOIN reference_object ro ON ro.id = f.reference_object_id " +
-            "AND ro.dimension_id = :dimensionId AND f.ratio_id = :ratioId", nativeQuery = true)
+            "AND ro.dimension_id = :dimensionId AND f.ratio_id = :ratioId \n" +
+            "ORDER BY ro.name", nativeQuery = true)
     List<Fact> findByDimensionIdAndRatioId(@Param("dimensionId") String dimensionId, @Param("ratioId") String ratioId);
 
     @Query(value =
@@ -31,7 +32,8 @@ public interface FactRepository extends JpaRepository<Fact, Long> {
                     "INNER JOIN reference_object _result ON _result.id = _ro_result.subordinate_id AND _result.dimension_id = :dimensionId\n" +
                     "INNER JOIN fact _fact ON _fact.reference_object_id = ro.id AND _fact.ratio_id = :ratioId\n" +
                     "WHERE ro.dimension_id IN (:dimensionCombination)\n" +
-                    "GROUP BY _result.id", nativeQuery = true)
+                    "GROUP BY _result.id\n" +
+                    "ORDER BY _result.name", nativeQuery = true)
     List<Fact> genericDWHResults(@Param("dimensionId") String dimensionId, @Param("ratioId") String ratioId,
                                  @Param("dimensionCombination") String dimensionCombination);
 
