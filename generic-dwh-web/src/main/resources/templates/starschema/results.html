@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'preview')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <div class="row mx-md-n5">
+            <div class="col px-md-5">
+                <div class="alert alert-success" role="alert">Query Time: <a class="alert-link" th:text="${timeElapsed}"/> ms. </div>
+            </div>
+            <div class="col px-md-5">
+                <div class="alert alert-secondary" role="alert">Results from DB: <a class="alert-link" th:text="${db}"/></div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+            <table class="table table-striped table-sm">
+                <thead>
+                <tr>
+                    <th:block th:each="dimension: ${dimensions}">
+                        <th th:text="${dimension}"></th>
+                    </th:block>
+                    <th:block th:each="ratio: ${ratios}">
+                        <th th:text="${ratio}"></th>
+                    </th:block>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="fact: ${starSchemaFacts}">
+                    <td th:each="object : ${fact}" th:text="${object}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info" role="alert">
+                    <a th:text="${query}"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <button onclick="window.history.go(-1);" class="btn btn-secondary float-left">Back</button>
+    </div>
+</div>
+
+</body>
+</html>

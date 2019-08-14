@@ -8,12 +8,11 @@ import de.wwu.ercis.genericdwhapp.repositories.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionHierarchyService;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -44,9 +43,16 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public Set<Fact> findAll() {
-        Set<Fact> facts = new HashSet<>();
+    public List<Fact> findAll() {
+        List<Fact> facts = new ArrayList<>();
         factRepository.findAll().forEach(facts::add);
+        return facts;
+    }
+
+    @Override
+    public List<Fact> findAllSort(Sort sort) {
+        List<Fact> facts = new ArrayList<>();
+        factRepository.findAll(sort).forEach(facts::add);
         return facts;
     }
 
@@ -57,16 +63,6 @@ public class FactSDJpaService implements FactService {
 
     @Override
     public Fact save(Fact object) { return factRepository.save(object);}
-
-    @Override
-    public void delete(Fact object) {
-        factRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        factRepository.deleteById(aLong);
-    }
 
     @Override
     public Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio) {

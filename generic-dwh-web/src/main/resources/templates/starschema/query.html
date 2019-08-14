@@ -5,13 +5,166 @@
     <title>Title</title>
 </head>
 <body>
-<main role="main" class="container">
-    <div class="jumbotron">
-        <h2>Query Star Schema TPC-H </h2>
-        DB Connection: <a th:text="${db}"></a>
-        <p></p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="customizing" th:action="@{|/starschema/results/${db}|}" method="get">
+                <!--<input type="hidden" name="combinations[]" value="">-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success" role="alert">
+                            Query TPC-H Star Schema on DB Connection:  <a class="alert-link" th:text="${db}"/>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <!--<br th:replace="genericdwh/_filters.html :: filters"/>-->
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-4">
+                        <div class="card">
+                            <div class="card-header">Ratios </div>
+                            <div class="card-body">
+                                <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="Profit"><br/>
+                                <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="Turnover"><br/>
+                                <input type="checkbox" th:text="' Product Price'" th:name="ratioChecked" th:value="l_extendedprice"><br/>
+                                <input type="checkbox" th:text="' Purchase Amount'" th:name="ratioChecked" th:value="l_quantity"><br/>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-8">
+                        <div class="card">
+                            <div class="card-header">Dimensions</div>
+                            <div class="card-body">
+                                <div class="card-columns">
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Customers'" th:id="customers"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="c_r_name" th:text="' Region'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="c_n_name" th:text="' Nation'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="c_mktsegment" th:text="' Market Segment'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="c_name" th:text="' Customer Name'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Orders'" th:id="orders"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_orderpriority" th:text="' Order Priority'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_orderstatus" th:text="' Order Status'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_clerk" th:text="' Order Clerk'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_orderkey" th:text="' Order Number'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Suppliers'" th:id="suppliers"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="s_name" th:text="' Supplier Name'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Products'" th:id="products"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_type" th:text="' Product Type'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_brand" th:text="' Product Brand'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_name" th:text="' Product Name'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Date'" th:id="date"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="d_year_number" th:text="' Year'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="d_month_number" th:text="' Month'"><br/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="validation-msg">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="submit" class="btn btn-primary float-right">Preview</button>
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    $(function() {
+
+                        $(document).on('submit', 'form.customizing', function() {
+                            var is_valid = validate_form();
+                            if (!is_valid) {
+                                return false;
+                            }
+                        });
+
+                        $(document).on('change', $('[name="ratioChecked"]'), function() {
+                            $('.validation-msg').empty();
+                            validate_form();
+                        });
+
+                        $(document).on('change', $('[name="dimensionChecked"]'), function() {
+                            $('.validation-msg').empty();
+                            validate_form();
+                        });
+
+                        $('.validation-msg').empty();
+                        var is_valid = true;
+
+                        validate_form = function() {
+                            var ratio_count = $('[name="ratioChecked"]:checked').length;
+                            var dimension_count = $('[name="dimensionChecked"]:checked').length;
+                            var is_valid = true;
+
+                            if (ratio_count == 0 || dimension_count ==0) {
+                                is_valid = false;
+                                $('.validation-msg').append($('<div/>', { class: 'alert alert-danger' }).html('You have to select at least one ratio and one dimension.'));
+                            } else {
+                                var is_valid = true;
+                            }
+
+                            if (is_valid) {
+                                $('button[type="submit"]').removeAttr('disabled');
+                            } else {
+                                $('button[type="submit"]').attr('disabled','disabled');
+                            }
+                            return is_valid;
+                        };
+                        validate_form();
+                    });
+                </script>
+
+            </form>
+        </div>
     </div>
-</main>
+</div> <!-- /container -->
 </body>
 </html>

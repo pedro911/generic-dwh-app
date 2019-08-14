@@ -3,11 +3,11 @@ package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObjectCombination;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.ReferenceObjectCombinationRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectCombinationService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ReferenceObjectCombinationSDJpaService implements ReferenceObjectCombinationService {
@@ -19,9 +19,16 @@ public class ReferenceObjectCombinationSDJpaService implements ReferenceObjectCo
     }
 
     @Override
-    public Set<ReferenceObjectCombination> findAll() {
-        Set<ReferenceObjectCombination> referenceObjectCombinations = new HashSet<>();
+    public List<ReferenceObjectCombination> findAll() {
+        List<ReferenceObjectCombination> referenceObjectCombinations = new ArrayList<>();
         referenceObjectCombinationRepository.findAll().forEach(referenceObjectCombinations::add);
+        return referenceObjectCombinations;
+    }
+
+    @Override
+    public List<ReferenceObjectCombination> findAllSort(Sort sort) {
+        List<ReferenceObjectCombination> referenceObjectCombinations = new ArrayList<>();
+        referenceObjectCombinationRepository.findAll(sort).forEach(referenceObjectCombinations::add);
         return referenceObjectCombinations;
     }
 
@@ -33,16 +40,6 @@ public class ReferenceObjectCombinationSDJpaService implements ReferenceObjectCo
     @Override
     public ReferenceObjectCombination save(ReferenceObjectCombination object) {
         return referenceObjectCombinationRepository.save(object);
-    }
-
-    @Override
-    public void delete(ReferenceObjectCombination object) {
-        referenceObjectCombinationRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        referenceObjectCombinationRepository.deleteById(aLong);
     }
 
     @Override

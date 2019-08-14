@@ -2,11 +2,11 @@ package de.wwu.ercis.genericdwhapp.services.genericdwh;
 
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
-import de.wwu.ercis.genericdwhapp.services.CrudService;
+import de.wwu.ercis.genericdwhapp.services.GenericDWHService;
 
 import java.util.List;
 
-public interface ReferenceObjectService extends CrudService<ReferenceObject, Long> {
+public interface ReferenceObjectService extends GenericDWHService<ReferenceObject, Long> {
 
     List<ReferenceObject> findByOrderByIdAsc();
 

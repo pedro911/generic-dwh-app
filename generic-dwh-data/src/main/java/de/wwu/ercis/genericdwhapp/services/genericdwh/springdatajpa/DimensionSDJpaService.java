@@ -7,9 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -22,9 +21,16 @@ public class DimensionSDJpaService implements DimensionService {
     }
 
     @Override
-    public Set<Dimension> findAll() {
-        Set<Dimension> dimensions = new HashSet<>();
+    public List<Dimension> findAll() {
+        List<Dimension> dimensions = new ArrayList<>();
         dimensionRepository.findAll().forEach(dimensions::add);
+        return dimensions;
+    }
+
+    @Override
+    public List<Dimension> findAllSort(Sort sort) {
+        List<Dimension> dimensions = new ArrayList<>();
+        dimensionRepository.findAll(sort).forEach(dimensions::add);
         return dimensions;
     }
 
@@ -36,16 +42,6 @@ public class DimensionSDJpaService implements DimensionService {
     @Override
     public Dimension save(Dimension object) {
         return dimensionRepository.save(object);
-    }
-
-    @Override
-    public void delete(Dimension object) {
-        dimensionRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        dimensionRepository.deleteById(aLong);
     }
 
     @Override

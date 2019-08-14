@@ -4,11 +4,11 @@ import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.ReferenceObjectRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.ReferenceObjectService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ReferenceObjectSDJpaService implements ReferenceObjectService {
@@ -20,9 +20,16 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     }
 
     @Override
-    public Set<ReferenceObject> findAll() {
-        Set<ReferenceObject> referenceObjects = new HashSet<>();
+    public List<ReferenceObject> findAll() {
+        List<ReferenceObject> referenceObjects = new ArrayList<>();
         referenceObjectRepository.findAll().forEach(referenceObjects::add);
+        return referenceObjects;
+    }
+
+    @Override
+    public List<ReferenceObject> findAllSort(Sort sort) {
+        List<ReferenceObject> referenceObjects = new ArrayList<>();
+        referenceObjectRepository.findAll(sort).forEach(referenceObjects::add);
         return referenceObjects;
     }
 
@@ -34,16 +41,6 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     @Override
     public ReferenceObject save(ReferenceObject object) {
         return referenceObjectRepository.save(object);
-    }
-
-    @Override
-    public void delete(ReferenceObject object) {
-        referenceObjectRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        referenceObjectRepository.deleteById(aLong);
     }
 
     @Override

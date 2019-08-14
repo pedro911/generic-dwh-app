@@ -5,12 +5,11 @@ import de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionCombination;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionCombinationRepository;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.DimensionRepository;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionCombinationService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class DimensionCombinationSDJpaService implements DimensionCombinationService {
@@ -24,9 +23,16 @@ public class DimensionCombinationSDJpaService implements DimensionCombinationSer
     }
 
     @Override
-    public Set<DimensionCombination> findAll() {
-        Set<DimensionCombination> dimensionCombinations = new HashSet<>();
+    public List<DimensionCombination> findAll() {
+        List<DimensionCombination> dimensionCombinations = new ArrayList<>();
         dimensionCombinationRepository.findAll().forEach(dimensionCombinations::add);
+        return dimensionCombinations;
+    }
+
+    @Override
+    public List<DimensionCombination> findAllSort(Sort sort) {
+        List<DimensionCombination> dimensionCombinations = new ArrayList<>();
+        dimensionCombinationRepository.findAll(sort).forEach(dimensionCombinations::add);
         return dimensionCombinations;
     }
 
@@ -38,16 +44,6 @@ public class DimensionCombinationSDJpaService implements DimensionCombinationSer
     @Override
     public DimensionCombination save(DimensionCombination object) {
         return dimensionCombinationRepository.save(object);
-    }
-
-    @Override
-    public void delete(DimensionCombination object) {
-        dimensionCombinationRepository.delete(object);
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-        dimensionCombinationRepository.deleteById(aLong);
     }
 
     @Override
