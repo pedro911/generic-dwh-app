@@ -9,15 +9,14 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class ResultParserImpl implements ResultParser {
+public class NativeQueryImpl implements NativeQuery {
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public List<Object[]> starQuery(String query) {
+    public List<Object[]> nativeQuery(String query) {
         return em.createNativeQuery(query).getResultList();
     }
-
 
 }

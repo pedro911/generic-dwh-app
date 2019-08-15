@@ -3,6 +3,7 @@ package de.wwu.ercis.genericdwhapp.repositories.genericdwh;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Fact;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Ratio;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
+import de.wwu.ercis.genericdwhapp.repositories.NativeQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface FactRepository extends JpaRepository<Fact, Long> {
+public interface FactRepository extends JpaRepository<Fact, Long>, NativeQuery {
 
     Optional<Fact> findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio);
 

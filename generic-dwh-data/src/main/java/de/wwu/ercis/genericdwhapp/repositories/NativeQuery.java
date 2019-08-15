@@ -2,8 +2,8 @@ package de.wwu.ercis.genericdwhapp.repositories;
 
 import java.util.List;
 
-public interface ResultParser {
+public interface NativeQuery {
 
-    List<Object[]> starQuery(String query);
+    List<Object[]> nativeQuery(String query);
 
 }

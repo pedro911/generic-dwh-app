@@ -72,20 +72,25 @@ public class GenericDWHController {
     @GetMapping("/genericdwh/results/{db}")
     public String processFindForm(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
-                                  @RequestParam("dimensionChecked") List<String> dimensions,
-                                  @RequestParam("dCombinations") List<String> dCombinations) {
+                                  @RequestParam("dimensionChecked") List<String> dimensions) {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
         if(db.endsWith("dyn"))
-            model.addAttribute("results", factService.dynETLQuery(ratios,dimensions,dCombinations));
+            model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
         else
-            model.addAttribute("results", factService.stdQuery(ratios,dimensions,dCombinations));
+            model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
         long end = System.nanoTime();
         double sec = (end - start) / 1e6;
         model.addAttribute("timeElapsed", sec);
+        model.addAttribute("dimensions", dimensions);
+        model.addAttribute("ratios", ratios);
         model.addAttribute("queryMethod", factService.queryMethod());
+        model.addAttribute("query", factService.query());
 
         return "genericdwh/results";
     }
+
+
+
 }

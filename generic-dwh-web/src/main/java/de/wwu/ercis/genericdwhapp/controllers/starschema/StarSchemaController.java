@@ -33,7 +33,7 @@ public class StarSchemaController {
                                   @RequestParam("dimensionChecked") List<String> dimensions){
 
         long start = System.nanoTime();
-        model.addAttribute("starSchemaFacts", starSchemaFactService.facts(dimensions,ratios));
+        model.addAttribute("starSchemaFacts", starSchemaFactService.starFacts(dimensions,ratios));
         long end = System.nanoTime();
         double sec = (end - start) / 1e6;
 

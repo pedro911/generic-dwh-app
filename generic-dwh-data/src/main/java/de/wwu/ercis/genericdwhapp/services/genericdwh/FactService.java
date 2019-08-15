@@ -21,4 +21,10 @@ public interface FactService extends GenericDWHService<Fact, Long> {
 
     List<Fact> genericDWHResults(String dimensionId, String ratioId, String dimensionCombination);
 
+    List<Object[]> gdwhDynQuery(List<String> ratios, List<String> dimensions);
+
+    List<Object[]> gdwhStdQuery(List<String> ratios, List<String> dimensions);
+
+    String query();
+
 }

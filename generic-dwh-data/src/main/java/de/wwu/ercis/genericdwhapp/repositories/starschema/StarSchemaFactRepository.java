@@ -1,7 +1,7 @@
 package de.wwu.ercis.genericdwhapp.repositories.starschema;
 
 import de.wwu.ercis.genericdwhapp.model.starschema.StarSchemaFact;
-import de.wwu.ercis.genericdwhapp.repositories.ResultParser;
+import de.wwu.ercis.genericdwhapp.repositories.NativeQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface StarSchemaFactRepository extends JpaRepository<StarSchemaFact, Long>, ResultParser {
+public interface StarSchemaFactRepository extends JpaRepository<StarSchemaFact, Long>, NativeQuery {
 
     @Query(value = "SELECT :dimension as 'name', SUM(:ratio) as 'value' FROM dim_customer c\n" +
             "INNER JOIN fact f ON f.FK_CUSTOMER = c.PK_CUSTKEY\n" +
