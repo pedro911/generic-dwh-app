@@ -21,7 +21,7 @@ public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactServi
     }
 
     @Override
-    public List<Object[]> starFacts(List<String> dimensions, List<String> ratios) {
+    public List<String[]> starFacts(List<String> dimensions, List<String> ratios) {
         String query = "";
         List<String> selects = new ArrayList<>();
         String from = " FROM fact f\n";

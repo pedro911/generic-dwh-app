@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface NativeQuery {
 
-    List<Object[]> nativeQuery(String query);
+    List<String[]> nativeQuery(String query);
 
 }

@@ -60,12 +60,12 @@ public class GenericDWHController {
 
     @RequestMapping("/genericdwh/query/{db}")
     public String returnQuery(@PathVariable String db, Model model){
+
         model.addAttribute("db", db);
-        model.addAttribute("dimensions",dimensionService.findByOrderByIdAsc());
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findDimensionsByCombinationId());
         model.addAttribute("dimensionRoots",dimensionHierarchyService.findAllByRoot());
         model.addAttribute("ratioRoots", ratioService.findAllByRoot());
-        //model.addAttribute("ratios", ratioService.findByOrderByIdAsc());
+
         return "genericdwh/query";
     }
 
@@ -77,7 +77,7 @@ public class GenericDWHController {
         model.addAttribute("db", db);
         long start = System.nanoTime();
         if(db.endsWith("dyn"))
-            model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
+            model.addAttribute("results", factService.gdwhDynQuery(ratios,dimensions));
         else
             model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
         long end = System.nanoTime();

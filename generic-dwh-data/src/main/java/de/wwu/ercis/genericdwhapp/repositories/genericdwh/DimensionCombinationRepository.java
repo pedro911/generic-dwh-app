@@ -17,4 +17,7 @@ public interface DimensionCombinationRepository extends JpaRepository<DimensionC
     @Query(value = "SELECT DISTINCT dimension_combination.combination_id as id FROM dimension_combination", nativeQuery = true)
     List<Long> findDimensionsByCombinationId();
 
+    @Query(value = "SELECT subordinate_id FROM dimension_combination WHERE combination_id= :id", nativeQuery = true)
+    List<Long> findDimensionCombinationsByCombinationId(Long id);
+
 }

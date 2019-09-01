@@ -22,11 +22,11 @@ public class Fact {
     @Column(name = "reference_object_id", nullable = false)
     private Long referenceObjectId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "reference_object_id", insertable=false , updatable=false)
     private ReferenceObject referenceObject;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ratio_id", insertable=false , updatable=false)
     private Ratio ratio;
 

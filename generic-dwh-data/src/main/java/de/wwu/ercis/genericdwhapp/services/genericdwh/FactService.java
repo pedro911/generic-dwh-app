@@ -13,17 +13,15 @@ public interface FactService extends GenericDWHService<Fact, Long> {
 
     List<Fact> dynETLQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations);
 
-    List<Fact> stdQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations);
-
     String queryMethod();
 
     List<Fact> findByDimensionIdAndRatioId(String dimensionId, String ratioId);
 
     List<Fact> genericDWHResults(String dimensionId, String ratioId, String dimensionCombination);
 
-    List<Object[]> gdwhDynQuery(List<String> ratios, List<String> dimensions);
+    List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions);
 
-    List<Object[]> gdwhStdQuery(List<String> ratios, List<String> dimensions);
+    List<String[]> gdwhStdQuery(List<String> ratios, List<String> dimensions);
 
     String query();
 

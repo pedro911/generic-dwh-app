@@ -15,7 +15,7 @@ public class NativeQueryImpl implements NativeQuery {
     private EntityManager em;
 
     @Override
-    public List<Object[]> nativeQuery(String query) {
+    public List<String[]> nativeQuery(String query) {
         return em.createNativeQuery(query).getResultList();
     }
 

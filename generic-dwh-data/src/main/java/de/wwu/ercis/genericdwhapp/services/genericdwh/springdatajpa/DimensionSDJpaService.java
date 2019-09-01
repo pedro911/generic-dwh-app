@@ -61,4 +61,9 @@ public class DimensionSDJpaService implements DimensionService {
         return dimensionRepository.findByRoot();
     }
 
+    @Override
+    public Dimension findByName(String name) {
+        return dimensionRepository.findByName(name).orElse(null);
+    }
+
 }

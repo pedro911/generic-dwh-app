@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -23,6 +24,6 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
     @Transactional(readOnly = true)
     List<Dimension> findByRoot();
 
-
+    Optional<Dimension> findByName(String name);
 
 }

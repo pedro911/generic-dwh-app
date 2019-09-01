@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface StarSchemaFactService {
 
-    List<Object[]> starFacts(List<String> dimensions, List<String> ratios);
+    List<String[]> starFacts(List<String> dimensions, List<String> ratios);
 
     String query();
 

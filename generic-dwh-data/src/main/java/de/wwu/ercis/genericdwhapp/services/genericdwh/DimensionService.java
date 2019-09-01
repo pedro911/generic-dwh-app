@@ -14,4 +14,6 @@ public interface DimensionService extends GenericDWHService<Dimension, Long> {
 
     List<Dimension> findByRoot();
 
+    Dimension findByName(String name);
+
 }
