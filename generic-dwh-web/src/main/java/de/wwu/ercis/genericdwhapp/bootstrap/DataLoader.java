@@ -68,10 +68,10 @@ public class DataLoader implements CommandLineRunner {
         dimensionService.save(state);
 
         //Dimension Combinations
-        DimensionCombination dc_monthProductCategory1 = new DimensionCombination(monthProductCategory.getId(), month.getId());
+        DimensionCombination dc_monthProductCategory1 = new DimensionCombination(monthProductCategory.getId(), month.getId(), true);
         dimensionCombinationService.save(dc_monthProductCategory1);
 
-        DimensionCombination dc_monthProductCategory2 = new DimensionCombination(monthProductCategory.getId(), productCategory.getId());
+        DimensionCombination dc_monthProductCategory2 = new DimensionCombination(monthProductCategory.getId(), productCategory.getId(), true);
         dimensionCombinationService.save(dc_monthProductCategory2);
 
         //Dimension Hierarchies

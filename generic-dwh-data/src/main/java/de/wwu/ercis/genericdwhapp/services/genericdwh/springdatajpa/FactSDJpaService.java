@@ -58,64 +58,12 @@ public class FactSDJpaService implements FactService {
     public Fact save(Fact object) { return factRepository.save(object);}
 
     @Override
-    public Fact findByReferenceObjectAndRatio(ReferenceObject referenceObject, Ratio ratio) {
-        return factRepository.findByReferenceObjectAndRatio(referenceObject, ratio).orElse(null);
-    }
-
-    @Override
-    public List<Fact> dynETLQuery(List<String> ratios, List<String> dimensions, List<String> dCombinations) {
-
-        queryMethod="";
-        Dimension dimensionResult = new Dimension();
-        Ratio ratioResult;
-        List<Fact> factsResult = new ArrayList<Fact>();
-
-        // uses SQL custom query
-        for (String dimension_root : dCombinations) {
-            List<Ratio> ratioList = ratioRepository.findByDimensionCombinationId(Long.parseLong(dimension_root));
-            for (String radio_id : ratios) {
-                ratioResult = ratioRepository.findById((Long.parseLong(radio_id))).orElse(null);
-                if (ratioList.contains(ratioResult)){
-                    for (String dimension_id : dimensions) {
-                        dimensionResult.setId(Long.parseLong(dimension_id));
-                        ReferenceObject roResult = referenceObjectRepository.findFirstByDimension(dimensionResult).orElse(null);
-                        if (null == this.findByReferenceObjectAndRatio(roResult,ratioResult)  ) {
-                            this.genericDWHResults(dimension_id, radio_id, dimension_root).forEach(factsResult::add);
-                            factsResult.forEach(fact -> factRepository.insertNewFact(fact.getReferenceObjectId(),fact.getRatioId(),fact.getValue()));
-                            if (queryMethod.startsWith("R") && !queryMethod.contains("and"))
-                                queryMethod = queryMethod + " and New Facts inserted";
-                            else queryMethod = "New Facts inserted";
-                        }
-                        else {
-                            this.findByDimensionIdAndRatioId(dimension_id, radio_id).forEach(factsResult::add);
-                            if (queryMethod.startsWith("N") && !queryMethod.contains("and"))
-                                queryMethod = queryMethod + " and Returned Existing Facts";
-                            else queryMethod = "Returned Existing Facts";
-                        }
-                    }
-                }
-            }
-        }
-        return factsResult;
-    }
-
-    @Override
     public String queryMethod() {
         return queryMethod;
     }
 
     @Override
     public String query() { return executedQuery; }
-
-    @Override
-    public List<Fact> findByDimensionIdAndRatioId(String dimensionId, String ratioId) {
-        return factRepository.findByDimensionIdAndRatioId(dimensionId, ratioId);
-    }
-
-    @Override
-    public List<Fact> genericDWHResults(String dimensionId, String ratioId, String dimensionCombination) {
-        return factRepository.genericDWHResults(dimensionId, ratioId, dimensionCombination);
-    }
 
     @Override
     public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) {
@@ -174,22 +122,22 @@ public class FactSDJpaService implements FactService {
                     .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2)")
                     .collect(Collectors.joining(","))
                     + from + ratiosJoins + where;
-            log.debug("query from dimension == 1");
-            System.out.println(query);
             factsResult = factRepository.nativeQuery(query);
             executedQuery = query;
             queryMethod = "Returned existing facts.";
 
             if (factsResult.isEmpty()) {
-                factsResult = gdwhStdQuery(ratios, dimensions);
-                queryMethod = "New facts inserted.";
                 for (String dcId : dCombinations) {
                     for (Ratio ratio : ratiosResult) {
-                        insertNewFacts(dimensionsIds.get(0).toString(), ratio.getId().toString(), dcId);
+                        if((isEmptyFactsForDimensionCombinationAndRatio(ratio.getId(), Long.parseLong(dimensions.get(0))) == true))
+                            insertNewFacts(dimensionsIds.get(0).toString(), ratio.getId().toString(), dcId);
                     }
                 }
+                factsResult = gdwhStdQuery(ratios, dimensions);
+                queryMethod = "New facts inserted.";
             }
         }
+
         else {
             for (int i = 0; i < dimensionsResult.size(); i++) {
                 String dimensionQuery = dimensionsResult.get(i).getName().replaceAll(" ", "_").toLowerCase();
@@ -206,7 +154,7 @@ public class FactSDJpaService implements FactService {
                     Dimension newCombination = new Dimension(dimensionName, false);
                     newDimensionCombination = dimensionRepository.save(newCombination);
                     // create new dimension combinations for each dimension
-                    dimensionsResult.forEach(d -> dimensionCombinationRepository.save(new DimensionCombination(newDimensionCombination.getId(), d.getId())));
+                    dimensionsResult.forEach(d -> dimensionCombinationRepository.save(new DimensionCombination(newDimensionCombination.getId(), d.getId(), false)));
                     where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ")\n";
                     // create new ref objects and facts
                     String concatWSQuery = "SELECT CONCAT_WS(\", \", " + selects.stream().collect(Collectors.joining(", "))
@@ -214,24 +162,20 @@ public class FactSDJpaService implements FactService {
                             + from + roJoins + ratiosJoins + where
                             + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                             + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
-                    log.debug("concatws query");
-                    System.out.println(concatWSQuery);
                     factsResult = factRepository.nativeQuery(concatWSQuery);
                     executedQuery = concatWSQuery;
                     if (!factsResult.isEmpty()) {
                         List<Fact> facts = new ArrayList<>();
-                        factsResult.stream().forEach(f -> {
+                        factsResult.forEach(f -> {
                             Fact fact = new Fact();
                             ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0].toString(), newDimensionCombination, "", false));
-                            System.out.println(ro.getId());
                             fact.setReferenceObjectId(ro.getId());
                             fact.setRatioId(ratio.getId());
                             fact.setValue(Double.valueOf(f[1]));
                             facts.add(fact);
                         });
                         factRepository.saveAll(facts);
-                        queryMethod = "New facts inserted.";
-                        System.out.println("facts saved at concatWSQuery!");
+                        queryMethod = "New ROs and facts inserted.";
                     }
 
                     where = " WHERE ro.dimension_id =" + newDimensionCombination.getId() + " ORDER BY ro.name";
@@ -243,18 +187,17 @@ public class FactSDJpaService implements FactService {
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
                             + from + ratiosJoins + where;
-                    log.debug("substring query after inserting facts");
-                    System.out.println(substringQuery);
                     factsResult = factRepository.nativeQuery(substringQuery);
+
                 }
                 // if there's already a dimension combination, check if for each selected ratio if there are facts saved
-                else if((checkFactsForDimensionCombinationAndRatio(ratio.getId(), existingDimensionCombination.getId()) == false)) {
+                else if((isEmptyFactsForDimensionCombinationAndRatio(ratio.getId(), existingDimensionCombination.getId()) == true)) {
                     //insert new facts for an existing dimension combination which has already its reference objects, but has no saved facts for this ratio
                     String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
                     String singleRatioJoin = "INNER JOIN fact " + ratioQuery + " ON "
                             + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id=" + ratio.getId() + "\n";
                     where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ")\n";
-                    String dirtyJoinQuery = "SELECT b.reference_object_id, a.ratioId, a.ratioValue from\n" +
+                    String stringJoinQuery = "SELECT b.reference_object_id, a.ratioId, a.ratioValue from\n" +
                             "(SELECT CONCAT_WS(\", \", " + selects.stream().collect(Collectors.joining(", "))
                             + ") as 'roNameValue', sum(" + ratio.getName().toLowerCase().replaceAll(" ", "_") + ".value) as 'ratioValue', "
                             + ratioQuery +".ratio_id AS 'ratioId' \n"
@@ -265,12 +208,10 @@ public class FactSDJpaService implements FactService {
                             "(SELECT ro.id AS 'reference_object_id', ro.name AS 'roNameNoValue' FROM reference_object ro \n" +
                             " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + ") b\n" +
                             " ON a.roNameValue = b.roNameNoValue";
-                    log.debug("read and insert from dirty query");
-                    System.out.println(dirtyJoinQuery);
-                    List<String[]> newFactsResult = factRepository.nativeQuery(dirtyJoinQuery);
+                    List<String[]> newFactsResult = factRepository.nativeQuery(stringJoinQuery);
                     if (!newFactsResult.isEmpty()) {
                         List<Fact> facts = new ArrayList<>();
-                        newFactsResult.stream().forEach(f -> {
+                        newFactsResult.forEach(f -> {
                             Fact fact = new Fact();
                             fact.setReferenceObjectId(Long.valueOf(f[0]));
                             fact.setRatioId(Long.valueOf(f[1]));
@@ -278,7 +219,6 @@ public class FactSDJpaService implements FactService {
                             facts.add(fact);
                         });
                         factRepository.saveAll(facts);
-                        System.out.println("facts saved after dirty join!");
                     }
 
                     where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " ORDER BY ro.name";
@@ -290,25 +230,20 @@ public class FactSDJpaService implements FactService {
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
                             + from + ratiosJoins + where;
-                    log.debug("substring query after inserting facts on existing reference objects");
-                    System.out.println(substringQuery);
                     factsResult = factRepository.nativeQuery(substringQuery);
+                    executedQuery = stringJoinQuery;
                     queryMethod = "New facts inserted.";
-                    executedQuery = dirtyJoinQuery;
                 }
                 else {
-                    String substringQuery = "";
                     //there are already saved facts for this ratio and dimension combination
                     where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " ORDER BY ro.name";
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
-                    substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
+                    String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
                             .stream()
                             .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(",")) + from + ratiosJoins + where;
-                    log.debug("substring query ratios > 1");
-                    System.out.println(substringQuery);
                     factsResult = factRepository.nativeQuery(substringQuery);
                     executedQuery = substringQuery;
                     queryMethod = "Returned existing facts.";
@@ -327,7 +262,6 @@ public class FactSDJpaService implements FactService {
 
     @Override
     public List<String[]> gdwhStdQuery(List<String> ratios, List<String> dimensions) {
-        queryMethod="";
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
         List<Dimension> dimensionsResult = new ArrayList<>();
@@ -383,6 +317,7 @@ public class FactSDJpaService implements FactService {
                 + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
 
         executedQuery = query;
+        queryMethod="";
 
         return factRepository.nativeQuery(query);
     }
@@ -401,33 +336,27 @@ public class FactSDJpaService implements FactService {
         List<String[]> factsResult = factRepository.nativeQuery(query);
         if (!factsResult.isEmpty()){
             List<Fact> facts = new ArrayList<>();
-            factsResult.parallelStream().forEach(f -> {
+            factsResult.forEach(f -> {
                 Fact fact = new Fact();
                 fact.setReferenceObjectId(Long.valueOf(f[0]));
                 fact.setRatioId(Long.valueOf(f[1]));
                 fact.setValue(Double.valueOf(f[2]));
                 facts.add(fact);
             });
-
             factRepository.saveAll(facts);
-            System.out.println("facts saved!");
         }
 
     }
 
-    public boolean checkFactsForDimensionCombinationAndRatio(Long ratioId, Long dimensionCombinationId){
+    public boolean isEmptyFactsForDimensionCombinationAndRatio(Long ratioId, Long dimensionId){
 
         String query = "SELECT f.value FROM fact f \n" +
                 "WHERE f.ratio_id = "+ratioId+" and f.reference_object_id =\n" +
                 "(SELECT id FROM reference_object\n" +
-                "WHERE dimension_id = "+dimensionCombinationId+" LIMIT 1)\n" +
+                "WHERE dimension_id = "+dimensionId+" LIMIT 1)\n" +
                 "LIMIT 1 ";
 
-        List<String[]> factsResult = factRepository.nativeQuery(query);
-        if (factsResult.isEmpty())
-            return false;
-        else
-            return true;
+        return factRepository.nativeQuery(query).isEmpty();
     }
 
 }

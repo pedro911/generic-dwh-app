@@ -7,7 +7,6 @@
         <div class="card border-dark mb-3" th:each="dimension : ${dimensionsCombinations}">
             <div class="card-header">Grouped by:
                 <span th:text="${dimension.name}"></span>
-                <!--<input hidden th:name="dCombinations" th:value="${dimension.id}" />-->
             </div>
             <div class="card-body">
                 <span th:each="ratio : ${ratioRoots}" th:remove="tag">

@@ -7,8 +7,43 @@
 <body>
 <main role="main" class="container">
     <div class="jumbotron">
-        <p class="lead">Generic DWH Tool - Comparing Query Performance on Generic DWH, Star and Snowflake schemas</p>
-        <p></p>
+        <h1 class="display-4">Generic DWH Tool</h1>
+        <p class="lead">This tool is being developed for testing data warehouse query performance. The goal is to compare performance using 3 different models:</p>
+        <ul class="list-unstyled">
+            <li>Generic DWH</li>
+            <li>Star Schema</li>
+            <li>Snowflake Schema</li>
+        </ul>
+        <p>The App is not yet fully implemented, planing to finish until Oct/2019</p>
+        <hr class="my-4">
+        <p class="h5">Data Source</p>
+        <p>Data come from TPC-H Decision Support Benchmark. More info at <a href="http://www.tpc.org/tpch/">http://www.tpc.org/tpch/</a></p>
+
+        <hr class="my-4">
+        <p class="h5">Methodology</p>
+        <p>The TPC-H DB was first generated using <a href="https://www.hammerdb.com/">HammerDB</a> script with different sizes.
+            A PHP ETL application was used to create the Generic DWH DB.
+            Pentaho BI was used to ETL TPC-DB to Star and Snowflake schemas.
+            And this application was developed to query data on those models.
+        </p>
+
+        <hr class="my-4">
+        <p class="h5">Technical Stack</p>
+        <ul class="list-unstyled">
+            <li>Spring v5.1.7.RELEASE</li>
+            <li>Spring Boot 2.1.5.RELEASE</li>
+            <li>Java 11.0.3</li>
+            <li>Bootstrap 4.3.1</li>
+        </ul>
+        <p>Code available on <a href="https://github.com/pedro911/generic-dwh-app">GitHub</a></p>
+
+        <hr class="my-4">
+        <p class="h5">Future Versions</p>
+        <p>Implement filters, Implement ETL within Java Application, Improve Stats, Fronted improvements</p>
+
+        <hr class="my-4">
+        <p>Questions or suggestions please send me a mail: pedro911@gmail.com </p>
+        <p>Pedro Marangoni</p>
     </div>
 </main>
 

@@ -32,8 +32,12 @@ public class DimensionCombination {
     @JoinColumn(name = "subordinate_id", referencedColumnName = "id", insertable=false , updatable=false)
     private Dimension subordinate;
 
-    public DimensionCombination(Long combination_id, Long subordinate_id) {
+    @Column(name = "show_on", columnDefinition = "tinyint(1)", nullable = false)
+    private boolean showOn;
+
+    public DimensionCombination(Long combination_id, Long subordinate_id, boolean showOn) {
         this.combinationId = combination_id;
         this.subordinateId = subordinate_id;
+        this.showOn = showOn;
     }
 }
