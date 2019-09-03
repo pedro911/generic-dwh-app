@@ -73,7 +73,15 @@ public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactServi
 
     @Override
     public String query() {
-        return executedQuery;
+        String result = executedQuery.toUpperCase().replaceAll("\n","<br/>");
+        result = result.replace("SELECT","<a class=\"text-primary font-weight-bold\">SELECT</a>");
+        result = result.replace("FROM","<a class=\"text-danger font-weight-bold\">FROM</a>");
+        result = result.replace("INNER JOIN","<a class=\"text-primary font-weight-bold\">INNER JOIN</a>");
+        result = result.replace("WHERE","<a class=\"text-danger font-weight-bold\">WHERE</a>");
+        result = result.replace("GROUP BY","<a class=\"text-danger font-weight-bold\">GROUP BY</a>");
+        result = result.replace("ORDER BY","<a class=\"text-danger font-weight-bold\">ORDER BY</a>");
+        result = result.replace("WITH ROLLUP","<a class=\"text-success font-weight-bold\">WITH ROLLUP</a>");
+        return result;
     }
 
 }

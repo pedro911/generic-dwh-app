@@ -26,6 +26,15 @@
             Pentaho BI was used to ETL TPC-DB to Star and Snowflake schemas.
             And this application was developed to query data on those models.
         </p>
+        <p>
+            The Generic DWH has 3 different DBs running:
+            <ul class="list-unstyled">
+                <li>Dynamic: the algorithm checks if there are already saved facts for the selected ratios-dimensions.
+                    If there are no facts saved yet, the system will create new reference objects (if needed), and insert new facts.</li>
+                <li>No Combinations: static DB where only standard generic DWH queries are executed.</li>
+                <li>All Combinations: static DB where all possible ratio-dimension combinations are already stored, the query is always the fastest one.</li>
+            </ul>
+        </p>
 
         <hr class="my-4">
         <p class="h5">Technical Stack</p>
@@ -39,7 +48,7 @@
 
         <hr class="my-4">
         <p class="h5">Future Versions</p>
-        <p>Implement filters, Implement ETL within Java Application, Improve Stats, Fronted improvements</p>
+        <p>Implement filters, Implement ETL within Java Application, Improve Stats, Fronted improvements, Add Spring Security</p>
 
         <hr class="my-4">
         <p>Questions or suggestions please send me a mail: pedro911@gmail.com </p>

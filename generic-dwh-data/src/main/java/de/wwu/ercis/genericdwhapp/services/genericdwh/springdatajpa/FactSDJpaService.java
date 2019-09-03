@@ -63,7 +63,19 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public String query() { return executedQuery; }
+    public String query() {
+        String result = executedQuery.toUpperCase().replaceAll("\n","<br/>");
+        result = result.replace("SELECT","<a class=\"text-primary font-weight-bold\">SELECT</a>");
+        result = result.replace("FROM REFERENCE_OBJECT RO","<a class=\"text-danger font-weight-bold\">FROM REFERENCE_OBJECT RO</a>");
+        result = result.replace("INNER JOIN REFERENCE_OBJECT_COMBINATION","<a class=\"text-primary font-weight-bold\">INNER JOIN REFERENCE_OBJECT_COMBINATION</a>");
+        result = result.replace("INNER JOIN FACT","<a class=\"text-primary font-weight-bold\">INNER JOIN FACT</a>");
+        result = result.replace("WHERE","<a class=\"text-danger font-weight-bold\">WHERE</a>");
+        result = result.replace("GROUP BY","<a class=\"text-danger font-weight-bold\">GROUP BY</a>");
+        result = result.replace("ORDER BY","<a class=\"text-danger font-weight-bold\">ORDER BY</a>");
+        result = result.replace("CONCAT_WS","<a class=\"text-danger font-italic\">CONCAT_WS</a>");
+        result = result.replace("SUBSTRING_INDEX","<a class=\"text-success font-weight-bold\">SUBSTRING_INDEX</a>");
+        return result;
+    }
 
     @Override
     public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) {
@@ -101,7 +113,7 @@ public class FactSDJpaService implements FactService {
         for (Ratio ratio : ratiosResult) {
             String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
             ratiosJoins = ratiosJoins + "INNER JOIN fact " + ratioQuery + " ON "
-                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id=" + ratio.getId() + "\n";
+                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n";
         }
 
         for (Dimension dimension : dimensionsResult) {
@@ -116,7 +128,7 @@ public class FactSDJpaService implements FactService {
         }
 
         if (dimensionsResult.size() == 1) {
-            where = "WHERE ro.dimension_id =" + dimensions.get(0) + " ORDER BY ro.name";
+            where = "WHERE ro.dimension_id =" + dimensions.get(0) + "\n ORDER BY ro.name";
             query = "SELECT ro.name, " + ratiosResult
                     .stream()
                     .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2)")
@@ -178,7 +190,7 @@ public class FactSDJpaService implements FactService {
                         queryMethod = "New ROs and facts inserted.";
                     }
 
-                    where = " WHERE ro.dimension_id =" + newDimensionCombination.getId() + " ORDER BY ro.name";
+                    where = " WHERE ro.dimension_id =" + newDimensionCombination.getId() + "\nORDER BY ro.name";
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
                     String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
@@ -195,18 +207,18 @@ public class FactSDJpaService implements FactService {
                     //insert new facts for an existing dimension combination which has already its reference objects, but has no saved facts for this ratio
                     String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
                     String singleRatioJoin = "INNER JOIN fact " + ratioQuery + " ON "
-                            + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id=" + ratio.getId() + "\n";
+                            + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n";
                     where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ")\n";
                     String stringJoinQuery = "SELECT b.reference_object_id, a.ratioId, a.ratioValue from\n" +
                             "(SELECT CONCAT_WS(\", \", " + selects.stream().collect(Collectors.joining(", "))
                             + ") as 'roNameValue', sum(" + ratio.getName().toLowerCase().replaceAll(" ", "_") + ".value) as 'ratioValue', "
-                            + ratioQuery +".ratio_id AS 'ratioId' \n"
+                            + ratioQuery +".ratio_id AS 'ratioId' "
                             + from + roJoins + singleRatioJoin + where
                             + " GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                             + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(",")) + ") a \n"
                             + "INNER JOIN \n" +
                             "(SELECT ro.id AS 'reference_object_id', ro.name AS 'roNameNoValue' FROM reference_object ro \n" +
-                            " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + ") b\n" +
+                            " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + ") b\n" +
                             " ON a.roNameValue = b.roNameNoValue";
                     List<String[]> newFactsResult = factRepository.nativeQuery(stringJoinQuery);
                     if (!newFactsResult.isEmpty()) {
@@ -221,7 +233,7 @@ public class FactSDJpaService implements FactService {
                         factRepository.saveAll(facts);
                     }
 
-                    where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " ORDER BY ro.name";
+                    where = " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + " \nORDER BY ro.name";
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
                     String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
@@ -236,7 +248,7 @@ public class FactSDJpaService implements FactService {
                 }
                 else {
                     //there are already saved facts for this ratio and dimension combination
-                    where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " ORDER BY ro.name";
+                    where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " \nORDER BY ro.name";
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
                     String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
@@ -305,7 +317,7 @@ public class FactSDJpaService implements FactService {
         for (Ratio ratio : ratiosResult) {
             String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
             joins = joins + "INNER JOIN fact " + ratioQuery + " ON "
-                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id=" + ratio.getId() + "\n";
+                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n";
         }
 
         query = "SELECT " + selects.stream().collect(Collectors.joining(",")) + ", "
