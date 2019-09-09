@@ -41,12 +41,6 @@ public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactServi
                 groupBy.add(d);
                 selects.add(d);
             }
-            else if (d.startsWith("s")){
-                if (!joins.contains("dim_supplier"))
-                    joins = joins + "INNER JOIN dim_supplier s ON s.PK_SUPPLIER = f.FK_SUPPLIER\n";;
-                groupBy.add(d);
-                selects.add(d);
-            }
             else if (d.startsWith("p")){
                 if (!joins.contains("dim_part"))
                     joins = joins +  "INNER JOIN dim_part p ON p.PK_PARTKEY = f.FK_PART\n";;
