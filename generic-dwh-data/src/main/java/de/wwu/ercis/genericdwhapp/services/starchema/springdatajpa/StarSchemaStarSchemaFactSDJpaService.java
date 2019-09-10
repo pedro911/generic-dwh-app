@@ -31,7 +31,7 @@ public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactServi
         for (String d: dimensions){
             if (d.startsWith("o") || d.startsWith("l")){
                 if (!joins.contains("dim_lineorder"))
-                    joins = joins + "INNER JOIN dim_lineorder l ON l.PK_ORDER = f.FK_ORDER\n";
+                    joins = joins + "INNER JOIN dim_lineorder l ON l.PK_LINEORDER = f.FK_LINEORDER\n";
                 groupBy.add(d);
                 selects.add(d);
             }

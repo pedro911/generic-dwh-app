@@ -63,9 +63,19 @@
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="o_orderpriority" th:text="' Order Priority'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_shippriority" th:text="' Order Ship Priority'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="o_orderstatus" th:text="' Order Status'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="o_clerk" th:text="' Order Clerk'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_returnflag" th:text="' Item Return Flag'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_linestatus" th:text="' Item Status'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_shipinstruct" th:text="' Item Ship Instruct'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_shipmode" th:text="' Item Ship Mode'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="o_orderkey" th:text="' Order Number'"><br/>
                                         </div>
@@ -74,9 +84,15 @@
                                         <div class="card-header" th:text="'Products'" th:id="products"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_type" th:text="' Product Type'"><br/>
+                                                   th:value="p_mfgr" th:text="' Manufacturer Group'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_brand" th:text="' Product Brand'"><br/>
+                                                   th:value="p_brand" th:text="' Brand'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_type" th:text="' Type'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_size" th:text="' Size'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="p_container" th:text="' Container'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_name" th:text="' Product Name'"><br/>
                                         </div>
