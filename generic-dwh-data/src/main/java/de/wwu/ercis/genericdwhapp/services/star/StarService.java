@@ -1,8 +1,8 @@
-package de.wwu.ercis.genericdwhapp.services.starchema;
+package de.wwu.ercis.genericdwhapp.services.star;
 
 import java.util.List;
 
-public interface StarSchemaFactService {
+public interface StarService {
 
     List<String[]> starFacts(List<String> dimensions, List<String> ratios);
 

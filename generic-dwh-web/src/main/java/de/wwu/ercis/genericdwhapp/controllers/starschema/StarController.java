@@ -1,6 +1,6 @@
 package de.wwu.ercis.genericdwhapp.controllers.starschema;
 
-import de.wwu.ercis.genericdwhapp.services.starchema.StarSchemaFactService;
+import de.wwu.ercis.genericdwhapp.services.star.StarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,36 +14,41 @@ import java.util.List;
 
 @Slf4j
 @Controller
-public class StarSchemaController {
+public class StarController {
 
-    private final StarSchemaFactService starSchemaFactService;
+    private final StarService starService;
 
-    public StarSchemaController(StarSchemaFactService starSchemaFactService) {
-        this.starSchemaFactService = starSchemaFactService;
+    public StarController(StarService starService) {
+        this.starService = starService;
     }
 
-    @RequestMapping({"/starschema", "/starschema/index", "/starschema/index.html","/starschema.html"})
-    public String getIndexPage(Model model){
-        return "starschema/index";
+    @RequestMapping({"/star", "/star/index", "/star/index.html","/star.html"})
+    public String getStarIndexPage(Model model){
+        return "star/index";
     }
 
-    @GetMapping("/starschema/results/{db}")
-    public String processFindForm(@PathVariable String db, Model model,
+    @RequestMapping("/star/query/{db}")
+    public String returnStarQueryPage(){
+        return "star/query";
+    }
+
+    @GetMapping("/star/results/{db}")
+    public String starQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
                                   @RequestParam("dimensionChecked") List<String> dimensions){
 
         long start = System.nanoTime();
-        model.addAttribute("starSchemaFacts", starSchemaFactService.starFacts(dimensions,ratios));
+        model.addAttribute("starFacts", starService.starFacts(dimensions,ratios));
         long end = System.nanoTime();
         double sec = (end - start) / 1e6;
 
-        model.addAttribute("query", starSchemaFactService.query());
+        model.addAttribute("query", starService.query());
         model.addAttribute("timeElapsed", sec);
         model.addAttribute("db", db);
         model.addAttribute("dimensions",formatDimensions(dimensions));
         model.addAttribute("ratios", formatRatios(ratios));
 
-        return "starschema/results";
+        return "star/results";
     }
 
     public List<String> formatRatios(List<String> ratios){

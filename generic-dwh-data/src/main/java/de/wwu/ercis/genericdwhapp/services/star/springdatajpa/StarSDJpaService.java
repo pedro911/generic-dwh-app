@@ -1,7 +1,7 @@
-package de.wwu.ercis.genericdwhapp.services.starchema.springdatajpa;
+package de.wwu.ercis.genericdwhapp.services.star.springdatajpa;
 
-import de.wwu.ercis.genericdwhapp.repositories.starschema.StarSchemaFactRepository;
-import de.wwu.ercis.genericdwhapp.services.starchema.StarSchemaFactService;
+import de.wwu.ercis.genericdwhapp.repositories.starschema.StarRepository;
+import de.wwu.ercis.genericdwhapp.services.star.StarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactService {
+public class StarSDJpaService implements StarService {
 
-    private final StarSchemaFactRepository starSchemaFactRepository;
+    private final StarRepository starRepository;
     private String executedQuery ="";
 
-    public StarSchemaStarSchemaFactSDJpaService(StarSchemaFactRepository starSchemaFactRepository) {
-        this.starSchemaFactRepository = starSchemaFactRepository;
+    public StarSDJpaService(StarRepository starRepository) {
+        this.starRepository = starRepository;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class StarSchemaStarSchemaFactSDJpaService implements StarSchemaFactServi
                 + " WITH ROLLUP\n ORDER BY " + groupBy.stream().collect(Collectors.joining(","));
 
         executedQuery = query;
-        return starSchemaFactRepository.nativeQuery(query);
+        return starRepository.nativeQuery(query);
     }
 
     @Override

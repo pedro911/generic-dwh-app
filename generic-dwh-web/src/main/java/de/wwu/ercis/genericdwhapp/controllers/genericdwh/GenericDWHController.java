@@ -38,7 +38,7 @@ public class GenericDWHController {
     }
 
     @RequestMapping({"/genericdwh", "/genericdwh/index", "/genericdwh/index.html", "/genericdwh.html"})
-    public String getIndexPage() {
+    public String getGenericDWHIndexPage() {
         return "genericdwh/index";
     }
 
@@ -59,7 +59,7 @@ public class GenericDWHController {
     }
 
     @RequestMapping("/genericdwh/query/{db}")
-    public String returnQuery(@PathVariable String db, Model model){
+    public String returnGenericDWHQueryPage(@PathVariable String db, Model model){
 
         model.addAttribute("db", db);
         model.addAttribute("dimensionsCombinations", dimensionCombinationService.findDimensionsByCombinationId());
@@ -70,7 +70,7 @@ public class GenericDWHController {
     }
 
     @GetMapping("/genericdwh/results/{db}")
-    public String processFindForm(@PathVariable String db, Model model,
+    public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
                                   @RequestParam("dimensionChecked") List<String> dimensions) {
 
