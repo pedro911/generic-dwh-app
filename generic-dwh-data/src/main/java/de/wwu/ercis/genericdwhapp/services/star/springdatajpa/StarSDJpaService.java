@@ -22,44 +22,29 @@ public class StarSDJpaService implements StarService {
 
     @Override
     public List<String[]> starFacts(List<String> dimensions, List<String> ratios) {
-        String query = "";
-        List<String> selects = new ArrayList<>();
-        String from = " FROM fact f\n";
-        String joins = "";
-        List<String> groupBy = new ArrayList<>();
+
+        List<String> joins = new ArrayList<>();
 
         for (String d: dimensions){
-            if (d.startsWith("o") || d.startsWith("l")){
-                if (!joins.contains("dim_lineorder"))
-                    joins = joins + "INNER JOIN dim_lineorder l ON l.PK_LINEORDER = f.FK_LINEORDER\n";
-                groupBy.add(d);
-                selects.add(d);
-            }
-            else if (d.startsWith("c")){
-                if (!joins.contains("dim_customer"))
-                    joins = joins + "INNER JOIN dim_customer c ON c.PK_CUSTKEY = f.FK_CUSTOMER\n";;
-                groupBy.add(d);
-                selects.add(d);
-            }
-            else if (d.startsWith("p")){
-                if (!joins.contains("dim_part"))
-                    joins = joins +  "INNER JOIN dim_part p ON p.PK_PARTKEY = f.FK_PART\n";;
-                groupBy.add(d);
-                selects.add(d);
-            }
-            else if (d.startsWith("d")){
-                if (!joins.contains("dim_date"))
-                    joins = joins +  "INNER JOIN dim_date d ON d.DATE_PK = f.FK_ORDERDATE\n";;
-                groupBy.add(d);
-                selects.add(d);
-            }
+            if ((d.startsWith("o") || d.startsWith("l")) && !joins.stream().anyMatch(s -> s.contains("dim_lineorder")))
+                joins.add("INNER JOIN dim_lineorder l ON l.PK_LINEORDER = f.FK_LINEORDER");
+
+            if (d.startsWith("c") && !joins.stream().anyMatch(s -> s.contains("dim_customer")))
+                joins.add("INNER JOIN dim_customer c ON c.PK_CUSTOMER = f.FK_CUSTOMER");
+
+            if (d.startsWith("p") && !joins.stream().anyMatch(s -> s.contains("dim_part")))
+                joins.add("INNER JOIN dim_part p ON p.PK_PART = f.FK_PART");
+
+            if (d.startsWith("d") && !joins.stream().anyMatch(s -> s.contains("dim_date")))
+                joins.add("INNER JOIN dim_date d ON d.DATE_PK = f.FK_ORDERDATE");
         }
 
-        query = "SELECT " + selects.stream().collect(Collectors.joining(",")) + ", "
+        String query = "SELECT " + dimensions.stream().collect(Collectors.joining(",")) + ", "
                 + ratios.stream().map(r-> "FORMAT(sum("+ r +"),2)").collect(Collectors.joining(","))
-                + from + joins
-                + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
-                + " WITH ROLLUP\n ORDER BY " + groupBy.stream().collect(Collectors.joining(","));
+                + " FROM fact f\n"
+                + joins.stream().collect(Collectors.joining("\n"))
+                + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
+                + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","));
 
         executedQuery = query;
         return starRepository.nativeQuery(query);

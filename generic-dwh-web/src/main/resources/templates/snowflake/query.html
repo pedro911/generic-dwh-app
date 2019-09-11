@@ -9,11 +9,10 @@
     <div class="row">
         <div class="col-md-12">
             <form class="customizing" th:action="@{|/snowflake/results/${db}|}" method="get">
-                <!--<input type="hidden" name="combinations[]" value="">-->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-success" role="alert">
-                            Query TPC-H Star Schema on DB Connection:  <a class="alert-link" th:text="${db}"/>
+                            Query TPC-H Snowflake Schema on DB Connection:  <a class="alert-link" th:text="${db}"/>
                         </div>
                     </div>
                 </div>
@@ -32,9 +31,9 @@
                             <div class="card-body">
                                 <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="Profit"><br/>
                                 <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="Turnover"><br/>
-                                <input type="checkbox" th:text="' Product Price'" th:name="ratioChecked" th:value="l_extendedprice"><br/>
+                                <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="Cost"><br/>
+                                <input type="checkbox" th:text="' Product Sell Price'" th:name="ratioChecked" th:value="lineitem_price"><br/>
                                 <input type="checkbox" th:text="' Purchase Amount'" th:name="ratioChecked" th:value="l_quantity"><br/>
-
                             </div>
                         </div>
                     </div>
@@ -48,11 +47,11 @@
                                         <div class="card-header" th:text="'Customers'" th:id="customers"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="c_r_name" th:text="' Region'"><br/>
+                                                   th:value="r_name" th:text="' Region'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="c_n_name" th:text="' Nation'"><br/>
+                                                   th:value="n_name" th:text="' Nation'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="c_mktsegment" th:text="' Market Segment'"><br/>
+                                                   th:value="m_mktsegment" th:text="' Market Segment'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="c_name" th:text="' Customer Name'"><br/>
                                         </div>

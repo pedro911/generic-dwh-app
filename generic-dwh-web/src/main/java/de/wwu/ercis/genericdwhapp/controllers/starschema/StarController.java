@@ -56,7 +56,7 @@ public class StarController {
 
         for (String ratio: ratios){
             switch (ratio){
-                case "l_extendedprice": ratio = "Product Price";
+                case "lineitem_price": ratio = "Product Price";
                     break;
                 case "l_quantity": ratio = "Purchase Amount";
                     break;

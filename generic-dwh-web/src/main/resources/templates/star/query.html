@@ -9,7 +9,6 @@
     <div class="row">
         <div class="col-md-12">
             <form class="customizing" th:action="@{|/star/results/${db}|}" method="get">
-                <!--<input type="hidden" name="combinations[]" value="">-->
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-success" role="alert">
@@ -32,9 +31,9 @@
                             <div class="card-body">
                                 <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="Profit"><br/>
                                 <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="Turnover"><br/>
-                                <input type="checkbox" th:text="' Product Price'" th:name="ratioChecked" th:value="l_extendedprice"><br/>
+                                <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="Cost"><br/>
+                                <input type="checkbox" th:text="' Product Sell Price'" th:name="ratioChecked" th:value="lineitem_price"><br/>
                                 <input type="checkbox" th:text="' Purchase Amount'" th:name="ratioChecked" th:value="l_quantity"><br/>
-
                             </div>
                         </div>
                     </div>
