@@ -30,7 +30,7 @@ public class AllDBMasterService {
         tpch_std_onegb.setPassword(pass);
         hashMap.put("tpch_std_onegb", tpch_std_onegb);
 
-        //GENERIC DWH SCHEMA
+        //GENERIC DWH SCHEMAS
 
         DriverManagerDataSource tpch_gdwh_mini_dyn = new DriverManagerDataSource();
         tpch_gdwh_mini_dyn.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_mini_dyn");
@@ -86,7 +86,25 @@ public class AllDBMasterService {
         tpch_gdwh_1gb_acb.setPassword(pass);
         hashMap.put("tpch_gdwh_1gb_acb", tpch_gdwh_1gb_acb);
 
-        //STAR SCHEMA
+        DriverManagerDataSource tpch_gdwh_10gb_dyn = new DriverManagerDataSource();
+        tpch_gdwh_10gb_dyn.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_10gb_dyn");
+        tpch_gdwh_10gb_dyn.setUsername(user);
+        tpch_gdwh_10gb_dyn.setPassword(pass);
+        hashMap.put("tpch_gdwh_10gb_dyn", tpch_gdwh_10gb_dyn);
+
+        DriverManagerDataSource tpch_gdwh_10gb_ncb = new DriverManagerDataSource();
+        tpch_gdwh_10gb_ncb.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_10gb_ncb");
+        tpch_gdwh_10gb_ncb.setUsername(user);
+        tpch_gdwh_10gb_ncb.setPassword(pass);
+        hashMap.put("tpch_gdwh_10gb_ncb", tpch_gdwh_10gb_ncb);
+
+        DriverManagerDataSource tpch_gdwh_10gb_acb = new DriverManagerDataSource();
+        tpch_gdwh_10gb_acb.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_10gb_acb");
+        tpch_gdwh_10gb_acb.setUsername(user);
+        tpch_gdwh_10gb_acb.setPassword(pass);
+        hashMap.put("tpch_gdwh_10gb_acb", tpch_gdwh_10gb_acb);
+
+        //STAR SCHEMAS
 
         DriverManagerDataSource tpch_star_mini = new DriverManagerDataSource();
         tpch_star_mini.setUrl("jdbc:mysql://localhost:3306/tpch_star_mini");
@@ -100,13 +118,43 @@ public class AllDBMasterService {
         tpch_star_small.setPassword(pass);
         hashMap.put("tpch_star_small", tpch_star_small);
 
-        //SNOWFLAKE SCHEMA
+        DriverManagerDataSource tpch_star_1gb = new DriverManagerDataSource();
+        tpch_star_1gb.setUrl("jdbc:mysql://localhost:3306/tpch_star_1gb");
+        tpch_star_1gb.setUsername(user);
+        tpch_star_1gb.setPassword(pass);
+        hashMap.put("tpch_star_1gb", tpch_star_1gb);
+
+        DriverManagerDataSource tpch_star_10gb = new DriverManagerDataSource();
+        tpch_star_10gb.setUrl("jdbc:mysql://localhost:3306/tpch_star_10gb");
+        tpch_star_10gb.setUsername(user);
+        tpch_star_10gb.setPassword(pass);
+        hashMap.put("tpch_star_10gb", tpch_star_10gb);
+
+        //SNOWFLAKE SCHEMAS
 
         DriverManagerDataSource tpch_snow_mini = new DriverManagerDataSource();
         tpch_snow_mini.setUrl("jdbc:mysql://localhost:3306/tpch_snow_mini");
         tpch_snow_mini.setUsername(user);
         tpch_snow_mini.setPassword(pass);
         hashMap.put("tpch_snow_mini", tpch_snow_mini);
+
+        DriverManagerDataSource tpch_snow_small = new DriverManagerDataSource();
+        tpch_snow_small.setUrl("jdbc:mysql://localhost:3306/tpch_snow_small");
+        tpch_snow_small.setUsername(user);
+        tpch_snow_small.setPassword(pass);
+        hashMap.put("tpch_snow_small", tpch_snow_small);
+
+        DriverManagerDataSource tpch_snow_1gb = new DriverManagerDataSource();
+        tpch_snow_1gb.setUrl("jdbc:mysql://localhost:3306/tpch_snow_1gb");
+        tpch_snow_1gb.setUsername(user);
+        tpch_snow_1gb.setPassword(pass);
+        hashMap.put("tpch_snow_1gb", tpch_snow_1gb);
+
+        DriverManagerDataSource tpch_snow_10gb = new DriverManagerDataSource();
+        tpch_snow_10gb.setUrl("jdbc:mysql://localhost:3306/tpch_snow_10gb");
+        tpch_snow_10gb.setUsername(user);
+        tpch_snow_10gb.setPassword(pass);
+        hashMap.put("tpch_snow_10gb", tpch_snow_10gb);
 
         return hashMap;
     }

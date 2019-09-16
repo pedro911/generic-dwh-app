@@ -17,23 +17,23 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-sm-12 col-md-12">
-                        <!--<br th:replace="genericdwh/_filters.html :: filters"/>-->
+                        <br th:replace="genericdwh/_filters.html :: filters"/>
                     </div>
                 </div>
-
+-->
                 <div class="row">
 
                     <div class="col-sm-6 col-md-4">
                         <div class="card">
                             <div class="card-header">Ratios </div>
                             <div class="card-body">
-                                <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="Profit"><br/>
                                 <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="Turnover"><br/>
                                 <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="Cost"><br/>
+                                <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="Profit"><br/>
                                 <input type="checkbox" th:text="' Product Sell Price'" th:name="ratioChecked" th:value="lineitem_price"><br/>
-                                <input type="checkbox" th:text="' Purchase Amount'" th:name="ratioChecked" th:value="l_quantity"><br/>
+                                <input type="checkbox" th:text="' Product Purchase Amount'" th:name="ratioChecked" th:value="l_quantity"><br/>
                             </div>
                         </div>
                     </div>
@@ -44,29 +44,34 @@
                             <div class="card-body">
                                 <div class="card-columns">
                                     <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Customers'" th:id="customers"></div>
+                                        <div class="card-header" th:text="'Market Locations'" th:id="mktlocations"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="r_name" th:text="' Region'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="n_name" th:text="' Nation'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Customers'" th:id="customers"></div>
+                                        <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="m_mktsegment" th:text="' Market Segment'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="c_name" th:text="' Customer Name'"><br/>
+                                                   th:value="c_name" th:text="' Customer'"><br/>
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">
                                         <div class="card-header" th:text="'Orders'" th:id="orders"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="o_orderpriority" th:text="' Order Priority'"><br/>
+                                                   th:value="o_orderpriority" th:text="' Priority'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="o_shippriority" th:text="' Order Ship Priority'"><br/>
+                                                   th:value="o_shippriority" th:text="' Ship Priority'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="o_orderstatus" th:text="' Order Status'"><br/>
+                                                   th:value="o_orderstatus" th:text="' Status'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="o_clerk" th:text="' Order Clerk'"><br/>
+                                                   th:value="o_clerk" th:text="' Clerk'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="l_returnflag" th:text="' Item Return Flag'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
@@ -80,6 +85,21 @@
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Order Items'" th:id="orderitems"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_returnflag" th:text="' Return Flag'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_linestatus" th:text="' Status'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_shipinstruct" th:text="' Ship Instruct'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="l_shipmode" th:text="' Ship Mode'"><br/>
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_orderkey" th:text="' Item'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
                                         <div class="card-header" th:text="'Products'" th:id="products"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
@@ -87,13 +107,13 @@
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_brand" th:text="' Brand'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_type" th:text="' Type'"><br/>
+                                                   th:value="p_container" th:text="' Container'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_size" th:text="' Size'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_container" th:text="' Container'"><br/>
+                                                   th:value="p_type" th:text="' Type'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_name" th:text="' Product Name'"><br/>
+                                                   th:value="p_name" th:text="' Product'"><br/>
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">

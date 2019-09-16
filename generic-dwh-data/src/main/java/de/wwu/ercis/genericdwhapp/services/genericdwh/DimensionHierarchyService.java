@@ -12,6 +12,4 @@ public interface DimensionHierarchyService extends GenericDWHService<DimensionHi
 
     List<DimensionRoot> findAllByRoot();
 
-    List<DimensionRoot> findAllByParentId(Long id);
-
 }
