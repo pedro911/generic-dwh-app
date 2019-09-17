@@ -1,6 +1,7 @@
 package de.wwu.ercis.genericdwhapp.controllers.snowflakeschema;
 
 import de.wwu.ercis.genericdwhapp.services.snowflake.springdatajpa.SnowflakeService;
+import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,11 @@ import java.util.List;
 @Controller
 public class SnowflakeController {
 
+    private final QueryTimeService queryTimeService;
     private final SnowflakeService snowflakeService;
 
-    public SnowflakeController(SnowflakeService snowflakeService) {
+    public SnowflakeController(QueryTimeService queryTimeService, SnowflakeService snowflakeService) {
+        this.queryTimeService = queryTimeService;
         this.snowflakeService = snowflakeService;
     }
 
@@ -39,13 +42,14 @@ public class SnowflakeController {
         long start = System.nanoTime();
         model.addAttribute("starFacts", snowflakeService.snowFacts(dimensions,ratios));
         long end = System.nanoTime();
-        double sec = (end - start) / 1e6;
+        Double sec = (end - start) / 1e6;
 
         model.addAttribute("query", snowflakeService.query());
         model.addAttribute("timeElapsed", sec);
         model.addAttribute("db", db);
         model.addAttribute("dimensions",formatDimensions(dimensions));
         model.addAttribute("ratios", formatRatios(ratios));
+        queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+","+formatRatios(ratios).toString(),sec);
 
         return "star/results";
     }

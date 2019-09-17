@@ -1,6 +1,7 @@
 package de.wwu.ercis.genericdwhapp.controllers.starschema;
 
 import de.wwu.ercis.genericdwhapp.services.star.StarService;
+import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +17,11 @@ import java.util.List;
 @Controller
 public class StarController {
 
+    private final QueryTimeService queryTimeService;
     private final StarService starService;
 
-    public StarController(StarService starService) {
+    public StarController(QueryTimeService queryTimeService, StarService starService) {
+        this.queryTimeService = queryTimeService;
         this.starService = starService;
     }
 
@@ -40,16 +43,17 @@ public class StarController {
         long start = System.nanoTime();
         model.addAttribute("starFacts", starService.starFacts(dimensions,ratios));
         long end = System.nanoTime();
-        double sec = (end - start) / 1e6;
+        Double sec = (end - start) / 1e6;
 
         model.addAttribute("query", starService.query());
         model.addAttribute("timeElapsed", sec);
         model.addAttribute("db", db);
         model.addAttribute("dimensions",formatDimensions(dimensions));
         model.addAttribute("ratios", formatRatios(ratios));
-
+        queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+","+formatRatios(ratios).toString(),sec);
         return "star/results";
     }
+
 
     public List<String> formatRatios(List<String> ratios){
         List<String> ratiosValues = new ArrayList<>();

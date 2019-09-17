@@ -156,6 +156,14 @@ public class AllDBMasterService {
         tpch_snow_10gb.setPassword(pass);
         hashMap.put("tpch_snow_10gb", tpch_snow_10gb);
 
+        //STATS DB
+
+        DriverManagerDataSource stats = new DriverManagerDataSource();
+        stats.setUrl("jdbc:mysql://localhost:3306/stats");
+        stats.setUsername(user);
+        stats.setPassword(pass);
+        hashMap.put("stats", stats);
+
         return hashMap;
     }
 }

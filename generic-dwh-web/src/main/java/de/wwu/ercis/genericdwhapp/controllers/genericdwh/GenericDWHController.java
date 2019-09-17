@@ -1,6 +1,7 @@
 package de.wwu.ercis.genericdwhapp.controllers.genericdwh;
 
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
+import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +25,14 @@ public class GenericDWHController {
     private final RatioService ratioService;
     private final RatioCombinationService ratioCombinationService;
     private final FactService factService;
+    private final QueryTimeService queryTimeService;
 
-    public GenericDWHController(DimensionService dimensionService, DimensionCombinationService dimensionCombinationService, DimensionHierarchyService dimensionHierarchyService, ReferenceObjectService referenceObjectService, ReferenceObjectCombinationService referenceObjectCombinationService, ReferenceObjectHierarchyService referenceObjectHierarchyService, RatioService ratioService, RatioCombinationService ratioCombinationService, FactService factService) {
+    public GenericDWHController(DimensionService dimensionService, DimensionCombinationService dimensionCombinationService,
+                                DimensionHierarchyService dimensionHierarchyService, ReferenceObjectService referenceObjectService,
+                                ReferenceObjectCombinationService referenceObjectCombinationService,
+                                ReferenceObjectHierarchyService referenceObjectHierarchyService, RatioService ratioService,
+                                RatioCombinationService ratioCombinationService, FactService factService,
+                                QueryTimeService queryTimeService) {
         this.dimensionService = dimensionService;
         this.dimensionCombinationService = dimensionCombinationService;
         this.dimensionHierarchyService = dimensionHierarchyService;
@@ -35,6 +42,7 @@ public class GenericDWHController {
         this.ratioService = ratioService;
         this.ratioCombinationService = ratioCombinationService;
         this.factService = factService;
+        this.queryTimeService = queryTimeService;
     }
 
     @RequestMapping({"/genericdwh", "/genericdwh/index", "/genericdwh/index.html", "/genericdwh.html"})
@@ -81,12 +89,14 @@ public class GenericDWHController {
         else
             model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
         long end = System.nanoTime();
-        double sec = (end - start) / 1e6;
+        Double sec = (end - start) / 1e6;
+
         model.addAttribute("timeElapsed", sec);
         model.addAttribute("dimensions", dimensions);
         model.addAttribute("ratios", ratios);
         model.addAttribute("queryMethod", factService.queryMethod());
         model.addAttribute("query", factService.query());
+        queryTimeService.addQueryTime(db,dimensions.toString()+","+ratios.toString(),sec);
 
         return "genericdwh/results";
     }
