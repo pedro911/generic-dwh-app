@@ -49,7 +49,7 @@ public class SnowflakeController {
         model.addAttribute("db", db);
         model.addAttribute("dimensions",formatDimensions(dimensions));
         model.addAttribute("ratios", formatRatios(ratios));
-        queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+","+formatRatios(ratios).toString(),sec);
+        queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
 
         return "star/results";
     }

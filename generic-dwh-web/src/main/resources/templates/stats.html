@@ -7,17 +7,58 @@
 <body>
 <main role="main" class="container">
     <div class="jumbotron">
-        <h3>Results of performance tests to be implemented...</h3>
-        <p th:each="qt: ${queryTimes}">
-            <a th:text="${qt.getQueryTimeMs()}"></a>
-            <a th:text="${qt.getDbModel().getDbName()}"></a>
-            <a th:text="${qt.getQueryString().getRefObjRatios()}"></a>
-            <a th:text="${qt.getQueryExecDate()}"></a>
+        <h3 class="text-center">Query Times for each DB Size and Model</h3>
+        <br/>
 
-        </p>
-        <canvas id="graph_smallDBs"></canvas>
-        <canvas id="graph_1gbDBs"></canvas>
-        <canvas id="graph_10gblDBs"></canvas>
+        <div class="card">
+            <div class="card-header">
+                Top 5 Slowest Queries on Small DBs
+            </div>
+            <div class="card-body">
+                <canvas id="graph_smallDBs"></canvas>
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <div class="card-header">
+                Top 5 Slowest Queries on 1GB DBs
+            </div>
+            <div class="card-body">
+                <canvas id="graph_1gbDBs"></canvas>
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <div class="card-header">
+                Total AVG Query Time for each DB Size
+            </div>
+            <div class="card-body">
+                <canvas id="graph_total"></canvas>
+            </div>
+        </div>
+        <br/>
+        <div class="card">
+            <div class="card-header">
+                Queries
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Queried Dimensions and Ratios</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="queryString: ${queryStrings}">
+                        <td th:text="${queryString.getQueryStringId()}"></td>
+                        <td th:text="${queryString.getRefObjRatios()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"
@@ -25,111 +66,180 @@
 <script th:src="@{/resources/js/graph.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
-    //get data from objects and put on graph
-    var dimensionsids = [1];
-    /*[# th:each="dimension : ${dimensions}"]*/
-    dimensionsids.push("[(${dimension.id})]");
-    /*[/]*/
-    console.log(dimensionsids);
 
-    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var color = Chart.helpers.color;
     var graph_smallDBs = {
         labels: [
             /*[# th:each="o : ${smallLabels}" ]*/
-            /*[[${ o[0] }]]*/,
+            /*[[${ o[0] }]]*/  ,
             /*[/]*/
         ],
-        datasets: [
-            {
-                label: 'TPC-H Std',
-                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
-                borderColor: window.chartColors.red,
-                borderWidth: 1,
-                data: dimensionsids
-            },
-            {
-                label: 'Generic DWH',
-                backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
-                borderColor: window.chartColors.blue,
-                borderWidth: 1,
-                data: [
-                    3,
-                    2,
-                    1,
-                    3,
-                    2
-                ]},
-            {
-                label: 'Star Schema',
-                backgroundColor: color(window.chartColors.orange).alpha(0.5).rgbString(),
-                borderColor: window.chartColors.orange,
-                borderWidth: 1,
-                data: [
-                    /*[# th:each="o : ${smallStarTime}" ]*/
-                    /*[[${ o[0] }]]*/,
-                    /*[/]*/
-                ]},
-            {
-                label: 'Snowflake Schema',
-                backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
-                borderColor: window.chartColors.purple,
-                borderWidth: 1,
-                data: [
-                    1.5,
-                    7.6,
-                    6.5,
-                    2.4,
-                    1.8
-                ]}
-        ]
-    };
-
-    var graph_1gbDBs = {
-        labels: ['Q11', 'Q22', 'Q33', 'Q44', 'Q55'],
         datasets: [
             {
                 label: 'Generic DWH DYN',
                 backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
                 borderColor: window.chartColors.red,
                 borderWidth: 1,
-                data: dimensionsids
-            },
+                data: [
+                    /*[# th:each="o : ${smallGdwhDYNQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Generic DWH ACB',
+                backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.blue,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${smallGdwhACBQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
             {
                 label: 'Generic DWH NCB',
                 backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
                 borderColor: window.chartColors.blue,
                 borderWidth: 1,
                 data: [
-                    3,
-                    2,
-                    1,
-                    3,
-                    2
+                    /*[# th:each="o : ${smallGdwhNCBQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
                 ]},
             {
-                label: 'Star Schema aa',
+                label: 'Star',
                 backgroundColor: color(window.chartColors.orange).alpha(0.5).rgbString(),
                 borderColor: window.chartColors.orange,
                 borderWidth: 1,
                 data: [
-                    2,
-                    7,
-                    5,
-                    0.7,
-                    0.4
+                    /*[# th:each="o : ${smallStarQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
                 ]},
             {
-                label: 'Snowflake Schema bb',
+                label: 'Snowflake',
                 backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
                 borderColor: window.chartColors.purple,
                 borderWidth: 1,
                 data: [
-                    1.5,
-                    7.6,
-                    6.5,
-                    2.4,
-                    1.8
+                    /*[# th:each="o : ${smallSnowQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]}
+        ]
+    };
+
+    var graph_1gbDBs = {
+        labels: [
+            /*[# th:each="o : ${oneGBLabels}" ]*/
+            /*[[${ o[0] }]]*/,
+            /*[/]*/
+        ],
+        datasets: [
+            {
+                label: 'Generic DWH DYN',
+                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.red,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${oneGBGdwhDYNQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Generic DWH ACB',
+                backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.blue,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${oneGBGdwhACBQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Generic DWH NCB',
+                backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.blue,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${oneGBGdwhNCBQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Star',
+                backgroundColor: color(window.chartColors.orange).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.orange,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${oneGBStarQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Snowflake',
+                backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.purple,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${oneGBSnowQueryTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]}
+        ]
+    };
+
+    var graph_total = {
+        labels: ["Small","1 GB","10 GB", "30 GB", "100 GB"],
+        datasets: [
+            {
+                label: 'Generic DWH DYN',
+                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.red,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${gdwhDYNTotalAvgTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Generic DWH ACB',
+                backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.blue,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${gdwhACBTotalAvgTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Generic DWH NCB',
+                backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.blue,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${gdwhNCBTotalAvgTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Star',
+                backgroundColor: color(window.chartColors.orange).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.orange,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${starTotalAvgTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
+                ]},
+            {
+                label: 'Snowflake',
+                backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.purple,
+                borderWidth: 1,
+                data: [
+                    /*[# th:each="o : ${snowTotalAvgTime}" ]*/
+                    /*[[${ o[0] }]]*/,
+                    /*[/]*/
                 ]}
         ]
     };
@@ -153,7 +263,7 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Query'
+                            labelString: 'Query String ID'
                         }
                     }],
                     yAxes: [{
@@ -188,7 +298,42 @@
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Query'
+                            labelString: 'Query String ID'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true   // minimum value will be 0.
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time (ms)'
+                        }
+                    }]
+                }
+            }
+        });
+
+        var ctx_graph_total = document.getElementById('graph_total').getContext('2d');
+        window.myBar = new Chart(ctx_graph_total, {
+            type: 'bar',
+            data: graph_total,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Total Query Average Time '
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'DB Sizes'
                         }
                     }],
                     yAxes: [{

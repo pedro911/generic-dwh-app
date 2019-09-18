@@ -14,8 +14,10 @@ public interface QueryTimeService extends CrudService<QueryTime, Long> {
 
     void savePending();
 
-    List<String[]> smallDB();
+    List<String[]> top5slowestQueries(String dbSize, String _dbModel);
 
-    List<String[]> labels();
+    List<String[]> labels(String dbSize);
+
+    List<String[]> totalAvgQueryTime(String _dbModel);
 
 }

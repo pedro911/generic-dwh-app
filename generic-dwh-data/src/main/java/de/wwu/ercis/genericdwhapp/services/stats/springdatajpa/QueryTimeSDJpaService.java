@@ -84,8 +84,7 @@ public class QueryTimeSDJpaService implements QueryTimeService {
 
     @Override
     public void savePending() {
-        log.debug("save pending... ");
-        queryTimeList.forEach(q -> System.out.println(q.getQueryString().toString() +", " + q.getQueryTimeMs()));
+
         for (QueryTime qt :queryTimeList){
             DBModel dbModel1 = dbModelRepository.findDBModelByDbName(qt.getDbModel().getDbName()).orElse(null);
             if (dbModel1 == null){
@@ -109,47 +108,67 @@ public class QueryTimeSDJpaService implements QueryTimeService {
     }
 
     @Override
-    public List<String[]> smallDB() {
-        List<String[]> gendwh_dyn;
-        List<String[]> gendwh_ncb;
-        List<String[]> gendwh_acb;
-        List<String[]> star = new ArrayList<>();
-        List<String[]> snow;
+    public List<String[]> top5slowestQueries(String dbSize, String _dbModel) {
+        List<String[]> result = new ArrayList<>();
 
         String query = "SELECT qt.query_string_id FROM query_time qt\n" +
                 "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
-                "WHERE d.db_name LIKE '%small%'\n" +
+                "WHERE d.db_name LIKE '%"+dbSize+"%'\n" +
                 "GROUP BY qt.query_string_id\n" +
                 "ORDER BY AVG(query_time_ms) DESC\n" +
                 "LIMIT 5";
+
         List<String[]> top5slowestQueriesIds = queryStringRepository.nativeQuery(query);
 
         for (Object[] o: top5slowestQueriesIds){
-            log.debug("ids... ");
-            System.out.println(o[0]);
             String q2 = "SELECT AVG(qt.query_time_ms), d.db_name FROM query_time qt\n" +
                     "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
-                    "WHERE d.db_name LIKE '%star_small%' AND qt.query_string_id = " + o[0];
-            star.add(queryStringRepository.nativeQuery(q2).get(0));
+                    "WHERE d.db_name LIKE '%"+_dbModel+"%' AND qt.query_string_id = " + o[0];
+            result.add(queryStringRepository.nativeQuery(q2).get(0));
         }
-        System.out.println(star);
 
-        return star;
+        return result;
     }
 
     @Override
-    public List<String[]> labels() {
+    public List<String[]> labels(String dbSize) {
 
         String query = "SELECT qt.query_string_id FROM query_time qt\n" +
                 "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
-                "WHERE d.db_name LIKE '%small%'\n" +
+                "WHERE d.db_name LIKE '%"+dbSize+"%'\n" +
                 "GROUP BY qt.query_string_id\n" +
                 "ORDER BY AVG(query_time_ms) DESC\n" +
                 "LIMIT 5";
-        List<String[]> top5slowestQueriesIds = queryStringRepository.nativeQuery(query);
 
+        return queryStringRepository.nativeQuery(query);
+    }
 
-        return top5slowestQueriesIds;
+    @Override
+    public List<String[]> totalAvgQueryTime(String _dbModel) {
+        List<String[]> result = new ArrayList<>();
+        List<String> dbSizes = new ArrayList<>();
+        dbSizes.add("small");
+        dbSizes.add("1gb");
+        dbSizes.add("10gb");
+        dbSizes.add("30gb");
+        dbSizes.add("100gb");
+        if(_dbModel.contains("star") || _dbModel.contains("snow")){
+            for (String s : dbSizes){
+                String query = "SELECT AVG(qt.query_time_ms), d.db_name FROM query_time qt\n" +
+                        "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
+                        "WHERE d.db_name LIKE '%"+_dbModel+"_"+s+"%' ";
+                result.add(queryTimeRepository.nativeQuery(query).get(0));
+            }
+        }
+        else {
+            for (String s : dbSizes){
+                String query = "SELECT AVG(qt.query_time_ms), d.db_name FROM query_time qt\n" +
+                        "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
+                        "WHERE d.db_name LIKE '%"+s+"_"+_dbModel+"%' ";
+                result.add(queryTimeRepository.nativeQuery(query).get(0));
+            }
+        }
+        return result;
     }
 
 }

@@ -96,7 +96,7 @@ public class GenericDWHController {
         model.addAttribute("ratios", ratios);
         model.addAttribute("queryMethod", factService.queryMethod());
         model.addAttribute("query", factService.query());
-        queryTimeService.addQueryTime(db,dimensions.toString()+","+ratios.toString(),sec);
+        queryTimeService.addQueryTime(db,dimensions.toString()+" - "+ratios.toString(), sec);
 
         return "genericdwh/results";
     }

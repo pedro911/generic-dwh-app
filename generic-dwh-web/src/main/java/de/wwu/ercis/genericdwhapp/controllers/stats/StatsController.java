@@ -1,5 +1,6 @@
 package de.wwu.ercis.genericdwhapp.controllers.stats;
 
+import de.wwu.ercis.genericdwhapp.services.stats.QueryStringService;
 import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StatsController {
 
     private final QueryTimeService queryTimeService;
+    private final QueryStringService queryStringService;
 
-    public StatsController(QueryTimeService queryTimeService) {
+    public StatsController(QueryTimeService queryTimeService, QueryStringService queryStringService) {
         this.queryTimeService = queryTimeService;
+        this.queryStringService = queryStringService;
     }
 
     @RequestMapping("/{db}")
@@ -21,8 +24,28 @@ public class StatsController {
         queryTimeService.savePending();
 
         model.addAttribute("db", db);
-        model.addAttribute("smallStarTime",queryTimeService.smallDB());
-        model.addAttribute("smallLabels",queryTimeService.labels());
+
+        model.addAttribute("smallLabels",queryTimeService.labels("small"));
+        model.addAttribute("smallGdwhDYNQueryTime",queryTimeService.top5slowestQueries("small","small_dyn"));
+        model.addAttribute("smallGdwhACBQueryTime",queryTimeService.top5slowestQueries("small","small_acb"));
+        model.addAttribute("smallGdwhNCBQueryTime",queryTimeService.top5slowestQueries("small","small_ncb"));
+        model.addAttribute("smallStarQueryTime",queryTimeService.top5slowestQueries("small","star_small"));
+        model.addAttribute("smallSnowQueryTime",queryTimeService.top5slowestQueries("small","snow_small"));
+
+        model.addAttribute("oneGBLabels",queryTimeService.labels("1gb"));
+        model.addAttribute("oneGBGdwhDYNQueryTime",queryTimeService.top5slowestQueries("1gb","1gb_dyn"));
+        model.addAttribute("oneGBGdwhACBQueryTime",queryTimeService.top5slowestQueries("1gb","1gb_acb"));
+        model.addAttribute("oneGBGdwhNCBQueryTime",queryTimeService.top5slowestQueries("1gb","1gb_ncb"));
+        model.addAttribute("oneGBStarQueryTime",queryTimeService.top5slowestQueries("1gb","star_1gb"));
+        model.addAttribute("oneGBSnowQueryTime",queryTimeService.top5slowestQueries("1gb","snow_1gb"));
+
+        model.addAttribute("gdwhDYNTotalAvgTime",queryTimeService.totalAvgQueryTime("dyn"));
+        model.addAttribute("gdwhACBTotalAvgTime",queryTimeService.totalAvgQueryTime("acb"));
+        model.addAttribute("gdwhNCBTotalAvgTime",queryTimeService.totalAvgQueryTime("ncb"));
+        model.addAttribute("starTotalAvgTime",queryTimeService.totalAvgQueryTime("star"));
+        model.addAttribute("snowTotalAvgTime",queryTimeService.totalAvgQueryTime("snow"));
+
+        model.addAttribute("queryStrings",queryStringService.findAllOrderById());
 
         //model.addAttribute("querySmallDBTimes", queryTimeService. );
 

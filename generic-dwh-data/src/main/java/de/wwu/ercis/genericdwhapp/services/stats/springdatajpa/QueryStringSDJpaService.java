@@ -6,7 +6,9 @@ import de.wwu.ercis.genericdwhapp.services.stats.QueryStringService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -44,5 +46,12 @@ public class QueryStringSDJpaService implements QueryStringService {
     @Override
     public void deleteById(Long aLong) {
         queryStringRepository.deleteById(aLong);
+    }
+
+    @Override
+    public List<QueryString> findAllOrderById() {
+        List<QueryString> queryStrings = new ArrayList<>();
+        queryStringRepository.findAllByOrderByQueryStringId().forEach(queryStrings::add);
+        return queryStrings;
     }
 }
