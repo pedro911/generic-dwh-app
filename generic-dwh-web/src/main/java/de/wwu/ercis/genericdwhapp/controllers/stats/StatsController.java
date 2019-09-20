@@ -39,11 +39,11 @@ public class StatsController {
         model.addAttribute("oneGBStarQueryTime",queryTimeService.top5slowestQueries("1gb","star_1gb"));
         model.addAttribute("oneGBSnowQueryTime",queryTimeService.top5slowestQueries("1gb","snow_1gb"));
 
-        model.addAttribute("gdwhDYNTotalAvgTime",queryTimeService.totalAvgQueryTime("dyn"));
-        model.addAttribute("gdwhACBTotalAvgTime",queryTimeService.totalAvgQueryTime("acb"));
-        model.addAttribute("gdwhNCBTotalAvgTime",queryTimeService.totalAvgQueryTime("ncb"));
-        model.addAttribute("starTotalAvgTime",queryTimeService.totalAvgQueryTime("star"));
-        model.addAttribute("snowTotalAvgTime",queryTimeService.totalAvgQueryTime("snow"));
+        model.addAttribute("gdwhDYNCountQueries",queryTimeService.countQueries("dyn"));
+        model.addAttribute("gdwhACBCountQueries",queryTimeService.countQueries("acb"));
+        model.addAttribute("gdwhNCBCountQueries",queryTimeService.countQueries("ncb"));
+        model.addAttribute("starCountQueries",queryTimeService.countQueries("star"));
+        model.addAttribute("snowCountQueries",queryTimeService.countQueries("snow"));
 
         model.addAttribute("queryStrings",queryStringService.findAllOrderById());
 

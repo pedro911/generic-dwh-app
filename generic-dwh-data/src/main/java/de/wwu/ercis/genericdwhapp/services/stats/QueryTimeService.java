@@ -18,6 +18,6 @@ public interface QueryTimeService extends CrudService<QueryTime, Long> {
 
     List<String[]> labels(String dbSize);
 
-    List<String[]> totalAvgQueryTime(String _dbModel);
+    List<String[]> countQueries(String _dbModel);
 
 }

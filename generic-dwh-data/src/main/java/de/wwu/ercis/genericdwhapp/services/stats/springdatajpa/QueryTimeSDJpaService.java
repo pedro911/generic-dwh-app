@@ -144,7 +144,7 @@ public class QueryTimeSDJpaService implements QueryTimeService {
     }
 
     @Override
-    public List<String[]> totalAvgQueryTime(String _dbModel) {
+    public List<String[]> countQueries(String _dbModel) {
         List<String[]> result = new ArrayList<>();
         List<String> dbSizes = new ArrayList<>();
         dbSizes.add("small");
@@ -154,7 +154,7 @@ public class QueryTimeSDJpaService implements QueryTimeService {
         dbSizes.add("100gb");
         if(_dbModel.contains("star") || _dbModel.contains("snow")){
             for (String s : dbSizes){
-                String query = "SELECT AVG(qt.query_time_ms), d.db_name FROM query_time qt\n" +
+                String query = "SELECT count(qt.query_string_id), d.db_name FROM query_time qt\n" +
                         "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
                         "WHERE d.db_name LIKE '%"+_dbModel+"_"+s+"%' ";
                 result.add(queryTimeRepository.nativeQuery(query).get(0));
@@ -162,7 +162,7 @@ public class QueryTimeSDJpaService implements QueryTimeService {
         }
         else {
             for (String s : dbSizes){
-                String query = "SELECT AVG(qt.query_time_ms), d.db_name FROM query_time qt\n" +
+                String query = "SELECT count(qt.query_string_id), d.db_name FROM query_time qt\n" +
                         "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
                         "WHERE d.db_name LIKE '%"+s+"_"+_dbModel+"%' ";
                 result.add(queryTimeRepository.nativeQuery(query).get(0));

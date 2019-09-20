@@ -51,6 +51,7 @@ public class StarController {
         model.addAttribute("dimensions",formatDimensions(dimensions));
         model.addAttribute("ratios", formatRatios(ratios));
         queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
+
         return "star/results";
     }
 

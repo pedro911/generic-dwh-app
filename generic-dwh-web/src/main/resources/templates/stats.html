@@ -9,7 +9,6 @@
     <div class="jumbotron">
         <h3 class="text-center">Query Times for each DB Size and Model</h3>
         <br/>
-
         <div class="card">
             <div class="card-header">
                 Top 5 Slowest Queries on Small DBs
@@ -30,7 +29,7 @@
         <br/>
         <div class="card">
             <div class="card-header">
-                Total AVG Query Time for each DB Size
+                Query Count for each DB Size
             </div>
             <div class="card-body">
                 <canvas id="graph_total"></canvas>
@@ -58,7 +57,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"
@@ -197,7 +195,7 @@
                 borderColor: window.chartColors.red,
                 borderWidth: 1,
                 data: [
-                    /*[# th:each="o : ${gdwhDYNTotalAvgTime}" ]*/
+                    /*[# th:each="o : ${gdwhDYNCountQueries}" ]*/
                     /*[[${ o[0] }]]*/,
                     /*[/]*/
                 ]},
@@ -207,7 +205,7 @@
                 borderColor: window.chartColors.blue,
                 borderWidth: 1,
                 data: [
-                    /*[# th:each="o : ${gdwhACBTotalAvgTime}" ]*/
+                    /*[# th:each="o : ${gdwhACBCountQueries}" ]*/
                     /*[[${ o[0] }]]*/,
                     /*[/]*/
                 ]},
@@ -217,7 +215,7 @@
                 borderColor: window.chartColors.blue,
                 borderWidth: 1,
                 data: [
-                    /*[# th:each="o : ${gdwhNCBTotalAvgTime}" ]*/
+                    /*[# th:each="o : ${gdwhNCBCountQueries}" ]*/
                     /*[[${ o[0] }]]*/,
                     /*[/]*/
                 ]},
@@ -227,7 +225,7 @@
                 borderColor: window.chartColors.orange,
                 borderWidth: 1,
                 data: [
-                    /*[# th:each="o : ${starTotalAvgTime}" ]*/
+                    /*[# th:each="o : ${starCountQueries}" ]*/
                     /*[[${ o[0] }]]*/,
                     /*[/]*/
                 ]},
@@ -237,7 +235,7 @@
                 borderColor: window.chartColors.purple,
                 borderWidth: 1,
                 data: [
-                    /*[# th:each="o : ${snowTotalAvgTime}" ]*/
+                    /*[# th:each="o : ${snowCountQueries}" ]*/
                     /*[[${ o[0] }]]*/,
                     /*[/]*/
                 ]}
@@ -326,7 +324,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Total Query Average Time '
+                    text: 'Query Count for each DB Size '
                 },
                 scales: {
                     xAxes: [{
@@ -343,7 +341,7 @@
                         },
                         scaleLabel: {
                             display: true,
-                            labelString: 'Time (ms)'
+                            labelString: 'Query Count'
                         }
                     }]
                 }

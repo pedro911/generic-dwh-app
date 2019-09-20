@@ -187,7 +187,7 @@ public class FactSDJpaService implements FactService {
                             facts.add(fact);
                         });
                         factRepository.saveAll(facts);
-                        queryMethod = "New ROs and facts inserted.";
+                        queryMethod = "New facts inserted.";
                     }
 
                     where = " WHERE ro.dimension_id =" + newDimensionCombination.getId() + "\nORDER BY ro.name";
