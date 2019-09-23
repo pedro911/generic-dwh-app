@@ -84,8 +84,10 @@ public class GenericDWHController {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
-        if(db.endsWith("dyn"))
+        if (db.endsWith("dyn"))
             model.addAttribute("results", factService.gdwhDynQuery(ratios,dimensions));
+        else if (db.endsWith("acb"))
+            model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions));
         else
             model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
         long end = System.nanoTime();

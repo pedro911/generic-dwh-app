@@ -273,6 +273,69 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
+    public List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions) {
+        queryMethod = "";
+        List<String[]> factsResult = new ArrayList<>();
+        List<String> dCombinations = new ArrayList<>();
+        List<Ratio> ratiosResult = new ArrayList<>();
+        List<Dimension> dimensionsResult = new ArrayList<>();
+        //split ratios and dimension combinations
+        Map<String, String> dCombinationsMap = ratios
+                .stream()
+                .distinct()
+                .map(s -> s.split("_"))
+                .collect(toMap(s -> s[0], s -> s[1]));
+
+        //add unique dimension combinations and all ratios to lists
+        dCombinationsMap.forEach((ratioId, dimension_combinationId) -> {
+            if (!dCombinations.contains(dimension_combinationId))
+                dCombinations.add(dimension_combinationId);
+            ratiosResult.add(ratioRepository.findById(Long.parseLong(ratioId)).orElse(null));
+        });
+        List<Long> dimensionsIds = dimensions.stream().map(s -> Long.parseLong(s)).distinct().sorted().collect(Collectors.toList());
+        dimensionsIds.stream().sorted().forEach(dId -> dimensionsResult.add(dimensionRepository.findById(dId).orElse(null)));
+
+        List<String> selectsWithSubstring = new ArrayList<>();
+        String from = " FROM reference_object ro \n";
+        String ratiosJoins ="";
+
+        for (Ratio ratio : ratiosResult) {
+            String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
+            ratiosJoins = ratiosJoins + "INNER JOIN fact " + ratioQuery + " ON "
+                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n";
+        }
+
+        for (int i = 0; i < dimensionsResult.size(); i++) {
+            String dimensionQuery = dimensionsResult.get(i).getName().replaceAll(" ", "_").toLowerCase();
+            selectsWithSubstring.add("SUBSTRING_INDEX(SUBSTRING_INDEX(ro.name,','," + (i + 1) + "),',',-1) as '" + dimensionQuery + "'");
+        }
+
+        //check if selected dimension combination exists
+        String dimensionName = dimensionsResult.stream().map(d -> d.getName()).collect(Collectors.joining(", "));
+        Dimension existingDimensionCombination = dimensionRepository.findByName(dimensionName).orElse(null);
+        //there are already saved facts for this ratio and dimension combination
+        String where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " \nORDER BY ro.name";
+        // this part uses substring_index function from mysql to split values in columns to show results on the frontend
+        String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
+                + ratiosResult
+                .stream()
+                .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
+                        "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
+                .collect(Collectors.joining(",")) + from + ratiosJoins + where;
+        factsResult = factRepository.nativeQuery(substringQuery);
+        executedQuery = substringQuery;
+        queryMethod = "Returned existing facts.";
+
+        // change IDs to names to display on fronted
+        ratios.clear();
+        ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
+        dimensions.clear();
+        dimensionsResult.forEach( dimension -> dimensions.add(dimension.getName()));
+
+        return factsResult;
+    }
+
+    @Override
     public List<String[]> gdwhStdQuery(List<String> ratios, List<String> dimensions) {
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
