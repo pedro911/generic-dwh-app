@@ -39,7 +39,7 @@ public class AllDBMasterService {
         hashMap.put("tpch_gdwh_mini_dyn", tpch_gdwh_mini_dyn);
 
         DriverManagerDataSource tpch_gdwh_mini_ncb = new DriverManagerDataSource();
-        tpch_gdwh_mini_ncb.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_mini_ncb");
+        tpch_gdwh_mini_ncb.setUrl("jdbc:mysql://localhost:3306/tpch_gdwh_mini1_ncb");
         tpch_gdwh_mini_ncb.setUsername(user);
         tpch_gdwh_mini_ncb.setPassword(pass);
         hashMap.put("tpch_gdwh_mini_ncb", tpch_gdwh_mini_ncb);

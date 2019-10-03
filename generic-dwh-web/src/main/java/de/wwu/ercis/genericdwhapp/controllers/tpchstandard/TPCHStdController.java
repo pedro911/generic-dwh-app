@@ -14,4 +14,9 @@ public class TPCHStdController {
         return "tpchstandard/index";
     }
 
+    @RequestMapping("/tpchstandard/dwcube")
+    public String returnDWCubeModel(){
+        return "tpchstandard/dwcube";
+    }
+
 }

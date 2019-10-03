@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -68,6 +66,7 @@ public class FactSDJpaService implements FactService {
         result = result.replace("SELECT","<a class=\"text-primary font-weight-bold\">SELECT</a>");
         result = result.replace("FROM REFERENCE_OBJECT RO","<a class=\"text-danger font-weight-bold\">FROM REFERENCE_OBJECT RO</a>");
         result = result.replace("INNER JOIN REFERENCE_OBJECT_COMBINATION","<a class=\"text-primary font-weight-bold\">INNER JOIN REFERENCE_OBJECT_COMBINATION</a>");
+        result = result.replace("INNER JOIN REFERENCE_OBJECT_HIERARCHY","<a class=\"text-danger font-weight-bold\">INNER JOIN REFERENCE_OBJECT_HIERARCHY</a>");
         result = result.replace("INNER JOIN FACT","<a class=\"text-primary font-weight-bold\">INNER JOIN FACT</a>");
         result = result.replace("WHERE","<a class=\"text-danger font-weight-bold\">WHERE</a>");
         result = result.replace("GROUP BY","<a class=\"text-danger font-weight-bold\">GROUP BY</a>");
@@ -353,6 +352,12 @@ public class FactSDJpaService implements FactService {
                 dCombinations.add(dimension_combinationId);
             ratiosResult.add(ratioRepository.findById(Long.parseLong(ratioId)).orElse(null));
         });
+
+        List<Dimension> atomicLevels = new ArrayList<>();
+        dCombinations.forEach(dc -> {
+            dimensionRepository.findAtomicLevels(dc).forEach(atomicLevels::add);
+        });
+
         ratios.clear();
         ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
         dimensions.stream().distinct().forEach( d -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
@@ -362,32 +367,72 @@ public class FactSDJpaService implements FactService {
         String query = "";
         List<String> selects = new ArrayList<>();
         String from = " FROM reference_object ro \n";
-        String joins = "";
+        Deque<String> joins = new ArrayDeque<>();
         String where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ")\n";
         List<String> groupBy = new ArrayList<>();
         List<String> orderBy = new ArrayList<>();
 
+        Deque<Dimension> dimensionHierarchy = new ArrayDeque<>();
+
         for (Dimension dimension : dimensionsResult) {
+
+            if (atomicLevels.stream().filter(d -> dimension.equals(d)).findAny().orElse(null) != null && !dimensionHierarchy.contains(dimension))
+                dimensionHierarchy.addFirst(dimension);
+
+            else if (dimensionRepository.findChildByParent(dimension.getId()).orElse(null) != null ){
+
+                Dimension child = dimensionRepository.findChildByParent(dimension.getId()).orElse(null);
+
+                if(!dimensionHierarchy.contains(child))
+                    dimensionHierarchy.addLast(child);
+                while ( dimensionRepository.findChildByParent(child.getId()).orElse(null) != null ){
+                    child = dimensionRepository.findChildByParent(child.getId()).orElse(null);
+                    if (!dimensionHierarchy.contains(child))
+                        dimensionHierarchy.addFirst(child);
+                }
+                if(!dimensionHierarchy.contains(dimension))
+                    dimensionHierarchy.addLast(dimension);
+            }
+        }
+
+        for (Dimension dh : dimensionHierarchy){
+            if ( atomicLevels.stream().filter(d -> dh.equals(d)).findAny().orElse(null) != null ) {
+                String atomicElement = dh.getName().replaceAll(" ","_").toLowerCase();
+                joins.addFirst("INNER JOIN reference_object_combination _ro_"+atomicElement+" ON _ro_"+atomicElement+".combination_id = ro.id\n" +
+                        "INNER JOIN reference_object _"+atomicElement+" ON _"+atomicElement+".id = _ro_"
+                        +atomicElement+".subordinate_id AND _"+atomicElement+".dimension_id = "+ dh.getId() +" \n");
+            }
+            else {
+                Dimension child1 = dimensionRepository.findChildByParent(dh.getId()).orElse(null);
+                if (child1!= null){
+                    String childQuery = child1.getName().replaceAll(" ", "_").toLowerCase();
+                    String parentQuery = dh.getName().replaceAll(" ", "_").toLowerCase();
+                    joins.add("INNER JOIN reference_object_hierarchy _" + childQuery + "_" + parentQuery + " ON _"
+                            + childQuery + "_" + parentQuery + ".child_id = _" + childQuery + ".id\n"
+                            + "INNER JOIN reference_object _" + parentQuery + " ON _" + parentQuery + ".id = _"
+                            + childQuery + "_" + parentQuery + ".parent_id AND _" + parentQuery + ".dimension_id = " + dh.getId() + " \n");
+                }
+            }
+        }
+
+        for (Dimension dimension : dimensionsResult){
             String dimensionQuery = dimension.getName().replaceAll(" ","_").toLowerCase();
             groupBy.add("_"+dimensionQuery+".id");
             orderBy.add("_"+dimensionQuery+".name");
             selects.add("_"+dimensionQuery+".name AS '"+dimensionQuery+"'");
-            joins = joins +
-                    "INNER JOIN reference_object_combination _ro_"+dimensionQuery+" ON _ro_"+dimensionQuery+".combination_id = ro.id\n" +
-                    "INNER JOIN reference_object _"+dimensionQuery+" ON _"+dimensionQuery+".id = _ro_"
-                    +dimensionQuery+".subordinate_id AND _"+dimensionQuery+".dimension_id = "+dimension.getId() +" \n";
         }
+
         for (Ratio ratio : ratiosResult) {
             String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
-            joins = joins + "INNER JOIN fact " + ratioQuery + " ON "
-                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n";
+            joins.addLast("INNER JOIN fact " + ratioQuery + " ON "
+                    + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n");
         }
 
         query = "SELECT " + selects.stream().collect(Collectors.joining(",")) + ", "
                 + ratiosResult.stream()
                 .map(r-> "FORMAT(sum("+ r.getName().toLowerCase().replaceAll(" ","_") +".value),2)")
                 .collect(Collectors.joining(","))
-                + from + joins + where
+                + from + joins.stream().collect(Collectors.joining(" ")) + where
                 + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                 + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
 
@@ -397,6 +442,69 @@ public class FactSDJpaService implements FactService {
         return factRepository.nativeQuery(query);
     }
 
+    /* old method without considering ref obj hierarchies
+        @Override
+        public List<String[]> gdwhStdQuery(List<String> ratios, List<String> dimensions) {
+            List<String> dCombinations = new ArrayList<>();
+            List<Ratio> ratiosResult = new ArrayList<>();
+            List<Dimension> dimensionsResult = new ArrayList<>();
+            //split ratios and dimension combinations, they come together from frontend
+            Map<String,String> dCombinationsMap = ratios
+                    .stream()
+                    .distinct()
+                    .map(s -> s.split("_"))
+                    .collect(toMap(s -> s[0], s -> s[1]));
+
+            //add unique dimension combinations and all ratios to lists
+            dCombinationsMap.forEach( (ratioId,dimension_combinationId) -> {
+                if(!dCombinations.contains(dimension_combinationId))
+                    dCombinations.add(dimension_combinationId);
+                ratiosResult.add(ratioRepository.findById(Long.parseLong(ratioId)).orElse(null));
+            });
+            ratios.clear();
+            ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
+            dimensions.stream().distinct().forEach( d -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
+            dimensions.clear();
+            dimensionsResult.forEach( dimension -> dimensions.add(dimension.getName()));
+
+            String query = "";
+            List<String> selects = new ArrayList<>();
+            String from = " FROM reference_object ro \n";
+            String joins = "";
+            String where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ")\n";
+            List<String> groupBy = new ArrayList<>();
+            List<String> orderBy = new ArrayList<>();
+
+            for (Dimension dimension : dimensionsResult) {
+                String dimensionQuery = dimension.getName().replaceAll(" ","_").toLowerCase();
+                groupBy.add("_"+dimensionQuery+".id");
+                orderBy.add("_"+dimensionQuery+".name");
+                selects.add("_"+dimensionQuery+".name AS '"+dimensionQuery+"'");
+                joins = joins +
+                        "INNER JOIN reference_object_combination _ro_"+dimensionQuery+" ON _ro_"+dimensionQuery+".combination_id = ro.id\n" +
+                        "INNER JOIN reference_object _"+dimensionQuery+" ON _"+dimensionQuery+".id = _ro_"
+                        +dimensionQuery+".subordinate_id AND _"+dimensionQuery+".dimension_id = "+dimension.getId() +" \n";
+            }
+            for (Ratio ratio : ratiosResult) {
+                String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
+                joins = joins + "INNER JOIN fact " + ratioQuery + " ON "
+                        + ratioQuery + ".reference_object_id = ro.id AND " + ratioQuery + ".ratio_id = " + ratio.getId() + "\n";
+            }
+
+            query = "SELECT " + selects.stream().collect(Collectors.joining(",")) + ", "
+                    + ratiosResult.stream()
+                    .map(r-> "FORMAT(sum("+ r.getName().toLowerCase().replaceAll(" ","_") +".value),2)")
+                    .collect(Collectors.joining(","))
+                    + from + joins + where
+                    + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
+                    + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
+
+            executedQuery = query;
+            queryMethod="";
+
+            return factRepository.nativeQuery(query);
+        }
+    */
     public void insertNewFacts(String dimension, String ratio, String dimensionCombination){
 
         String query = "SELECT _ref_object.id, _ratio.ratio_id, sum(_ratio.value)\n" +
