@@ -25,6 +25,9 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
 
         List<String> joins = new ArrayList<>();
 
+        if (dimensions.contains("d_month_number") && !dimensions.contains("d_year_number"))
+            dimensions.add("d_year_number");
+
         for (String d: dimensions){
             //Customer Dimension
             if((d.startsWith("r") || d.startsWith("n") || d.startsWith("m") || d.startsWith("c")) && !joins.stream().anyMatch(s -> s.contains("dim_customer")))
@@ -76,7 +79,7 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
                 + joins.stream().collect(Collectors.joining("\n"))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","));
-
+        System.out.println(query);
         executedQuery = query;
         return snowflakeRepository.nativeQuery(query);
     }

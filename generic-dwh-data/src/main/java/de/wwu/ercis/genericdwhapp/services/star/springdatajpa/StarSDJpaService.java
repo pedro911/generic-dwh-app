@@ -25,6 +25,9 @@ public class StarSDJpaService implements StarService {
 
         List<String> joins = new ArrayList<>();
 
+        if (dimensions.contains("d_month_number") && !dimensions.contains("d_year_number"))
+            dimensions.add("d_year_number");
+
         for (String d: dimensions){
             if ((d.startsWith("o") || d.startsWith("l")) && !joins.stream().anyMatch(s -> s.contains("dim_lineorder")))
                 joins.add("INNER JOIN dim_lineorder l ON l.PK_LINEORDER = f.FK_LINEORDER");
@@ -37,6 +40,7 @@ public class StarSDJpaService implements StarService {
 
             if (d.startsWith("d") && !joins.stream().anyMatch(s -> s.contains("dim_date")))
                 joins.add("INNER JOIN dim_date d ON d.DATE_PK = f.FK_ORDERDATE");
+
         }
 
         String query = "SELECT " + dimensions.stream().collect(Collectors.joining(",")) + ", "
@@ -45,7 +49,7 @@ public class StarSDJpaService implements StarService {
                 + joins.stream().collect(Collectors.joining("\n"))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","));
-
+        System.out.println(query);
         executedQuery = query;
         return starRepository.nativeQuery(query);
     }

@@ -40,7 +40,7 @@ public class SnowflakeController {
                                    @RequestParam("dimensionChecked") List<String> dimensions){
 
         long start = System.nanoTime();
-        model.addAttribute("starFacts", snowflakeService.snowFacts(dimensions,ratios));
+        model.addAttribute("snowFacts", snowflakeService.snowFacts(dimensions,ratios));
         long end = System.nanoTime();
         Double sec = (end - start) / 1e6;
 
@@ -51,7 +51,8 @@ public class SnowflakeController {
         model.addAttribute("ratios", formatRatios(ratios));
         queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
 
-        return "star/results";
+        return "snowflake/results";
+
     }
 
     public List<String> formatRatios(List<String> ratios){
