@@ -38,6 +38,9 @@ public class StarSDJpaService implements StarService {
             if (d.startsWith("p") && !joins.stream().anyMatch(s -> s.contains("dim_part")))
                 joins.add("INNER JOIN dim_part p ON p.PK_PART = f.FK_PART");
 
+            if (d.startsWith("s") && !joins.stream().anyMatch(s -> s.contains("dim_supplier")))
+                joins.add("INNER JOIN dim_supplier s ON s.PK_SUPPLIER = f.FK_SUPPLIER");
+
             if (d.startsWith("d") && !joins.stream().anyMatch(s -> s.contains("dim_date")))
                 joins.add("INNER JOIN dim_date d ON d.DATE_PK = f.FK_ORDERDATE");
 
@@ -49,7 +52,6 @@ public class StarSDJpaService implements StarService {
                 + joins.stream().collect(Collectors.joining("\n"))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","));
-        System.out.println(query);
         executedQuery = query;
         return starRepository.nativeQuery(query);
     }

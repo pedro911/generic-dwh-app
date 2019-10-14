@@ -14,8 +14,4 @@ public interface DimensionHierarchyRepository extends JpaRepository<DimensionHie
 
     List<DimensionHierarchy> findByOrderByParentIdAsc();
 
-    List<DimensionHierarchy> findAllByParentId(Long id);
-
-
-
 }

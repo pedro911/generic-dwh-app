@@ -91,14 +91,14 @@ public class GenericDWHController {
         else
             model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
         long end = System.nanoTime();
-        Double sec = (end - start) / 1e6;
+        Double mSec = (end - start) / 1e6;
 
-        model.addAttribute("timeElapsed", sec);
+        model.addAttribute("timeElapsed", mSec);
         model.addAttribute("dimensions", dimensions);
         model.addAttribute("ratios", ratios);
         model.addAttribute("queryMethod", factService.queryMethod());
         model.addAttribute("query", factService.query());
-        queryTimeService.addQueryTime(db,dimensions.toString()+" - "+ratios.toString(), sec);
+        queryTimeService.addQueryTime(db,dimensions.toString()+" - "+ratios.toString(), mSec);
 
         return "genericdwh/results";
     }

@@ -67,6 +67,10 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
             if(d.contains("p_container"))
                 joins.add("INNER JOIN p_container pc on pc.p_container_id = p.p_container_id");
 
+            //Supplier Dimension
+            if (d.startsWith("s") && !joins.stream().anyMatch(s -> s.contains("dim_supplier")))
+                joins.add("INNER JOIN dim_supplier s ON s.PK_SUPPLIER = f.FK_SUPPLIER");
+
             //Date Dimension
             if (d.startsWith("d") && !joins.stream().anyMatch(s -> s.contains("dim_date")))
                 joins.add("INNER JOIN dim_date d ON d.DATE_PK = f.FK_ORDERDATE");
@@ -79,7 +83,6 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
                 + joins.stream().collect(Collectors.joining("\n"))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","));
-        System.out.println(query);
         executedQuery = query;
         return snowflakeRepository.nativeQuery(query);
     }

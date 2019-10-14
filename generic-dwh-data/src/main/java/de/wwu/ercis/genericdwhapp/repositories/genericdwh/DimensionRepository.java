@@ -22,6 +22,13 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
             "WHERE dh.parent_id NOT IN (select dimension_hierarchy.child_id FROM dimension_hierarchy)", nativeQuery = true)
     List<Dimension> findByRoot();
 
+    @Query(value = "SELECT * FROM dimension d WHERE NOT EXISTS \n" +
+            "(SELECT 1 FROM dimension_hierarchy dh \n" +
+            "WHERE dh.child_id = d.id) AND NOT EXISTS \n" +
+            "(SELECT 1 FROM dimension_combination dc WHERE dc.combination_id = d.id) \n" +
+            "ORDER BY d.is_time ASC, d.name ASC", nativeQuery = true)
+    List<Dimension> findAllRoots();
+
     Optional<Dimension> findByName(String name);
 
     @Query(value = "SELECT * FROM dimension d WHERE d.id IN \n" +
@@ -33,5 +40,10 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
             "(SELECT dh.child_id FROM dimension_hierarchy dh WHERE dh.parent_id = :parentId) \n" +
             "ORDER BY d.name ASC", nativeQuery = true)
     Optional<Dimension> findChildByParent(Long parentId);
+
+    @Query(value = "SELECT * FROM dimension d WHERE d.id IN \n" +
+            "(SELECT dh.child_id FROM dimension_hierarchy dh WHERE dh.parent_id = :parentId) \n" +
+            "ORDER BY d.name ASC", nativeQuery = true)
+    List<Dimension> findChildByParentList(Long parentId);
 
 }

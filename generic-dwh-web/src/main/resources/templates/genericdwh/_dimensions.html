@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<section th:fragment="dimensions" >
-    <!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.DimensionRoot"*/-->
-    <th:block th:each="hierarchyLevel : ${roots}">
-        <span th:if="'null' == ${hierarchyLevel.parentId}" th:remove="tag">
-            <div class="card border-dark mb-3">
-                <div class="card-header" th:text="${hierarchyLevel.name}" th:id="${hierarchyLevel.id}"></div>
-                <div class="card-body">
-        </span>
-                <input class="dimension" type="checkbox" th:if="'null' != ${hierarchyLevel.parentId}"
-                       th:name="dimensionChecked"
-                       th:value="${hierarchyLevel.id}"
-                       th:text="'  ' + ${hierarchyLevel.name}">
-                <section th:include="genericdwh/_dimensions.html :: dimensions" th:with="roots=${hierarchyLevel.childrenItems}"/>
-        <span th:if="'null' == ${hierarchyLevel.parentId}" th:remove="tag">
-                </div>
-            </div>
-        </span>
-    </th:block>
+<section th:fragment="dimensions">
+    <!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
+    <div class="card border-dark mb-3" th:each="dimension : ${dimensionRoots}">
+
+        <div class="card-header" >
+            <span th:if="'null' == ${dimension.parentId}" th:text="${dimension.name}" th:id="${dimension.id}" th:remove="tag"></span>
+        </div>
+
+        <div class="card-body">
+            <span th:each="dimension : ${dimension.childrenItems}" th:remove="tag">
+                 <input type="checkbox" th:text="'  ' + ${dimension.name}" th:name="dimensionChecked" th:value="${dimension.id}">
+                 <br/>
+            </span>
+        </div>
+    </div>
 </section>
 </body>
 </html>
