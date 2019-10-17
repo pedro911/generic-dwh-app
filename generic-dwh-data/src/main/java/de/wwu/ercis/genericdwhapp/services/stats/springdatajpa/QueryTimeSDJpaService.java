@@ -113,7 +113,7 @@ public class QueryTimeSDJpaService implements QueryTimeService {
 
         String query = "SELECT qt.query_string_id FROM query_time qt\n" +
                 "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
-                "WHERE d.db_name LIKE '%"+dbSize+"%'\n" +
+                "WHERE d.db_name LIKE '%"+dbSize+"%' AND d.db_name NOT LIKE '%dyn%'\n" +
                 "GROUP BY qt.query_string_id\n" +
                 "ORDER BY AVG(query_time_ms) DESC\n" +
                 "LIMIT 5";
@@ -135,7 +135,7 @@ public class QueryTimeSDJpaService implements QueryTimeService {
 
         String query = "SELECT qt.query_string_id FROM query_time qt\n" +
                 "INNER JOIN db_model d ON d.db_model_id = qt.db_model_id\n" +
-                "WHERE d.db_name LIKE '%"+dbSize+"%'\n" +
+                "WHERE d.db_name LIKE '%"+dbSize+"%' AND d.db_name NOT LIKE '%dyn%'\n" +
                 "GROUP BY qt.query_string_id\n" +
                 "ORDER BY AVG(query_time_ms) DESC\n" +
                 "LIMIT 5";
