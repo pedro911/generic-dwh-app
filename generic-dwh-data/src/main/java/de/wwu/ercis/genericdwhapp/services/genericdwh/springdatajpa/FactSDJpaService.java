@@ -374,17 +374,24 @@ public class FactSDJpaService implements FactService {
         String dimensionName = dimensionsResult.stream().map(d -> d.getName()).collect(Collectors.joining(", "));
         Dimension existingDimensionCombination = dimensionRepository.findByName(dimensionName).orElse(null);
         //there are already saved facts for this ratio and dimension combination
-        String where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " \nORDER BY ro.name";
-        // this part uses substring_index function from mysql to split values in columns to show results on the frontend
-        String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
-                + ratiosResult
-                .stream()
-                .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
-                        "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
-                .collect(Collectors.joining(",")) + from + ratiosJoins + where;
-        factsResult = factRepository.nativeQuery(substringQuery);
-        executedQuery = substringQuery;
-        queryMethod = "Returned existing facts.";
+        if (existingDimensionCombination != null) {
+            String where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " \nORDER BY ro.name";
+
+            // this part uses substring_index function from mysql to split values in columns to show results on the frontend
+            String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
+                    + ratiosResult
+                    .stream()
+                    .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
+                            "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
+                    .collect(Collectors.joining(",")) + from + ratiosJoins + where;
+            factsResult = factRepository.nativeQuery(substringQuery);
+            executedQuery = substringQuery;
+            queryMethod = "Returned existing facts.";
+        }
+        else{
+            executedQuery = "No facts found for this combination!";
+            queryMethod = "";
+        }
 
         // change IDs to names to display on fronted
         ratios.clear();

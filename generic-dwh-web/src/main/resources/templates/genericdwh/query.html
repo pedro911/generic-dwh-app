@@ -18,6 +18,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" th:if="${#strings.contains(db, 'acb')}">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning" role="alert">
+                            INFO: There are only stored combinations for single dimension levels and single dimension levels with year-month. Other combinations will fail.
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <!--<br th:replace="genericdwh/_filters.html :: filters"/>-->
