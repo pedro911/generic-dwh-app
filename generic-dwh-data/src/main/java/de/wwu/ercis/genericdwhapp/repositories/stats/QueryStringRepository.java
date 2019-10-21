@@ -17,4 +17,6 @@ public interface QueryStringRepository extends JpaRepository<QueryString, Long>,
 
     List<QueryString> findAllByOrderByQueryStringId();
 
+    List<QueryString> findAllByQueryStringIdIn(List<Long> queryIds);
+
 }

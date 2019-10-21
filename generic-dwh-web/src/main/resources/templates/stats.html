@@ -20,19 +20,32 @@
         <br/>
         <div class="card">
             <div class="card-header">
-                Top 5 Slowest Queries on 1GB DBs
+                Queries
             </div>
             <div class="card-body">
-                <canvas id="graph_1gbDBs"></canvas>
+                <table class="table table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Queried Dimensions and Ratios for Small DB</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="queryStringSmall: ${queryStringsSmall}">
+                        <td th:text="${queryStringSmall.getQueryStringId()}"></td>
+                        <td th:text="${queryStringSmall.getRefObjRatios()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <br/>
         <div class="card">
             <div class="card-header">
-                Query Count for each DB Size
+                Top 5 Slowest Queries on 1GB DBs
             </div>
             <div class="card-body">
-                <canvas id="graph_total"></canvas>
+                <canvas id="graph_1gbDBs"></canvas>
             </div>
         </div>
         <br/>
@@ -45,18 +58,29 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Queried Dimensions and Ratios</th>
+                        <th>Queried Dimensions and Ratios for 1GB DB</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="queryString: ${queryStrings}">
-                        <td th:text="${queryString.getQueryStringId()}"></td>
-                        <td th:text="${queryString.getRefObjRatios()}"></td>
+                    <tr th:each="queryString1GB: ${queryStrings1GB}">
+                        <td th:text="${queryString1GB.getQueryStringId()}"></td>
+                        <td th:text="${queryString1GB.getRefObjRatios()}"></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <br/>
+        <div class="card">
+            <div class="card-header">
+                Query Count for each DB Size
+            </div>
+            <div class="card-body">
+                <canvas id="graph_total"></canvas>
+            </div>
+        </div>
+        <br/>
+
     </div>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"

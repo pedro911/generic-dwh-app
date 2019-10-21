@@ -54,4 +54,15 @@ public class QueryStringSDJpaService implements QueryStringService {
         queryStringRepository.findAllByOrderByQueryStringId().forEach(queryStrings::add);
         return queryStrings;
     }
+
+    @Override
+    public List<QueryString> findAllByQueryIds(List<String[]> queryIds){
+        List<QueryString> queryStrings = new ArrayList<>();
+        List<Long> queryIdsList = new ArrayList<>();
+        for (Object[] o: queryIds){
+            queryIdsList.add(Long.parseLong(o[0].toString()));
+        }
+        queryStringRepository.findAllByQueryStringIdIn(queryIdsList).forEach(queryStrings::add);
+        return queryStrings;
+    }
 }

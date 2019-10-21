@@ -9,4 +9,6 @@ public interface QueryStringService extends CrudService<QueryString, Long> {
 
     List<QueryString> findAllOrderById();
 
+    List<QueryString> findAllByQueryIds(List<String[]> queryIds);
+
 }
