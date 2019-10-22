@@ -54,6 +54,11 @@
         <button onclick="window.history.go(-1);" class="btn btn-secondary float-left">Back</button>
     </div>
 </div>
-
+<script type="text/javascript">
+    const Http = new XMLHttpRequest();
+    const url='http://dwh-architectures.uni-muenster.de/stats';
+    Http.open("GET", url);
+    Http.send();
+</script>
 </body>
 </html>
