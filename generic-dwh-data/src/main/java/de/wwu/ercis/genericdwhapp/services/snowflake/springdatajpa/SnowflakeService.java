@@ -41,17 +41,9 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
                 joins.add("INNER JOIN region r on r.r_regionkey = n.n_regionkey");
             }
 
-            //Line Order Dimension
-            if((d.startsWith("o") || d.startsWith("l")) && !joins.stream().anyMatch(s -> s.contains("dim_lineorder")))
-                joins.add("INNER JOIN dim_lineorder l ON l.PK_LINEORDER = f.FK_LINEORDER");
-            if(d.contains("o_clerk"))
-                joins.add("INNER JOIN order_clerk oc ON oc.order_clerk_id = l.order_clerk_id");
-            if(d.contains("o_orderpriority"))
-                joins.add("INNER JOIN order_priority op ON op.order_priority_id = l.order_priority_id");
-            if(d.contains("l_shipinstruct"))
-                joins.add("INNER JOIN ship_instruct si ON si.ship_instruct_id = l.ship_instruct_id");
-            if(d.contains("l_shipmode"))
-                joins.add("INNER JOIN ship_mode sm ON sm.ship_mode_id = l.ship_mode_id");
+            //Clerk Dimension
+            if(d.startsWith("o") && !joins.stream().anyMatch(s -> s.contains("dim_clerk")))
+                joins.add("INNER JOIN dim_clerk k ON k.PK_CLERK = f.FK_CLERK");
 
             //Product Dimension
             if (d.startsWith("p")  && !joins.stream().anyMatch(s -> s.contains("dim_part")))
@@ -64,8 +56,7 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
                 joins.add("INNER JOIN p_brand pb on pb.p_brand_id = p.p_brand_id");
             if(d.contains("p_type"))
                 joins.add("INNER JOIN p_type pt on pt.p_type_id = p.p_type_id");
-            if(d.contains("p_container"))
-                joins.add("INNER JOIN p_container pc on pc.p_container_id = p.p_container_id");
+
 
             //Supplier Dimension
             if (d.startsWith("s") && !joins.stream().anyMatch(s -> s.contains("dim_supplier")))

@@ -65,6 +65,8 @@ public class StarController {
                     break;
                 case "l_quantity": ratio = "Purchase Amount";
                     break;
+                case "product_cost": ratio = "Product Cost";
+                    break;
             }
             ratiosValues.add(ratio);
         }
@@ -86,23 +88,11 @@ public class StarController {
                     break;
                 case "o_clerk": dimension = "Order Clerk";
                     break;
-                case "l_returnflag": dimension = "Return Flag";
-                    break;
-                case "l_linestatus": dimension = "Product Status";
-                    break;
-                case "l_shipinstruct": dimension = "Ship Instruct";
-                    break;
-                case "l_shipmode": dimension = "Ship Mode";
-                    break;
                 case "p_mfgr": dimension = "Manufacturer Group";
                     break;
                 case "p_brand": dimension = "Product Brand";
                     break;
                 case "p_type": dimension = "Product Type";
-                    break;
-                case "p_size": dimension = "Product Size";
-                    break;
-                case "p_container": dimension = "Container";
                     break;
                 case "p_name": dimension = "Product Name";
                     break;

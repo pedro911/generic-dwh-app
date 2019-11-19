@@ -29,8 +29,8 @@
                         <div class="card">
                             <div class="card-header">Ratios </div>
                             <div class="card-body">
-                                <input type="checkbox" th:text="' Turnover'" th:name="ratioChecked" th:value="Turnover"><br/>
-                                <input type="checkbox" th:text="' Cost'" th:name="ratioChecked" th:value="Cost"><br/>
+                                <input type="checkbox" th:text="' Revenue'" th:name="ratioChecked" th:value="Revenue"><br/>
+                                <input type="checkbox" th:text="' Product Cost'" th:name="ratioChecked" th:value="product_cost"><br/>
                                 <input type="checkbox" th:text="' Profit'" th:name="ratioChecked" th:value="Profit"><br/>
                                 <input type="checkbox" th:text="' Product Sell Price'" th:name="ratioChecked" th:value="lineitem_price"><br/>
                                 <input type="checkbox" th:text="' Product Purchase Amount'" th:name="ratioChecked" th:value="l_quantity"><br/>
@@ -94,41 +94,10 @@
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_type" th:text="' Product Type'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_size" th:text="' Product Size'"><br/>
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="p_container" th:text="' Product Container'"><br/>
-                                            <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_name" th:text="' Product Name'"><br/>
                                         </div>
                                     </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Return Flags'" th:id="returnFlags"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="l_returnflag" th:text="' Return Flag'"><br/>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Ship Modes'" th:id="shipModes"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="l_shipmode" th:text="' Ship Mode'"><br/>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Ship Instructs'" th:id="shipInstructs"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="l_shipinstruct" th:text="' Ship Instruct'"><br/>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Ship Statuses'" th:id="shipStatuses"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="l_linestatus" th:text="' Ship Status'"><br/>
-                                        </div>
-                                    </div>
+
                                     <div class="card border-dark mb-3">
                                         <div class="card-header" th:text="'Time'" th:id="time"></div>
                                         <div class="card-body">

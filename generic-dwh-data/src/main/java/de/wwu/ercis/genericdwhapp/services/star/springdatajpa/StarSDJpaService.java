@@ -29,8 +29,8 @@ public class StarSDJpaService implements StarService {
             dimensions.add("d_year_number");
 
         for (String d: dimensions){
-            if ((d.startsWith("o") || d.startsWith("l")) && !joins.stream().anyMatch(s -> s.contains("dim_lineorder")))
-                joins.add("INNER JOIN dim_lineorder l ON l.PK_LINEORDER = f.FK_LINEORDER");
+            if (d.startsWith("o") && !joins.stream().anyMatch(s -> s.contains("dim_clerk")))
+                joins.add("INNER JOIN dim_clerk k ON k.PK_CLERK = f.FK_CLERK");
 
             if (d.startsWith("c") && !joins.stream().anyMatch(s -> s.contains("dim_customer")))
                 joins.add("INNER JOIN dim_customer c ON c.PK_CUSTOMER = f.FK_CUSTOMER");
