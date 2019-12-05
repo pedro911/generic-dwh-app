@@ -31,9 +31,7 @@
     <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
 </head>
-
 <body>
-
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" th:href="@{/}"><i class="icon ion-md-cube"></i> Generic DWH Tool </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,8 +76,22 @@
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_acb}">All Combinations</a>
                         </ul>
                     </li>
-                    <!--<li><a class="dropdown-item" th:href="@{/oups}">SF 1 </a></li>
-                    <li><a class="dropdown-item" th:href="@{/oups}">SF 10 </a></li>-->
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">SF 1</a>
+                        <ul class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf1_dyn}">Dynamic ETL</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf1_ncb}">No Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf1_acb}">All Combinations</a>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">SF 10</a>
+                        <ul class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf10_dyn}">Dynamic ETL</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf10_ncb}">No Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf10_acb}">All Combinations</a>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -90,9 +102,8 @@
                     <a class="dropdown-item" th:href="@{/star}">DB Model</a>
                     <a class="dropdown-item" th:href="@{/star/query/tpch_star_mini}">Mini</a>
                     <a class="dropdown-item" th:href="@{/star/query/tpch_star_small}">Small</a>
-                    <a class="dropdown-item" th:href="@{/star/query/tpch_star_1gb}">SF 1 </a>
-                    <a class="dropdown-item" th:href="@{/star/query/tpch_star_10gb}">SF 10 </a>
-
+                    <a class="dropdown-item" th:href="@{/star/query/tpch_star_sf1}">SF 1 </a>
+                    <a class="dropdown-item" th:href="@{/star/query/tpch_star_sf10}">SF 10 </a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -103,9 +114,8 @@
                     <a class="dropdown-item" th:href="@{/snowflake}">DB Model</a>
                     <a class="dropdown-item" th:href="@{/snowflake/query/tpch_snow_mini}">Mini </a>
                     <a class="dropdown-item" th:href="@{/snowflake/query/tpch_snow_small}">Small </a>
-                    <a class="dropdown-item" th:href="@{/snowflake/query/tpch_snow_1gb}">SF 1 </a>
-                    <a class="dropdown-item" th:href="@{/snowflake/query/tpch_snow_10gb}">SF 10 </a>
-
+                    <a class="dropdown-item" th:href="@{/snowflake/query/tpch_snow_sf1}">SF 1 </a>
+                    <a class="dropdown-item" th:href="@{/snowflake/query/tpch_snow_sf10}">SF 10 </a>
                 </div>
             </li>
             <li class="nav-item">
@@ -133,7 +143,5 @@
         </div>
       </div>
   </div>
-
-
 </body>
 </html>
