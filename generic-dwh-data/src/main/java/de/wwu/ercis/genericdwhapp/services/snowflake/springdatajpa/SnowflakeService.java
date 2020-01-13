@@ -30,10 +30,11 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
 
         for (String d: dimensions){
             //Customer Dimension
-            if((d.startsWith("r") || d.startsWith("n") || d.startsWith("m") || d.startsWith("c")) && !joins.stream().anyMatch(s -> s.contains("dim_customer")))
+            if((d.contains("r_name") || d.contains("n_name") || d.contains("c_name") || d.contains("market_segment"))
+                    && !joins.stream().anyMatch(s -> s.contains("dim_customer")))
                 joins.add("INNER JOIN dim_customer c ON c.PK_CUSTOMER = f.FK_CUSTOMER");
-            if(d.contains("m_mktsegment"))
-                joins.add("INNER JOIN mktsegment m ON m.mktsegment_id = c.mktsegment_id");
+            if(d.contains("market_segment"))
+                joins.add("INNER JOIN market_segment m ON m.pk_market_segment = c.market_segment_id");
             if(d.contains("n_name") && !joins.stream().anyMatch(s -> s.contains("nation")))
                 joins.add("INNER JOIN nation n on n.n_nationkey = c.c_nationkey");
             if(d.contains("r_name")){
@@ -42,24 +43,24 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
             }
 
             //Clerk Dimension
-            if(d.startsWith("o") && !joins.stream().anyMatch(s -> s.contains("dim_clerk")))
+            if(d.contains("o_clerk") && !joins.stream().anyMatch(s -> s.contains("dim_clerk")))
                 joins.add("INNER JOIN dim_clerk k ON k.PK_CLERK = f.FK_CLERK");
 
             //Product Dimension
-            if (d.startsWith("p")  && !joins.stream().anyMatch(s -> s.contains("dim_part")))
-                joins.add("INNER JOIN dim_part p ON p.PK_PART = f.FK_PART");
-            if(d.contains("p_mfgr")){
-                joins.add("INNER JOIN p_brand pb on pb.p_brand_id = p.p_brand_id");
-                joins.add("INNER JOIN p_mfgr pm on pm.p_mfgr_id = pb.p_mfgr_id");
+            if ( (d.startsWith("p") || d.contains("manufacturer_group"))
+                    && !joins.stream().anyMatch(s -> s.contains("dim_product")))
+                joins.add("INNER JOIN dim_product p ON p.PK_PART = f.FK_PART");
+            if(d.contains("manufacturer_group")){
+                joins.add("INNER JOIN product_brand pb on pb.pk_product_brand = p.product_brand_id");
+                joins.add("INNER JOIN manufacturer_group mg on mg.pk_manufacturer_group = pb.manufacturer_group_id");
             }
-            if(d.contains("p_brand") && !joins.stream().anyMatch(s -> s.contains("p_brand")))
-                joins.add("INNER JOIN p_brand pb on pb.p_brand_id = p.p_brand_id");
-            if(d.contains("p_type"))
-                joins.add("INNER JOIN p_type pt on pt.p_type_id = p.p_type_id");
-
+            if(d.contains("product_brand") && !joins.stream().anyMatch(s -> s.contains("product_brand")))
+                joins.add("INNER JOIN product_brand pb on pb.pk_product_brand = p.product_brand_id");
+            if(d.contains("product_type"))
+                joins.add("INNER JOIN product_type pt on pt.pk_product_type = p.product_type_id");
 
             //Supplier Dimension
-            if (d.startsWith("s") && !joins.stream().anyMatch(s -> s.contains("dim_supplier")))
+            if (d.contains("s_name") && !joins.stream().anyMatch(s -> s.contains("dim_supplier")))
                 joins.add("INNER JOIN dim_supplier s ON s.PK_SUPPLIER = f.FK_SUPPLIER");
 
             //Date Dimension

@@ -33,7 +33,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" th:href="@{/}"><i class="icon ion-md-cube"></i> Generic DWH Tool </a>
+    <a class="navbar-brand" th:href="@{/}"><i class="icon ion-md-cube"></i> Query DW-Designs Tool</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -63,9 +63,14 @@
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">Mini</a>
                         <ul class="dropdown-menu">
-                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_dyn}">Dynamic ETL</a>
+                            <h6 class="dropdown-header">Querying:</h6>
+                            <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_dyn}">Dynamic </a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_ncb}">No Combinations</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_acb}">All Combinations</a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Util:</h6>
+                            <a class="dropdown-item">Dynamic ETL </a>
+                            <a class="dropdown-item">Generate All Combinations</a>
                         </ul>
                     </li>
                     <li class="dropdown-submenu">

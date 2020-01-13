@@ -35,8 +35,8 @@ public class StarSDJpaService implements StarService {
             if (d.startsWith("c") && !joins.stream().anyMatch(s -> s.contains("dim_customer")))
                 joins.add("INNER JOIN dim_customer c ON c.PK_CUSTOMER = f.FK_CUSTOMER");
 
-            if (d.startsWith("p") && !joins.stream().anyMatch(s -> s.contains("dim_part")))
-                joins.add("INNER JOIN dim_part p ON p.PK_PART = f.FK_PART");
+            if (d.startsWith("p") && !joins.stream().anyMatch(s -> s.contains("dim_product")))
+                joins.add("INNER JOIN dim_product p ON p.PK_PART = f.FK_PART");
 
             if (d.startsWith("s") && !joins.stream().anyMatch(s -> s.contains("dim_supplier")))
                 joins.add("INNER JOIN dim_supplier s ON s.PK_SUPPLIER = f.FK_SUPPLIER");

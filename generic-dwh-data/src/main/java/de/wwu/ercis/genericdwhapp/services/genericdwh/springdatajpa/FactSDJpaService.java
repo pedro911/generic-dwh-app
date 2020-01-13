@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,7 +80,19 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) {
+    public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) throws IOException {
+        // load all combinations, please do it only once!!!
+        // set ratios = all ratios, set dimensions all combinations!
+        /*
+        ratios.clear();
+        ratios.add("1_20");
+        ratios.add("2_20");
+        ratios.add("3_20");
+        ratios.add("4_20");
+        ratios.add("5_20");
+        dimensions = getAllDimensionCombinations();
+        */
+
         queryMethod = "";
         List<String[]> factsResult = new ArrayList<>();
         List<String> dCombinations = new ArrayList<>();
@@ -189,20 +204,21 @@ public class FactSDJpaService implements FactService {
                                     + "\nORDER BY _" + dimensionNameQuery + ".id ";
                             factsResult = factRepository.nativeQuery(query);
                             if (!factsResult.isEmpty()) {
-                                List<Fact> facts = new ArrayList<>();
+                                //List<Fact> facts = new ArrayList<>();
                                 factsResult.forEach(f -> {
                                     Fact fact = new Fact();
                                     fact.setReferenceObjectId(Long.valueOf(f[0]));
                                     fact.setRatioId(Long.valueOf(f[1]));
                                     fact.setValue(Double.valueOf(f[2]));
-                                    facts.add(fact);
+                                    factRepository.save(fact);
+                                    //facts.add(fact);
                                 });
-                                factRepository.saveAll(facts);
+                                //factRepository.saveAll(facts);
                             }
                         }
                     }
                 }
-                factsResult = gdwhStdQuery(ratios, dimensions);
+                factsResult = gdwhNcbQuery(ratios, dimensions);
                 queryMethod = "New facts inserted.";
             }
         }
@@ -237,16 +253,17 @@ public class FactSDJpaService implements FactService {
                     factsResult = factRepository.nativeQuery(concatWSQuery);
                     executedQuery = concatWSQuery;
                     if (!factsResult.isEmpty()) {
-                        List<Fact> facts = new ArrayList<>();
+                        //List<Fact> facts = new ArrayList<>();
                         factsResult.forEach(f -> {
                             Fact fact = new Fact();
                             ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0].toString(), newDimensionCombination, "", false));
                             fact.setReferenceObjectId(ro.getId());
                             fact.setRatioId(ratio.getId());
                             fact.setValue(Double.valueOf(f[1]));
-                            facts.add(fact);
+                            factRepository.save(fact);
+                            //facts.add(fact);
                         });
-                        factRepository.saveAll(facts);
+                        //factRepository.saveAll(facts);
                         queryMethod = "New facts inserted.";
                     }
 
@@ -281,16 +298,19 @@ public class FactSDJpaService implements FactService {
                             " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + ") b\n" +
                             " ON a.roNameValue = b.roNameNoValue";
                     List<String[]> newFactsResult = factRepository.nativeQuery(stringJoinQuery);
+                    //maybe change the insert with direct sql after returning results, don't need to send results to java and then insert,
+                    //but after reading, insert using the same query
                     if (!newFactsResult.isEmpty()) {
-                        List<Fact> facts = new ArrayList<>();
+                        //List<Fact> facts = new ArrayList<>();
                         newFactsResult.forEach(f -> {
                             Fact fact = new Fact();
                             fact.setReferenceObjectId(Long.valueOf(f[0]));
                             fact.setRatioId(Long.valueOf(f[1]));
                             fact.setValue(Double.valueOf(f[2]));
-                            facts.add(fact);
+                            factRepository.save(fact);
+                            //facts.add(fact);
                         });
-                        factRepository.saveAll(facts);
+                        //factRepository.saveAll(facts);
                     }
 
                     where = " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + " \nORDER BY ro.name";
@@ -327,7 +347,8 @@ public class FactSDJpaService implements FactService {
         ratios.clear();
         ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
         dimensions.clear();
-        dimensionsResult.forEach( dimension -> dimensions.add(dimension.getName()));
+        List<String> finalDimensions = dimensions;
+        dimensionsResult.forEach(dimension -> finalDimensions.add(dimension.getName()));
 
         return factsResult;
     }
@@ -403,7 +424,7 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String[]> gdwhStdQuery(List<String> ratios, List<String> dimensions) {
+    public List<String[]> gdwhNcbQuery(List<String> ratios, List<String> dimensions) {
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
         List<Dimension> dimensionsResult = new ArrayList<>();
@@ -426,11 +447,7 @@ public class FactSDJpaService implements FactService {
             dimensionRepository.findAtomicLevels(dc).forEach(atomicLevels::add);
         });
 
-        ratios.clear();
-        ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
         dimensions.stream().distinct().forEach( d -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
-        dimensions.clear();
-        dimensionsResult.forEach( dimension -> dimensions.add(dimension.getName()));
 
         String query = "";
         List<String> selects = new ArrayList<>();
@@ -483,7 +500,8 @@ public class FactSDJpaService implements FactService {
             }
         }
 
-        for (Dimension dimension : dimensionsResult){
+        List<Dimension> dimensions_sorted = dimensionsResult.stream().sorted(Comparator.comparingLong(Dimension::getId)).collect(Collectors.toList());
+        for (Dimension dimension : dimensions_sorted){
             String dimensionQuery = dimension.getName().replaceAll(" ","_").toLowerCase();
             groupBy.add("_"+dimensionQuery+".id");
             orderBy.add("_"+dimensionQuery+".name");
@@ -504,6 +522,12 @@ public class FactSDJpaService implements FactService {
                 + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                 + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
 
+        // change IDs to names to display on fronted
+        ratios.clear();
+        ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
+        dimensions.clear();
+        dimensions_sorted.forEach( dimension -> dimensions.add(dimension.getName()));
+
         executedQuery = query;
         queryMethod="";
 
@@ -519,6 +543,15 @@ public class FactSDJpaService implements FactService {
                 "LIMIT 1 ";
 
         return factRepository.nativeQuery(query).isEmpty();
+    }
+
+    public List<String> getAllDimensionCombinations() throws IOException {
+        List<String> result = new ArrayList<>();
+        //read txt with all combinations
+
+        Files.lines(Paths.get("C:/temp/combinations.txt")).forEach(result::add);
+
+        return result;
     }
 
 }

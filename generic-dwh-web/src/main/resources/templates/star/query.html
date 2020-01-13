@@ -41,6 +41,13 @@
                             <div class="card-body">
                                 <div class="card-columns">
                                     <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Clerks'" th:id="clerks"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_clerk" th:text="' Clerk Name'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
                                         <div class="card-header" th:text="'Market Locations'" th:id="mktlocations"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
@@ -52,19 +59,12 @@
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Customers'" th:id="customers"></div>
+                                        <div class="card-header" th:text="'Market Segments'" th:id="customers"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="c_mktsegment" th:text="' Market Segment'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="c_name" th:text="' Customer Name'"><br/>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Clerks'" th:id="clerks"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="o_clerk" th:text="' Clerk Name'"><br/>
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">
@@ -79,14 +79,7 @@
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Suppliers'" th:id="suppliers"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="s_name" th:text="' Supplier Name'"><br/>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Products'" th:id="products"></div>
+                                        <div class="card-header" th:text="'Product Types'" th:id="products"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_type" th:text="' Product Type'"><br/>
@@ -94,7 +87,13 @@
                                                    th:value="p_name" th:text="' Product Name'"><br/>
                                         </div>
                                     </div>
-
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Suppliers'" th:id="suppliers"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="s_name" th:text="' Supplier Name'"><br/>
+                                        </div>
+                                    </div>
                                     <div class="card border-dark mb-3">
                                         <div class="card-header" th:text="'Time'" th:id="time"></div>
                                         <div class="card-body">

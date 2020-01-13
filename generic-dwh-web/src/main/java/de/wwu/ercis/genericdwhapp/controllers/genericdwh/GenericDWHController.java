@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j
@@ -80,7 +82,7 @@ public class GenericDWHController {
     @GetMapping("/genericdwh/results/{db}")
     public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
-                                  @RequestParam("dimensionChecked") List<String> dimensions) {
+                                  @RequestParam("dimensionChecked") List<String> dimensions) throws IOException, URISyntaxException {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
@@ -89,7 +91,7 @@ public class GenericDWHController {
         else if (db.endsWith("acb"))
             model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions));
         else
-            model.addAttribute("results", factService.gdwhStdQuery(ratios,dimensions));
+            model.addAttribute("results", factService.gdwhNcbQuery(ratios,dimensions));
         long end = System.nanoTime();
         Double mSec = (end - start) / 1e6;
 
