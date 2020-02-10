@@ -5,13 +5,9 @@ import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Slf4j
@@ -79,10 +75,31 @@ public class GenericDWHController {
         return "genericdwh/query";
     }
 
+    @RequestMapping("/genericdwh/gen_all_combinations/{db}")
+    public String generateGDWHAllCombinations(@PathVariable String db, Model model){
+
+        model.addAttribute("db", db);
+        model.addAttribute("allCombinations", factService.getAllDimensionCombinations());
+
+        return "genericdwh/gen_all_combinations";
+    }
+
+    @ResponseBody
+    @RequestMapping("/genericdwh/gen_all_combinations/save/{db}")
+    public void saveCombination(@RequestParam("combination") String combination, HttpServletResponse response) throws InterruptedException {
+
+        //System.out.println("Combination controller:" + combination);
+        if (factService.saveCombination(combination))
+            response.setStatus(200);
+        else
+            response.setStatus(100);
+
+    }
+
     @GetMapping("/genericdwh/results/{db}")
     public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
-                                  @RequestParam("dimensionChecked") List<String> dimensions) throws IOException, URISyntaxException {
+                                  @RequestParam("dimensionChecked") List<String> dimensions) {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();

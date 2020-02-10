@@ -16,4 +16,6 @@ public interface DimensionService extends GenericDWHService<Dimension, Long> {
 
     Dimension findByName(String name);
 
+    List<Dimension> findAtomicAndHierarchyLevels();
+
 }

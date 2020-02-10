@@ -66,4 +66,9 @@ public class DimensionSDJpaService implements DimensionService {
         return dimensionRepository.findByName(name).orElse(null);
     }
 
+    @Override
+    public List<Dimension> findAtomicAndHierarchyLevels() {
+        return dimensionRepository.findAtomicAndHierarchyLevels();
+    }
+
 }

@@ -16,6 +16,8 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
 
     List<Dimension> findByOrderByIdAsc();
 
+    Dimension findFirstByOrderByIdDesc();
+
     List<Dimension> findAll(Sort sort);
 
     @Query(value = "SELECT * FROM dimension_hierarchy dh LEFT JOIN dimension d ON d.id = dh.parent_id\n" +
@@ -45,5 +47,9 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
             "(SELECT dh.child_id FROM dimension_hierarchy dh WHERE dh.parent_id = :parentId) \n" +
             "ORDER BY d.name ASC", nativeQuery = true)
     List<Dimension> findChildByParentList(Long parentId);
+
+    @Query(value = "SELECT * FROM dimension\n" +
+            "WHERE id IN(SELECT DISTINCT child_id FROM dimension_hierarchy)", nativeQuery = true)
+    List<Dimension> findAtomicAndHierarchyLevels();
 
 }

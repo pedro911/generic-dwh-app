@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'gen_all_combinations')}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="customizing" th:action="@{|/genericdwh/gen_all_combinations/${db}|}" method="get">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-success" role="alert">
+                            Query Generic DWH TPC-H on DB Connection:  <a class="alert-link" th:text="${db}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning" role="alert">
+                            The process may take hours!
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card border-dark mb-3">
+                        <div class="card-header">Generate and Save Facts for All Hierarchy Combinations</div>
+                        <div class="card-body">
+                            <tr th:text="'Numer of combinations to load:  ' + ${allCombinations.size()}" ></tr>
+                            <br/>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                     aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%">25%</div>
+                            </div>
+                            <br/>
+
+                            <div id='progressBar' style='height: 20px; border: 2px solid green; margin-bottom: 20px'>
+                                <div id='bar' style='height: 100%; background: #33dd33; width: 0%'></div>
+                            </div>
+
+                            <div id='combinationsPanel' style='height: 100px; border: 2px solid #ccc; overflow: auto'></div>
+
+                            <input id="startButton" type="button" value="Start" style="margin-top: 20px"/>
+                            <input id="stopButton" type="button" value="Stop" style="margin-top: 20px"/>
+
+                            <div id='debug' style='height: 200px; border: 2px solid #ccc; overflow: auto'></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <script type="text/javascript" th:inline="javascript">
+                    /*<![CDATA[*/
+                    var totalCombinations = [[${allCombinations.size()}]];
+                    var combinationList = [[${allCombinations}]];
+                    var combinationsSaved;
+                    const db = [[${db}]];
+                    var currentCombination ="";
+
+                    //add combinations to panel
+                    function addCombinations() {
+                        var combinationsPanel = document.getElementById('combinationsPanel');
+                        for (var i = 0; i < totalCombinations; i++){
+                            var combination = combinationList[i].toString();
+                            combinationsPanel.innerHTML = combinationsPanel.innerHTML + combination + '<br/>';
+                        }
+                    }
+
+                    //To log everything on console
+                    function debug(s) {
+                        var debug = document.getElementById('debug');
+                        if (debug) {
+                            debug.innerHTML = debug.innerHTML + '<br/>' + s;
+                        }
+                    }
+
+                    //Will be called when dimension combination saving is completed
+                    function onSavingComplete(e) {
+                        combinationsSaved++;
+                        //debug('saving: ' + currentCombination);
+                        debug('complete ' + combinationsSaved + " of " + totalCombinations);
+                        if (combinationsSaved < totalCombinations) {
+                            var percentComplete = ((totalCombinations - (totalCombinations - combinationsSaved))/totalCombinations)*100;
+                            var bar = document.getElementById('bar');
+                            bar.style.width = percentComplete + '%';
+                            bar.innerHTML = percentComplete + ' % complete';
+                            debug('percentComplete ' + percentComplete);
+                        } else {
+                            var bar = document.getElementById('bar');
+                            bar.style.width = '100%';
+                            bar.innerHTML = '100% complete';
+                            alert('Finished saving combinations');
+                        }
+                    }
+
+                    //This will continueously update the progress bar
+                    function onSavingProgress(e) {
+                        if(e.lengthComputable){
+                            combinationsSaved += e;
+                            var percentComplete = ((totalCombinations - (totalCombinations - combinationsSaved))/totalCombinations)*100;
+                            var bar = document.getElementById('bar');
+                            bar.style.width = percentComplete + '%';
+                            bar.innerHTML = percentComplete + ' % complete';
+                        }
+
+                    }
+
+                    //the Ouchhh !! moments will be captured here
+                    function onSavingFailed(e) {
+                        alert("Error saving combination");
+                    }
+
+                    //Pick the next combination and save it
+                    function saveCombinations() {
+
+                        for (var i = 0; i < totalCombinations; i++) {
+                            var combination = combinationList[i].toString();
+                            var xhr = new XMLHttpRequest();
+                            var fd = new FormData();
+                            const url = "http://localhost:8880/genericdwh/gen_all_combinations/save/" + db;
+                            //var combination = document.getElementById('combinationsPanel').firstElementChild;
+                            fd.set("combination", combination);
+                            xhr.addEventListener("progress", onSavingProgress, false);
+                            xhr.addEventListener("load", onSavingComplete, false);
+                            xhr.addEventListener("error", onSavingFailed, false);
+                            xhr.open("POST", url);
+                            debug('saving: ' + combination);
+
+                            xhr.onreadystatechange = function () {
+                                if(xhr.status === 200) {
+                                    console.log('status 200');
+                                }
+                                if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                                    console.log('FIM');
+                                }
+                            };
+
+                            xhr.send(fd);
+                        }
+                    }
+
+                    //Let's begin the saving process
+                    function startSaving() {
+                        combinationsSaved = 0;
+                        saveCombinations();
+                    }
+
+                    // Implement Abort
+                    function stopSaving(){
+                        //xhr.addEventListener("abort", transferCanceled);
+                    }
+
+                    //Event listeners for button clicks
+                    window.onload = function() {
+                        addCombinations();
+                        document.getElementById('startButton').addEventListener('click', startSaving, false);
+                        document.getElementById('stopButton').addEventListener('click', stopSaving, false);
+                    }
+
+                    /*]]>*/
+                </script>
+
+            </form>
+        </div>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>

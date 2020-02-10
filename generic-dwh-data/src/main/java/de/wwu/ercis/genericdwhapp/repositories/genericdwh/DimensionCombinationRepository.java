@@ -18,4 +18,6 @@ public interface DimensionCombinationRepository extends JpaRepository<DimensionC
             "WHERE dimension_combination.show_on = TRUE ", nativeQuery = true)
     List<Long> findDimensionsByCombinationId();
 
+    DimensionCombination findFirstByOrderByCombinationIdDesc();
+
 }

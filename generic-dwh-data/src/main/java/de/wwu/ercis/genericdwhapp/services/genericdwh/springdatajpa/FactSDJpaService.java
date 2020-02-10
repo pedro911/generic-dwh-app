@@ -2,14 +2,13 @@ package de.wwu.ercis.genericdwhapp.services.genericdwh.springdatajpa;
 
 import de.wwu.ercis.genericdwhapp.model.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.repositories.genericdwh.*;
+import de.wwu.ercis.genericdwhapp.services.genericdwh.DimensionHierarchyService;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.FactService;
 import lombok.extern.slf4j.Slf4j;
+import org.paukov.combinatorics3.Generator;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,15 +24,18 @@ public class FactSDJpaService implements FactService {
     private final ReferenceObjectRepository referenceObjectRepository;
     private final DimensionCombinationRepository dimensionCombinationRepository;
 
+    private final DimensionHierarchyService dimensionHierarchyService;
+
     private String queryMethod ="";
     private String executedQuery ="";
 
-    public FactSDJpaService(FactRepository factRepository, RatioRepository ratioRepository, DimensionRepository dimensionRepository, ReferenceObjectRepository referenceObjectRepository, DimensionCombinationRepository dimensionCombinationRepository) {
+    public FactSDJpaService(FactRepository factRepository, RatioRepository ratioRepository, DimensionRepository dimensionRepository, ReferenceObjectRepository referenceObjectRepository, DimensionCombinationRepository dimensionCombinationRepository, DimensionHierarchyService dimensionHierarchyService) {
         this.factRepository = factRepository;
         this.ratioRepository = ratioRepository;
         this.dimensionRepository = dimensionRepository;
         this.referenceObjectRepository = referenceObjectRepository;
         this.dimensionCombinationRepository = dimensionCombinationRepository;
+        this.dimensionHierarchyService = dimensionHierarchyService;
     }
 
     @Override
@@ -80,19 +82,7 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) throws IOException {
-        // load all combinations, please do it only once!!!
-        // set ratios = all ratios, set dimensions all combinations!
-        /*
-        ratios.clear();
-        ratios.add("1_20");
-        ratios.add("2_20");
-        ratios.add("3_20");
-        ratios.add("4_20");
-        ratios.add("5_20");
-        dimensions = getAllDimensionCombinations();
-        */
-
+    public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) {
         queryMethod = "";
         List<String[]> factsResult = new ArrayList<>();
         List<String> dCombinations = new ArrayList<>();
@@ -204,16 +194,13 @@ public class FactSDJpaService implements FactService {
                                     + "\nORDER BY _" + dimensionNameQuery + ".id ";
                             factsResult = factRepository.nativeQuery(query);
                             if (!factsResult.isEmpty()) {
-                                //List<Fact> facts = new ArrayList<>();
                                 factsResult.forEach(f -> {
                                     Fact fact = new Fact();
                                     fact.setReferenceObjectId(Long.valueOf(f[0]));
                                     fact.setRatioId(Long.valueOf(f[1]));
                                     fact.setValue(Double.valueOf(f[2]));
                                     factRepository.save(fact);
-                                    //facts.add(fact);
                                 });
-                                //factRepository.saveAll(facts);
                             }
                         }
                     }
@@ -251,19 +238,17 @@ public class FactSDJpaService implements FactService {
                             + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                             + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
                     factsResult = factRepository.nativeQuery(concatWSQuery);
+                    System.out.println(concatWSQuery);
                     executedQuery = concatWSQuery;
                     if (!factsResult.isEmpty()) {
-                        //List<Fact> facts = new ArrayList<>();
                         factsResult.forEach(f -> {
                             Fact fact = new Fact();
-                            ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0].toString(), newDimensionCombination, "", false));
+                            ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0], newDimensionCombination, "", false));
                             fact.setReferenceObjectId(ro.getId());
                             fact.setRatioId(ratio.getId());
                             fact.setValue(Double.valueOf(f[1]));
                             factRepository.save(fact);
-                            //facts.add(fact);
                         });
-                        //factRepository.saveAll(facts);
                         queryMethod = "New facts inserted.";
                     }
 
@@ -301,16 +286,13 @@ public class FactSDJpaService implements FactService {
                     //maybe change the insert with direct sql after returning results, don't need to send results to java and then insert,
                     //but after reading, insert using the same query
                     if (!newFactsResult.isEmpty()) {
-                        //List<Fact> facts = new ArrayList<>();
                         newFactsResult.forEach(f -> {
                             Fact fact = new Fact();
                             fact.setReferenceObjectId(Long.valueOf(f[0]));
                             fact.setRatioId(Long.valueOf(f[1]));
                             fact.setValue(Double.valueOf(f[2]));
                             factRepository.save(fact);
-                            //facts.add(fact);
                         });
-                        //factRepository.saveAll(facts);
                     }
 
                     where = " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + " \nORDER BY ro.name";
@@ -545,13 +527,52 @@ public class FactSDJpaService implements FactService {
         return factRepository.nativeQuery(query).isEmpty();
     }
 
-    public List<String> getAllDimensionCombinations() throws IOException {
-        List<String> result = new ArrayList<>();
-        //read txt with all combinations
+    @Override
+    public List<String> getAllDimensionCombinations() {
 
-        Files.lines(Paths.get("C:/temp/combinations.txt")).forEach(result::add);
+        List<String> all_combinations = new ArrayList<>();
 
-        return result;
+        //query to return all hierarchy levels which can be stored as reference object
+        List<String> input = new ArrayList<>();
+        dimensionRepository.findAtomicAndHierarchyLevels().forEach(dimension -> input.add(dimension.getName()));
+
+        //generates all combinations of hierarchy levels and add to result
+        List<String> test = new ArrayList<>();
+        test.add("1");
+        test.add("2");
+        test.add("3");
+        test.add("4");
+        test.add("5");
+        test.add("6");
+        test.add("7");
+        test.add("8");
+        test.add("9");
+
+        Generator.subset(test)
+                .simple()
+                .stream()
+                .forEach(r -> all_combinations.add(r.toString()));
+
+        //first element is always empty, delete it
+        all_combinations.remove(0);
+
+        return all_combinations;
     }
+
+    @Override
+    public boolean saveCombination(String combination) throws InterruptedException {
+        //first check if facts from last combination were completely saved
+        System.out.println("Combination on fact service: " + combination);
+        //Dimension lastDimension = dimensionRepository.findFirstByOrderByIdDesc();
+        //DimensionCombination lastDimensionCombination = dimensionCombinationRepository.findFirstByOrderByCombinationIdDesc();
+        //System.out.println("Last dimension id: " + lastDimension.getId());
+        //System.out.println("Last dimension combination id:" + lastDimensionCombination.getCombinationId());
+        //if (lastDimension.getId() == lastDimensionCombination.getCombinationId());
+            //System.out.println(lastDimension.getName());
+
+        return true;
+    }
+
+
 
 }
