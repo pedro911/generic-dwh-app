@@ -243,7 +243,7 @@ public class FactSDJpaService implements FactService {
                     if (!factsResult.isEmpty()) {
                         factsResult.forEach(f -> {
                             Fact fact = new Fact();
-                            ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0], newDimensionCombination, "", false));
+                            ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0], newDimensionCombination, null, false));
                             fact.setReferenceObjectId(ro.getId());
                             fact.setRatioId(ratio.getId());
                             fact.setValue(Double.valueOf(f[1]));
@@ -261,6 +261,7 @@ public class FactSDJpaService implements FactService {
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
                             + from + ratiosJoins + where;
+                    System.out.println(substringQuery);
                     factsResult = factRepository.nativeQuery(substringQuery);
 
                 }

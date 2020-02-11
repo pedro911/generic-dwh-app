@@ -62,7 +62,7 @@ public class SnowflakeController {
             switch (ratio){
                 case "selling_price": ratio = "Sell Price";
                     break;
-                case "purchase_amount": ratio = "Purchase Amount";
+                case "l_quantity": ratio = "Purchase Amount";
                     break;
                 case "product_cost": ratio = "Product Cost";
                     break;
