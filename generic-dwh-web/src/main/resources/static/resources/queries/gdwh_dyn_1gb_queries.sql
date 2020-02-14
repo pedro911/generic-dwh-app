@@ -1,23 +1,23 @@
 use tpch_gdwh_1gb_dyn;
 set @sf := 1;
 
+#for SF1:
+set @quantity_limit := 199;
+set @max_customer := "Customer#000142346";
+
+#for SF10:
+#set @quantity_limit := 499;
+#set @max_customer := "Customer#001371611";
+
+
 #example query ACB
 
-select ro.name, revenue.value as 'revenue', product_cost.value as 'product_cost', profit.value as 'profit', selling_prince.value as 'selling_price', purchase_amount.value as 'purchase_amount' from reference_object ro
-inner join fact revenue         on revenue.reference_object_id = ro.id and revenue.ratio_id = 1
-inner join fact product_cost    on product_cost.reference_object_id = ro.id and product_cost.ratio_id = 2
-inner join fact profit          on profit.reference_object_id = ro.id and profit.ratio_id = 3
-inner join fact selling_prince  on selling_prince.reference_object_id = ro.id and selling_prince.ratio_id = 4
-inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
-
-
-SELECT ro.name, f.value FROM reference_object ro
-INNER JOIN fact f ON f.reference_object_id = ro.id
-INNER JOIN fact product_cost ON product_cost.reference_object_id = ro.id AND product_cost.ratio_id = 2
-WHERE ro.dimension_id = 26
-	AND RO.NAME LIKE '%supplier#000000093%'
-	AND RO.NAME LIKE '%machinery%'
-	AND (RO.NAME LIKE '%1995%' OR RO.NAME LIKE '%1996%')
+#select ro.name, revenue.value as 'revenue', product_cost.value as 'product_cost', profit.value as 'profit', selling_prince.value as 'selling_price', purchase_amount.value as 'purchase_amount' from reference_object ro
+#inner join fact revenue         on revenue.reference_object_id = ro.id and revenue.ratio_id = 1
+#inner join fact product_cost    on product_cost.reference_object_id = ro.id and product_cost.ratio_id = 2
+#inner join fact profit          on profit.reference_object_id = ro.id and profit.ratio_id = 3
+#inner join fact selling_prince  on selling_prince.reference_object_id = ro.id and selling_prince.ratio_id = 4
+#inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 
 select '#Q1.1';
 
@@ -773,6 +773,7 @@ inner join fact revenue on revenue.reference_object_id = ro.id and revenue.ratio
 where ro.dimension_id = (select id from dimension where name = "Region, Manufacturer Group, Year, Month")
     and ro.name like '%Manufacturer#4%'
     and ro.name like '%199211%';
+
 
 select '#Q5.2';
 
