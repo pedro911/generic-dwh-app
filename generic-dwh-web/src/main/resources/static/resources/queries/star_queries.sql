@@ -1,175 +1,185 @@
-USE TPCH_SMALL_STAR;
-SET @SF := 1;
-#Q1.1
-SELECT C_R_NAME, D_YEAR_NUMBER, SUM(REVENUE), SUM(PRODUCT_COST), SUM(PROFIT), SUM(SELLING_PRICE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE C_R_NAME = "EUROPE"
-  AND D.D_YEAR_NUMBER = 1998;
+use tpch_star_1gb;
+set @sf := 1;
+
+#for SF1:
+set @quantity_limit := 199;
+set @max_customer := "Customer#000142346";
+
+#for SF10:
+#set @quantity_limit := 499;
+#set @max_customer := "Customer#001371611";
 
 
-#Q2.1
-SELECT C_MKTSEGMENT, D_MONTH_NUMBER, D_YEAR_NUMBER, SUM(PROFIT), SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE C_MKTSEGMENT = "AUTOMOBILE"
-  AND D_MONTH_NUMBER = 12
-  AND D_YEAR_NUMBER = 1995;
+select '#q1.1';
+select c_r_name, d_year_number, sum(revenue), sum(product_cost), sum(profit), sum(selling_price) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where c_r_name = "europe"
+  and d.d_year_number = 1998;
 
 
-# Q2.2
-SELECT C_MKTSEGMENT, D_MONTH_NUMBER, D_YEAR_NUMBER, SUM(PROFIT), SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE (C_MKTSEGMENT = "AUTOMOBILE"
-    OR C_MKTSEGMENT = "FURNITURE"
-    OR C_MKTSEGMENT = "MACHINERY")
-  AND (D_MONTH_NUMBER = 3
-    OR D_MONTH_NUMBER = 6
-    OR D_MONTH_NUMBER = 12)
-  AND D_YEAR_NUMBER = 1994
-GROUP BY C_MKTSEGMENT,D_MONTH_NUMBER,D_YEAR_NUMBER
-HAVING SUM(L_QUANTITY) >= 4000*@SF;
+select '#q2.1';
+select c_mktsegment, d_month_number, d_year_number, sum(profit), sum(l_quantity) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where c_mktsegment = "automobile"
+  and d_month_number = 12
+  and d_year_number = 1995;
 
 
-#Q3.1
-SELECT C_N_NAME, P_TYPE, D_YEAR_NUMBER, SUM(PRODUCT_COST),SUM(PROFIT),SUM(SELLING_PRICE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE C_N_NAME = "BRAZIL"
-  AND P_TYPE = "SMALL PLATED TIN"
-  AND D_YEAR_NUMBER = 1997;
+select '#q2.2';
+select c_mktsegment, d_month_number, d_year_number, sum(profit), sum(l_quantity) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where (c_mktsegment = "automobile"
+    or c_mktsegment = "furniture"
+    or c_mktsegment = "machinery")
+  and (d_month_number = 3
+    or d_month_number = 6
+    or d_month_number = 12)
+  and d_year_number = 1994
+group by c_mktsegment,d_month_number,d_year_number
+having sum(l_quantity) >= 4000*@sf;
 
 
-#Q3.2
-SELECT C_N_NAME, P_TYPE, D_YEAR_NUMBER, SUM(PRODUCT_COST),SUM(PROFIT),SUM(SELLING_PRICE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE P_TYPE = "PROMO POLISHED COPPER"
-  AND D_YEAR_NUMBER BETWEEN 1993 AND 1996
-GROUP BY C_N_NAME,P_TYPE,D_YEAR_NUMBER;
+select '#q3.1';
+select c_n_name, p_type, d_year_number, sum(product_cost),sum(profit),sum(selling_price) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where c_n_name = "brazil"
+  and p_type = "small plated tin"
+  and d_year_number = 1997;
 
 
-#Q3.3
-SELECT C_N_NAME, P_TYPE, D_YEAR_NUMBER, SUM(PRODUCT_COST), SUM(PROFIT), SUM(SELLING_PRICE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE (C_N_NAME = "BRAZIL"
-    OR C_N_NAME = "UNITED STATES"
-    OR C_N_NAME = "JAPAN")
-  AND (P_TYPE = "LARGE ANODIZED NICKEL"
-    OR P_TYPE = "LARGE ANODIZED STEEL"
-    OR P_TYPE = "LARGE ANODIZED TIN")
-  AND D_YEAR_NUMBER = 1995
-GROUP BY C_N_NAME,P_TYPE,D_YEAR_NUMBER
-ORDER BY C_N_NAME,P_TYPE,D_YEAR_NUMBER;
+select '#q3.2';
+select c_n_name, p_type, d_year_number, sum(product_cost),sum(profit),sum(selling_price) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where p_type = "promo polished copper"
+  and d_year_number between 1993 and 1996
+group by c_n_name,p_type,d_year_number;
 
 
-#Q4.1
-SELECT O_CLERK, P_MFGR, D_YEAR_NUMBER, SUM(REVENUE), SUM(PROFIT) FROM FACT F
-    INNER JOIN DIM_CLERK K ON K.PK_CLERK = F.FK_CLERK
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE O_CLERK = "CLERK#000000015"
-  AND (P_MFGR = "MANUFACTURER#2"
-    OR P_MFGR ="MANUFACTURER#5")
-  AND D_YEAR_NUMBER = 1993;
+select '#q3.3';
+select c_n_name, p_type, d_year_number, sum(product_cost), sum(profit), sum(selling_price) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where (c_n_name = "brazil"
+    or c_n_name = "united states"
+    or c_n_name = "japan")
+  and (p_type = "large anodized nickel"
+    or p_type = "large anodized steel"
+    or p_type = "large anodized tin")
+  and d_year_number = 1995
+group by c_n_name,p_type,d_year_number
+order by c_n_name,p_type,d_year_number;
 
 
-#Q5.1
-SELECT C_R_NAME,P_MFGR,D_MONTH_NUMBER,D_YEAR_NUMBER, SUM(REVENUE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE P_MFGR = "MANUFACTURER#4"
-  AND D_MONTH_NUMBER = 11
-  AND D_YEAR_NUMBER = 1992
-GROUP BY C_R_NAME,P_MFGR,D_MONTH_NUMBER,D_YEAR_NUMBER;
+select '#q4.1';
+select o_clerk, p_mfgr, d_year_number, sum(revenue), sum(profit) from fact f
+    inner join dim_clerk k on k.pk_clerk = f.fk_clerk
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where o_clerk = "clerk#000000015"
+  and (p_mfgr = "manufacturer#2"
+    or p_mfgr ="manufacturer#5")
+  and d_year_number = 1993
+group by p_mfgr;
 
 
-#Q5.2
-SELECT C_R_NAME,P_MFGR,D_MONTH_NUMBER,D_YEAR_NUMBER, SUM(REVENUE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE (P_MFGR = "MANUFACTURER#1"
-    OR P_MFGR = "MANUFACTURER#3")
-  AND D_YEAR_NUMBER >= 1996
-GROUP BY C_R_NAME,P_MFGR,D_MONTH_NUMBER,D_YEAR_NUMBER;
+select '#q5.1';
+select c_r_name,p_mfgr,d_month_number,d_year_number, sum(revenue) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where p_mfgr = "manufacturer#4"
+  and d_month_number = 11
+  and d_year_number = 1992
+group by c_r_name,p_mfgr,d_month_number,d_year_number;
 
 
-#Q6.1
-SELECT C_MKTSEGMENT,P_TYPE,S_NAME,D_YEAR_NUMBER, SUM(PRODUCT_COST), SUM(SELLING_PRICE), SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_SUPPLIER S ON S.PK_SUPPLIER = F.FK_SUPPLIER
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE C_MKTSEGMENT = "MACHINERY"
-  AND S_NAME = "SUPPLIER#000000093"
-  AND D_YEAR_NUMBER BETWEEN 1995 AND 1997
-GROUP BY C_MKTSEGMENT,P_TYPE,S_NAME,D_YEAR_NUMBER
-ORDER BY C_MKTSEGMENT,P_TYPE,S_NAME,D_YEAR_NUMBER;
+select '#q5.2';
+select c_r_name,p_mfgr,d_month_number,d_year_number, sum(revenue) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where (p_mfgr = "manufacturer#1"
+    or p_mfgr = "manufacturer#3")
+  and d_year_number >= 1996
+group by c_r_name,p_mfgr,d_month_number,d_year_number;
 
 
-#Q7.1
-SELECT C_NAME,P_BRAND,D_MONTH_NUMBER,D_YEAR_NUMBER, SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE C_NAME = "CUSTOMER#000000854"
-GROUP BY C_NAME,P_BRAND,D_MONTH_NUMBER,D_YEAR_NUMBER
-ORDER BY C_NAME,P_BRAND,D_MONTH_NUMBER,D_YEAR_NUMBER;
+select '#q6.1';
+select c_mktsegment,p_type,s_name,d_year_number, sum(product_cost), sum(selling_price), sum(l_quantity) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_supplier s on s.pk_supplier = f.fk_supplier
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where c_mktsegment = "machinery"
+  and s_name = "supplier#000000093"
+  and d_year_number between 1995 and 1997
+group by c_mktsegment,p_type,s_name,d_year_number
+order by c_mktsegment,p_type,s_name,d_year_number;
 
 
-#Q7.2
-SELECT C_NAME,P_BRAND,D_MONTH_NUMBER,D_YEAR_NUMBER, SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_DATE D ON D.DATE_PK = F.FK_ORDERDATE
-WHERE C_NAME = "CUSTOMER#000000854"
-GROUP BY C_NAME,P_BRAND,D_MONTH_NUMBER,D_YEAR_NUMBER
-HAVING SUM(L_QUANTITY) >= 30*@SF
-ORDER BY C_NAME,P_BRAND,D_MONTH_NUMBER,D_YEAR_NUMBER;
+select '#q7.1';
+select c_name,p_brand,d_month_number,d_year_number, sum(l_quantity) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+group by c_name,p_brand,d_month_number,d_year_number
+having sum(l_quantity) > @quantity_limit
+order by c_name,p_brand,d_month_number,d_year_number;
 
 
-#Q8.1
-SELECT O_CLERK,C_R_NAME,C_MKTSEGMENT, SUM(REVENUE),SUM(PRODUCT_COST),SUM(PROFIT),SUM(SELLING_PRICE),SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_CLERK K ON K.PK_CLERK = F.FK_CLERK
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-WHERE O_CLERK = "CLERK#000000535"
-  AND C_MKTSEGMENT = "FURNITURE"
-GROUP BY O_CLERK,C_R_NAME,C_MKTSEGMENT
-ORDER BY O_CLERK,C_R_NAME,C_MKTSEGMENT;
+select '#q7.2';
+select c_name,p_brand,d_month_number,d_year_number, sum(l_quantity) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_date d on d.date_pk = f.fk_orderdate
+where c_name = @max_customer
+group by c_name,p_brand,d_month_number,d_year_number
+order by c_name,p_brand,d_month_number,d_year_number;
 
 
-#Q9.1
-SELECT C_N_NAME,C_MKTSEGMENT,S_NAME, SUM(REVENUE), SUM(PRODUCT_COST), SUM(SELLING_PRICE) FROM FACT F
-    INNER JOIN DIM_CUSTOMER C ON C.PK_CUSTOMER = F.FK_CUSTOMER
-    INNER JOIN DIM_SUPPLIER S ON S.PK_SUPPLIER = F.FK_SUPPLIER
-WHERE S.S_NAME = "SUPPLIER#000000024"
-  AND (C.C_N_NAME = "CANADA"
-    OR C.C_N_NAME = "UNITED STATES")
-GROUP BY C_N_NAME,C_MKTSEGMENT,S_NAME
-ORDER BY C_N_NAME,C_MKTSEGMENT,S_NAME;
+select '#q8.1';
+select o_clerk,c_r_name,c_mktsegment, sum(revenue),sum(product_cost),sum(profit),sum(selling_price),sum(l_quantity) from fact f
+    inner join dim_clerk k on k.pk_clerk = f.fk_clerk
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+where o_clerk = "clerk#000000535"
+  and c_mktsegment = "furniture"
+group by o_clerk,c_r_name,c_mktsegment
+order by o_clerk,c_r_name,c_mktsegment;
 
 
-#Q10.1
-SELECT O_CLERK, P_BRAND,P_NAME, SUM(PROFIT),SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-    INNER JOIN DIM_CLERK K ON K.PK_CLERK = F.FK_CLERK
-WHERE P_BRAND = "BRAND#41"
-GROUP BY O_CLERK, P_BRAND, P_NAME
-HAVING SUM(PROFIT) < 0
-ORDER BY O_CLERK,P_BRAND,P_NAME;
+select '#q9.1';
+select c_n_name,c_mktsegment,s_name, sum(revenue), sum(product_cost), sum(selling_price) from fact f
+    inner join dim_customer c on c.pk_customer = f.fk_customer
+    inner join dim_supplier s on s.pk_supplier = f.fk_supplier
+where s.s_name = "supplier#000000024"
+  and (c.c_n_name = "canada"
+    or c.c_n_name = "united states")
+group by c_n_name,c_mktsegment,s_name
+order by c_n_name,c_mktsegment,s_name;
 
 
-#Q10.2
-SELECT P_BRAND, P_NAME, SUM(PROFIT), SUM(L_QUANTITY) FROM FACT F
-    INNER JOIN DIM_PRODUCT P ON P.PK_PART = F.FK_PART
-GROUP BY P_BRAND, P_NAME
-HAVING SUM(PROFIT) < 0
-ORDER BY SUM(PROFIT);
+select '#q10.1';
+select o_clerk, p_brand,p_name, sum(profit),sum(l_quantity) from fact f
+    inner join dim_product p on p.pk_part = f.fk_part
+    inner join dim_clerk k on k.pk_clerk = f.fk_clerk
+where p_brand = "brand#41"
+group by o_clerk, p_brand, p_name
+having sum(profit) < 0
+order by o_clerk,p_brand,p_name;
+
+
+select '#q10.2';
+select p_brand, p_name, sum(profit), sum(l_quantity) from fact f
+    inner join dim_product p on p.pk_part = f.fk_part
+group by p_brand, p_name
+having sum(profit) < 0
+order by sum(profit);
 

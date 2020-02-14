@@ -1,7 +1,16 @@
 use tpch_snow_1gb;
 set @sf := 1;
 
-#q1.1
+#for SF1:
+set @quantity_limit := 199;
+set @max_customer := "Customer#000142346";
+
+#for SF10:
+#set @quantity_limit := 499;
+#set @max_customer := "Customer#001371611";
+
+
+select '#q1.1';
 select r_name,d_year_number, sum(revenue), sum(product_cost), sum(profit), sum(selling_price) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -11,18 +20,7 @@ where r_name = "europe"
   and d.d_year_number = 1998;
 
 
-#q1.2
-select r_name,d_year_number, sum(revenue), sum(product_cost), sum(profit), sum(selling_price) from fact f
-inner join dim_customer c on c.pk_customer = f.fk_customer
-inner join nation n on n.n_nationkey = c.c_nationkey
-inner join region r on r.r_regionkey = n.n_regionkey
-inner join dim_date d on d.date_pk = f.fk_orderdate
-where (r_name = "africa" or r_name = "asia")
-  and d.d_year_number between 1995 and 1996
-group by r_name, d.d_year_number;
-
-
-#q2.1
+select '#q2.1';
 select market_segment,d_year_number,d_month_number, sum(profit), sum(l_quantity) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join market_segment m on m.pk_market_segment = c.market_segment_id
@@ -32,7 +30,7 @@ where market_segment = "automobile"
   and d_year_number = 1995;
 
 
-#q2.2
+select '#q2.2';
 select market_segment,d_year_number,d_month_number, sum(profit), sum(l_quantity) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join market_segment m on m.pk_market_segment = c.market_segment_id
@@ -48,7 +46,7 @@ group by market_segment,d_month_number,d_year_number
 having sum(l_quantity) >= 4000*@sf;
 
 
-#q3.1
+select '#q3.1';
 select n_name, product_type, d_year_number, sum(product_cost), sum(profit), sum(selling_price) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -60,7 +58,7 @@ where n_name = "brazil"
   and d_year_number = 1997;
 
 
-#q3.2
+select '#q3.2';
 select n_name, product_type, d_year_number, sum(product_cost), sum(profit), sum(selling_price) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -72,7 +70,7 @@ where product_type = "promo polished copper"
 group by n_name, product_type, d_year_number;
 
 
-#q3.3
+select '#q3.3';
 select n_name, product_type, d_year_number, sum(product_cost), sum(profit), sum(selling_price) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -90,7 +88,7 @@ group by n_name, product_type, d_year_number
 order by n_name, product_type, d_year_number;
 
 
-#q4.1
+select '#q4.1';
 select o_clerk,manufacturer_group,d_year_number, sum(revenue),sum(profit) from fact f
 inner join dim_clerk k on k.pk_clerk = f.fk_clerk
 inner join dim_product p on p.pk_part = f.fk_part
@@ -100,10 +98,11 @@ inner join dim_date d on d.date_pk = f.fk_orderdate
 where o_clerk = "clerk#000000015"
   and (manufacturer_group = "manufacturer#2"
     or manufacturer_group = "manufacturer#5")
-  and d_year_number = 1993;
+  and d_year_number = 1993
+group by manufacturer_group;
 
 
-#q5.1
+select '#q5.1';
 select r_name,manufacturer_group,d_year_number,d_month_number, sum(revenue) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -118,7 +117,7 @@ where manufacturer_group = "manufacturer#4"
 group by r_name,manufacturer_group,d_year_number,d_month_number;
 
 
-#q5.2
+select '#q5.2';
 select r_name,manufacturer_group,d_year_number,d_month_number, sum(revenue) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -133,7 +132,7 @@ where (manufacturer_group = "manufacturer#1"
 group by r_name,manufacturer_group,d_year_number,d_month_number;
 
 
-#q6.1
+select '#q6.1';
 select market_segment,product_type,s_name,d_year_number, sum(product_cost),sum(selling_price),sum(l_quantity) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join market_segment m on m.pk_market_segment = c.market_segment_id
@@ -148,30 +147,29 @@ group by market_segment,product_type,s_name,d_year_number
 order by market_segment,product_type,s_name,d_year_number;
 
 
-#q7.1
+select '#q7.1';
 select c_name,product_brand,d_year_number,d_month_number, sum(l_quantity) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join dim_product p on p.pk_part = f.fk_part
 inner join product_brand pb on pb.pk_product_brand = p.product_brand_id
 inner join dim_date d on d.date_pk = f.fk_orderdate
-where c_name = "customer#000000854"
 group by c_name,product_brand,d_year_number,d_month_number
+having sum(l_quantity) > @quantity_limit
 order by c_name,product_brand,d_year_number,d_month_number;
 
 
-#q7.2
+select '#q7.2';
 select c_name,product_brand,d_year_number,d_month_number, sum(l_quantity) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join dim_product p on p.pk_part = f.fk_part
 inner join product_brand pb on pb.pk_product_brand = p.product_brand_id
 inner join dim_date d on d.date_pk = f.fk_orderdate
-where c_name = "customer#000000854"
+where c_name = @max_customer
 group by c_name,product_brand,d_year_number,d_month_number
-having sum(l_quantity) >= 30*@sf
 order by c_name,product_brand,d_year_number,d_month_number;
 
 
-#q8.1
+select '#q8.1';
 select o_clerk,r_name,market_segment, sum(revenue),sum(product_cost),sum(profit),sum(selling_price),sum(l_quantity) from fact f
 inner join dim_clerk k on k.pk_clerk = f.fk_clerk
 inner join dim_customer c on c.pk_customer = f.fk_customer
@@ -184,7 +182,7 @@ group by o_clerk,r_name,market_segment
 order by o_clerk,r_name,market_segment;
 
 
-#q9.1
+select '#q9.1';
 select n_name,market_segment,s_name, sum(revenue),sum(product_cost),sum(selling_price) from fact f
 inner join dim_customer c on c.pk_customer = f.fk_customer
 inner join nation n on n.n_nationkey = c.c_nationkey
@@ -197,7 +195,7 @@ group by n_name,market_segment,s_name
 order by n_name,market_segment,s_name;
 
 
-#q10.1
+select '#q10.1';
 select o_clerk,product_brand,p_name, sum(profit),sum(l_quantity) from fact f
 inner join dim_clerk k on k.pk_clerk = f.fk_clerk
 inner join dim_product p on p.pk_part = f.fk_part
@@ -208,13 +206,11 @@ having sum(profit) < 0
 order by o_clerk,product_brand,p_name;
 
 
-#q10.2
-select o_clerk,product_brand,p_name, sum(profit),sum(l_quantity) from fact f
-inner join dim_clerk k on k.pk_clerk = f.fk_clerk
+select '#q10.2';
+select product_brand, p_name, sum(profit),sum(l_quantity) from fact f
 inner join dim_product p on p.pk_part = f.fk_part
 inner join product_brand pb on pb.pk_product_brand = p.product_brand_id
-where product_brand = "brand#41"
-group by o_clerk,product_brand,p_name
+group by product_brand,p_name
 having sum(profit) < 0
 order by sum(profit);
 
