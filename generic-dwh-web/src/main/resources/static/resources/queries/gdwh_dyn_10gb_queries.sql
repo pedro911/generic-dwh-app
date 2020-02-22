@@ -1,13 +1,13 @@
-use tpch_gdwh_1gb_dyn;
-set @sf := 1;
+use tpch_gdwh_10gb_dyn;
+set @sf := 10;
 
 #for SF1:
-set @quantity_limit := 199;
-set @max_customer := "Customer#000142346";
+#set @quantity_limit := 199;
+#set @max_customer := "Customer#000142346";
 
 #for SF10:
-#set @quantity_limit := 499;
-#set @max_customer := "Customer#001371611";
+set @quantity_limit := 499;
+set @max_customer := "Customer#001371611";
 
 
 #example query ACB
@@ -56,7 +56,7 @@ insert into dimension_combination (combination_id, subordinate_id, show_on) valu
     (select id from dimension where name = "Market Segment, Month"), (select id from dimension where name = "Month"), false
 );
 
-insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 1995-12", (select id from dimension where name = "Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 199512", (select id from dimension where name = "Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 365751132.33000195);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 395056);
@@ -66,7 +66,7 @@ inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id = (select id from dimension where name = "Market Segment, Month")
     and ro.name like '%AUTOMOBILE%'
-    and ro.name like '%1995-12%';
+    and ro.name like '%199512%';
 
 SET @end_time := CURRENT_TIME();
 SELECT TIME_TO_SEC(TIMEDIFF(@end_time, @start_time)) AS 'query_time';
@@ -75,39 +75,39 @@ SELECT TIME_TO_SEC(TIMEDIFF(@end_time, @start_time)) AS 'query_time';
 select '#Q2.2';
 SET @start_time := CURRENT_TIME();
 
-insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 1994-03", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 199403", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 379728170.8600013);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 410914);
-insert into reference_object (name, dimension_id, is_time) values ("FURNITURE, 1994-03", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("FURNITURE, 199403", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 354104464.08999807);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 383362);
-insert into reference_object (name, dimension_id, is_time) values ("MACHINERY, 1994-03", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("MACHINERY, 199403", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 354582620.82000035);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 384571);
-insert into reference_object (name, dimension_id, is_time) values ("FURNITURE, 1994-06", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("FURNITURE, 199406", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 349502329.57000005);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 377181);
-insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 1994-06", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 199406", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 352204778.6600018);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 381696);
-insert into reference_object (name, dimension_id, is_time) values ("MACHINERY, 1994-06", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("MACHINERY, 199406", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 341766396.02999836);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 369989);
-insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 1994-12", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("AUTOMOBILE, 199412", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 359922624.6599989);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 389839);
-insert into reference_object (name, dimension_id, is_time) values ("FURNITURE, 1994-12", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("FURNITURE, 199412", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 364604084.26000017);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 393386);
-insert into reference_object (name, dimension_id, is_time) values ("MACHINERY, 1994-12", (select id from dimension where name ="Market Segment, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("MACHINERY, 199412", (select id from dimension where name ="Market Segment, Month") , false);
 set @last_ro := LAST_INSERT_ID();
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 3, 370850715.1499996);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (@last_ro, 5, 401520);
@@ -116,8 +116,8 @@ select ro.name, profit.value as 'profit', purchase_amount.value as 'purchase_amo
 inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id = 3
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id = (select id from dimension where name = "Market Segment, Month")
-    and (ro.name like '%AUTOMOBILE%' or ro.name like '%furniture%' or ro.name like '%machinery%')
-    and (ro.name like '%1994-03%' or ro.name like '%1994-06%' or ro.name like '%1994-12%');
+    and ro.name like '%AUTOMOBILE%'
+    and ro.name like '%199512%';
 
 SET @end_time := CURRENT_TIME();
 SELECT TIME_TO_SEC(TIMEDIFF(@end_time, @start_time)) AS 'query_time';
@@ -788,22 +788,22 @@ insert into dimension_combination (combination_id, subordinate_id, show_on) valu
     (select id from dimension where name = "Region, Manufacturer Group, Year, Month"), (select id from dimension where name = "Month"), false
 );
 
-insert into reference_object (name, dimension_id, is_time) values ("AFRICA, Manufacturer#4, 1992, 1992-11", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("AFRICA, Manufacturer#4, 1992, 199211", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (LAST_INSERT_ID(), 1, 137764866.1599998);
-insert into reference_object (name, dimension_id, is_time) values ("EUROPE, Manufacturer#4, 1992, 1992-11", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("EUROPE, Manufacturer#4, 1992, 199211", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (LAST_INSERT_ID(), 1, 103550825.23000021);
-insert into reference_object (name, dimension_id, is_time) values ("MIDDLE EAST, Manufacturer#4, 1992, 1992-11", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("MIDDLE EAST, Manufacturer#4, 1992, 199211", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (LAST_INSERT_ID(), 1, 84193049.83999993);
-insert into reference_object (name, dimension_id, is_time) values ("ASIA, Manufacturer#4, 1992, 1992-11", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("ASIA, Manufacturer#4, 1992, 199211", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (LAST_INSERT_ID(), 1, 111840045.05000004);
-insert into reference_object (name, dimension_id, is_time) values ("AMERICA, Manufacturer#4, 1992, 1992-11", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
+insert into reference_object (name, dimension_id, is_time) values ("AMERICA, Manufacturer#4, 1992, 199211", (select id from dimension where name = "Region, Manufacturer Group, Year, Month") , false);
 insert into fact (reference_object_id, ratio_id, VALUE) VALUES (LAST_INSERT_ID(), 1, 114247934.57999991);
 
 select ro.name, revenue.value as 'revenue' from reference_object ro
 inner join fact revenue on revenue.reference_object_id = ro.id and revenue.ratio_id = 1
 where ro.dimension_id = (select id from dimension where name = "Region, Manufacturer Group, Year, Month")
     and ro.name like '%Manufacturer#4%'
-    and ro.name like '%1992-11%';
+    and ro.name like '%199211%';
 
 SET @end_time := CURRENT_TIME();
 SELECT TIME_TO_SEC(TIMEDIFF(@end_time, @start_time)) AS 'query_time';

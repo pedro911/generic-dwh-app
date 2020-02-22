@@ -25,7 +25,7 @@ inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id = (select id from dimension where name = "Market Segment, Month")
     and ro.name like '%AUTOMOBILE%'
-    and ro.name like '%199512%';
+    and ro.name like '%1995-12%';
 
 
 select '#Q2.2';
@@ -34,8 +34,8 @@ select ro.name, profit.value as 'profit', purchase_amount.value as 'purchase_amo
 inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id = 3
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id = (select id from dimension where name = "Market Segment, Month")
-    and ro.name like '%AUTOMOBILE%'
-    and ro.name like '%199512%';
+    and (ro.name like '%AUTOMOBILE%' or ro.name like '%furniture%' or ro.name like '%machinery%')
+    and (ro.name like '%1994-03%' or ro.name like '%1994-06%' or ro.name like '%1994-12%');
 
 
 select '#Q3.1';
@@ -57,6 +57,17 @@ inner join fact product_cost on product_cost.reference_object_id = ro.id and pro
 inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id = 3
 inner join fact selling_prince on selling_prince.reference_object_id = ro.id and selling_prince.ratio_id = 4
 where ro.dimension_id = (select id from dimension where name = "Nation, Product Type, Year")
+    and ro.name like '%PROMO POLISHED COPPER%'
+    and (ro.name like '%1993%' or ro.name like '%1994%' or ro.name like '%1994%' or ro.name like '%1995%' or ro.name like '%1996%');
+
+
+select '#Q3.3';
+
+select ro.name, product_cost.value as 'product_cost', profit.value as 'profit', selling_prince.value as 'selling_price' from reference_object ro
+inner join fact product_cost on product_cost.reference_object_id = ro.id and product_cost.ratio_id = 2
+inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id = 3
+inner join fact selling_prince on selling_prince.reference_object_id = ro.id and selling_prince.ratio_id = 4
+where ro.dimension_id = (select id from dimension where name = "Nation, Product Type, Year")
     and ro.name like '%1995%'
     and (ro.name like '%LARGE ANODIZED NICKEL%' or ro.name like '%LARGE ANODIZED STEEL%' or ro.name like '%LARGE ANODIZED TIN%')
     and (ro.name like '%BRAZIL%' or ro.name like '%UNITED STATES%' or ro.name like '%JAPAN%');
@@ -64,7 +75,7 @@ where ro.dimension_id = (select id from dimension where name = "Nation, Product 
 
 select '#Q4.1';
 
-select ro.name, revenue.value as 'revenue', profit.value as 'profit', from reference_object ro
+select ro.name, revenue.value as 'revenue', profit.value as 'profit' from reference_object ro
 inner join fact revenue on revenue.reference_object_id = ro.id and revenue.ratio_id = 1
 inner join fact profit on profit.reference_object_id = ro.id and profit.ratio_id = 3
 where ro.dimension_id = (select id from dimension where name = "Clerk Name, Manufacturer Group, Year")
@@ -78,7 +89,7 @@ select ro.name, revenue.value as 'revenue' from reference_object ro
 inner join fact revenue on revenue.reference_object_id = ro.id and revenue.ratio_id = 1
 where ro.dimension_id = (select id from dimension where name = "Region, Manufacturer Group, Year, Month")
     and ro.name like '%Manufacturer#4%'
-    and ro.name like '%199211%';
+    and ro.name like '%1992-11%';
 
 
 select '#Q5.2';
@@ -107,7 +118,8 @@ select '#q7.1';
 select ro.name, purchase_amount.value as 'purchase_amount'  from reference_object ro
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id = (select id from dimension where name = "Customer Name, Product Brand, Year, Month")
-    and purchase_amount.value > 199;
+    and purchase_amount.value > 199
+order by purchase_amount.value desc;
 
 
 select '#q7.2';
@@ -115,7 +127,8 @@ select '#q7.2';
 select ro.name, purchase_amount.value as 'purchase_amount'  from reference_object ro
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id = (select id from dimension where name = "Customer Name, Product Brand, Year, Month")
-    and ro.name like concat('%',@max_customer,'%');
+    and ro.name like concat('%',@max_customer,'%')
+order by purchase_amount.value desc;
 
 
 select '#q8.1';

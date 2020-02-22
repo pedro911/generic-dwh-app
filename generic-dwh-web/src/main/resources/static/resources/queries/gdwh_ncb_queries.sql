@@ -244,7 +244,7 @@ inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id a
 where ro.dimension_id in(20)
 group by _customer_name.id,_product_brand.id,_year.id,_month.id
 having sum(purchase_amount.value) > @quantity_limit
-order by _customer_name.name,_product_brand.name,_year.name,_month.name;
+order by sum(purchase_amount.value) desc;
 
 
 select '#q7.2';
@@ -262,8 +262,8 @@ inner join reference_object_hierarchy _month_year on _month_year.child_id = _mon
 inner join reference_object _year on _year.id = _month_year.parent_id and _year.dimension_id = 17
 inner join fact purchase_amount on purchase_amount.reference_object_id = ro.id and purchase_amount.ratio_id = 5
 where ro.dimension_id in(20)
-group by _customer_name.id,_product_brand.id,_year.id,_month.id
-order by _customer_name.name,_product_brand.name,_year.name,_month.name;
+group by _product_brand.id,_year.id,_month.id
+order by sum(purchase_amount.value) desc;
 
 
 select '#q8.1';
@@ -340,3 +340,5 @@ group by _product_brand.id,_product_name.id
 having sum(profit.value) < 0
 order by sum(profit.value);
 
+
+select 'end :)';

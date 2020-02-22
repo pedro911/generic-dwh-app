@@ -49,7 +49,7 @@ public interface DimensionRepository extends JpaRepository<Dimension, Long> {
     List<Dimension> findChildByParentList(Long parentId);
 
     @Query(value = "SELECT * FROM dimension\n" +
-            "WHERE id IN(SELECT DISTINCT child_id FROM dimension_hierarchy)", nativeQuery = true)
+            "WHERE id IN(SELECT DISTINCT child_id FROM dimension_hierarchy) ORDER BY id", nativeQuery = true)
     List<Dimension> findAtomicAndHierarchyLevels();
 
 }

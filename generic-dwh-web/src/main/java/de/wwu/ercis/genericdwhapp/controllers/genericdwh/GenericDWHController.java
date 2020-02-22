@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -79,7 +80,6 @@ public class GenericDWHController {
     public String generateGDWHAllCombinations(@PathVariable String db, Model model){
 
         model.addAttribute("db", db);
-        model.addAttribute("allCombinations", factService.getAllDimensionCombinations());
 
         return "genericdwh/gen_all_combinations";
     }
@@ -99,18 +99,23 @@ public class GenericDWHController {
     @GetMapping("/genericdwh/results/{db}")
     public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
-                                  @RequestParam("dimensionChecked") List<String> dimensions) {
+                                  @RequestParam("dimensionChecked") List<String> dimensions) throws FileNotFoundException {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
+
         if (db.endsWith("dyn"))
             model.addAttribute("results", factService.gdwhDynQuery(ratios,dimensions));
         else if (db.endsWith("acb"))
             model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions));
         else
             model.addAttribute("results", factService.gdwhNcbQuery(ratios,dimensions));
+
         long end = System.nanoTime();
         Double mSec = (end - start) / 1e6;
+
+        //generate csv with SQL to all combinations DB, take some time...
+        //factService.getAllDimensionCombinations();
 
         model.addAttribute("timeElapsed", mSec);
         model.addAttribute("dimensions", dimensions);

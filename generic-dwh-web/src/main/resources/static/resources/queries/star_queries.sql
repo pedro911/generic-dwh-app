@@ -19,7 +19,7 @@ where c_r_name = "europe"
 
 
 select '#q2.1';
-select c_mktsegment, d_month_number, d_year_number, sum(profit), sum(l_quantity) from fact f
+select c_mktsegment, d_year_number, d_month_number, sum(profit), sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_date d on d.date_pk = f.fk_orderdate
 where c_mktsegment = "automobile"
@@ -28,7 +28,7 @@ where c_mktsegment = "automobile"
 
 
 select '#q2.2';
-select c_mktsegment, d_month_number, d_year_number, sum(profit), sum(l_quantity) from fact f
+select c_mktsegment, d_year_number, d_month_number, sum(profit), sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_date d on d.date_pk = f.fk_orderdate
 where (c_mktsegment = "automobile"
@@ -38,7 +38,7 @@ where (c_mktsegment = "automobile"
     or d_month_number = 6
     or d_month_number = 12)
   and d_year_number = 1994
-group by c_mktsegment,d_month_number,d_year_number
+group by c_mktsegment,d_year_number,d_month_number
 having sum(l_quantity) >= 4000*@sf;
 
 
@@ -91,25 +91,25 @@ group by p_mfgr;
 
 
 select '#q5.1';
-select c_r_name,p_mfgr,d_month_number,d_year_number, sum(revenue) from fact f
+select c_r_name,p_mfgr,d_year_number,d_month_number, sum(revenue) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
     inner join dim_date d on d.date_pk = f.fk_orderdate
 where p_mfgr = "manufacturer#4"
   and d_month_number = 11
   and d_year_number = 1992
-group by c_r_name,p_mfgr,d_month_number,d_year_number;
+group by c_r_name,p_mfgr,d_year_number, d_month_number;
 
 
 select '#q5.2';
-select c_r_name,p_mfgr,d_month_number,d_year_number, sum(revenue) from fact f
+select c_r_name,p_mfgr,d_year_number,d_month_number, sum(revenue) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
     inner join dim_date d on d.date_pk = f.fk_orderdate
 where (p_mfgr = "manufacturer#1"
     or p_mfgr = "manufacturer#3")
   and d_year_number >= 1996
-group by c_r_name,p_mfgr,d_month_number,d_year_number;
+group by c_r_name,p_mfgr,d_year_number,d_month_number;
 
 
 select '#q6.1';
@@ -126,23 +126,23 @@ order by c_mktsegment,p_type,s_name,d_year_number;
 
 
 select '#q7.1';
-select c_name,p_brand,d_month_number,d_year_number, sum(l_quantity) from fact f
+select c_name,p_brand,d_year_number, d_month_number, sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
     inner join dim_date d on d.date_pk = f.fk_orderdate
-group by c_name,p_brand,d_month_number,d_year_number
+group by c_name,p_brand,d_year_number, d_month_number
 having sum(l_quantity) > @quantity_limit
-order by c_name,p_brand,d_month_number,d_year_number;
+order by sum(l_quantity) desc;
 
 
 select '#q7.2';
-select c_name,p_brand,d_month_number,d_year_number, sum(l_quantity) from fact f
+select c_name,p_brand,d_year_number,d_month_number, sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
     inner join dim_date d on d.date_pk = f.fk_orderdate
 where c_name = @max_customer
-group by c_name,p_brand,d_month_number,d_year_number
-order by c_name,p_brand,d_month_number,d_year_number;
+group by p_brand,d_year_number,d_month_number
+order by sum(l_quantity) desc;
 
 
 select '#q8.1';
@@ -183,3 +183,5 @@ group by p_brand, p_name
 having sum(profit) < 0
 order by sum(profit);
 
+
+select 'end :)';

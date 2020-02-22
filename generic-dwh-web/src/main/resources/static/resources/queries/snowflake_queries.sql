@@ -42,7 +42,7 @@ where (market_segment = "automobile"
     or d_month_number = 6
     or d_month_number = 12)
   and d_year_number = 1994
-group by market_segment,d_month_number,d_year_number
+group by market_segment,d_year_number,d_month_number
 having sum(l_quantity) >= 4000*@sf;
 
 
@@ -155,7 +155,7 @@ inner join product_brand pb on pb.pk_product_brand = p.product_brand_id
 inner join dim_date d on d.date_pk = f.fk_orderdate
 group by c_name,product_brand,d_year_number,d_month_number
 having sum(l_quantity) > @quantity_limit
-order by c_name,product_brand,d_year_number,d_month_number;
+order by sum(l_quantity) desc;
 
 
 select '#q7.2';
@@ -165,8 +165,8 @@ inner join dim_product p on p.pk_part = f.fk_part
 inner join product_brand pb on pb.pk_product_brand = p.product_brand_id
 inner join dim_date d on d.date_pk = f.fk_orderdate
 where c_name = @max_customer
-group by c_name,product_brand,d_year_number,d_month_number
-order by c_name,product_brand,d_year_number,d_month_number;
+group by product_brand,d_year_number,d_month_number
+order by sum(l_quantity) desc;
 
 
 select '#q8.1';
@@ -214,3 +214,5 @@ group by product_brand,p_name
 having sum(profit) < 0
 order by sum(profit);
 
+
+select 'end :)';

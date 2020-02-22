@@ -9,8 +9,12 @@ import org.paukov.combinatorics3.Generator;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -193,15 +197,7 @@ public class FactSDJpaService implements FactService {
                                     + "\nGROUP BY _" + dimensionNameQuery + ".id "
                                     + "\nORDER BY _" + dimensionNameQuery + ".id ";
                             factsResult = factRepository.nativeQuery(query);
-                            if (!factsResult.isEmpty()) {
-                                factsResult.forEach(f -> {
-                                    Fact fact = new Fact();
-                                    fact.setReferenceObjectId(Long.valueOf(f[0]));
-                                    fact.setRatioId(Long.valueOf(f[1]));
-                                    fact.setValue(Double.valueOf(f[2]));
-                                    factRepository.save(fact);
-                                });
-                            }
+                            saveFacts(factsResult);
                         }
                     }
                 }
@@ -238,16 +234,11 @@ public class FactSDJpaService implements FactService {
                             + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                             + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
                     factsResult = factRepository.nativeQuery(concatWSQuery);
-                    System.out.println(concatWSQuery);
                     executedQuery = concatWSQuery;
                     if (!factsResult.isEmpty()) {
                         factsResult.forEach(f -> {
-                            Fact fact = new Fact();
                             ReferenceObject ro = referenceObjectRepository.save(new ReferenceObject(f[0], newDimensionCombination, null, false));
-                            fact.setReferenceObjectId(ro.getId());
-                            fact.setRatioId(ratio.getId());
-                            fact.setValue(Double.valueOf(f[1]));
-                            factRepository.save(fact);
+                            factRepository.save(new Fact(ratio.getId(),ro.getId(),Double.valueOf(f[1])));
                         });
                         queryMethod = "New facts inserted.";
                     }
@@ -261,7 +252,6 @@ public class FactSDJpaService implements FactService {
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
                             + from + ratiosJoins + where;
-                    System.out.println(substringQuery);
                     factsResult = factRepository.nativeQuery(substringQuery);
 
                 }
@@ -286,15 +276,7 @@ public class FactSDJpaService implements FactService {
                     List<String[]> newFactsResult = factRepository.nativeQuery(stringJoinQuery);
                     //maybe change the insert with direct sql after returning results, don't need to send results to java and then insert,
                     //but after reading, insert using the same query
-                    if (!newFactsResult.isEmpty()) {
-                        newFactsResult.forEach(f -> {
-                            Fact fact = new Fact();
-                            fact.setReferenceObjectId(Long.valueOf(f[0]));
-                            fact.setRatioId(Long.valueOf(f[1]));
-                            fact.setValue(Double.valueOf(f[2]));
-                            factRepository.save(fact);
-                        });
-                    }
+                    saveFacts(newFactsResult);
 
                     where = " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + " \nORDER BY ro.name";
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
@@ -334,6 +316,18 @@ public class FactSDJpaService implements FactService {
         dimensionsResult.forEach(dimension -> finalDimensions.add(dimension.getName()));
 
         return factsResult;
+    }
+
+    private void saveFacts(List<String[]> factsResult) {
+        if (!factsResult.isEmpty()) {
+            factsResult.forEach(f -> {
+                Fact fact = new Fact();
+                fact.setReferenceObjectId(Long.valueOf(f[0]));
+                fact.setRatioId(Long.valueOf(f[1]));
+                fact.setValue(Double.valueOf(f[2]));
+                factRepository.save(fact);
+            });
+        }
     }
 
     @Override
@@ -529,35 +523,129 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String> getAllDimensionCombinations() {
+    public List<String> getAllDimensionCombinations() throws FileNotFoundException {
+        //set the dimension combination ID with the atomic levels which contains the ref objs and facts stored
+        //it's max(id) from dimension on NCB DB
+        String dimensionCombinationWithAtomicLevels = "20";
+        List<String> insertDC_SQL_Queries = new ArrayList<>();
+        List<String> selectRO_SQL_Queries = new ArrayList<>();
 
-        List<String> all_combinations = new ArrayList<>();
+        List<String> dimensionCombinationIds = new ArrayList<>();
 
         //query to return all hierarchy levels which can be stored as reference object
-        List<String> input = new ArrayList<>();
-        dimensionRepository.findAtomicAndHierarchyLevels().forEach(dimension -> input.add(dimension.getName()));
+        List<String> dimensionsIds = new ArrayList<>();
+        dimensionRepository.findAtomicAndHierarchyLevels().forEach(dimension -> dimensionsIds.add(dimension.getId().toString()));
 
         //generates all combinations of hierarchy levels and add to result
+/*
         List<String> test = new ArrayList<>();
         test.add("1");
         test.add("2");
         test.add("3");
         test.add("4");
-        test.add("5");
-        test.add("6");
-        test.add("7");
-        test.add("8");
-        test.add("9");
+*/
 
-        Generator.subset(test)
+        Generator.subset(dimensionsIds)
                 .simple()
                 .stream()
-                .forEach(r -> all_combinations.add(r.toString()));
+                .forEach(r -> dimensionCombinationIds.add(String.valueOf(r)));
 
         //first element is always empty, delete it
-        all_combinations.remove(0);
+        dimensionCombinationIds.remove(0);
 
-        return all_combinations;
+        for (String dcId : dimensionCombinationIds){
+            if (dcId.contains(",")){
+                List<String> groupBy = new ArrayList<>();
+                List<String> orderBy = new ArrayList<>();
+                List<Dimension> dimensionsResult = new ArrayList<>();
+                List<Dimension> atomicLevels = new ArrayList<>();
+                Deque<String> roJoins = new ArrayDeque<>();
+                Deque<Dimension> dimensionHierarchy = new ArrayDeque<>();
+                dimensionRepository.findAtomicLevels(dimensionCombinationWithAtomicLevels).forEach(atomicLevels::add);
+                dcId = dcId.replace("[","");
+                dcId = dcId.replace("]","");
+                List<String> dimensionIds = Stream.of(dcId.split("\\s*,\\s*")).collect(Collectors.toList());
+
+                dimensionIds.stream().forEach(dId -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(dId)).orElse(null)));
+
+                for (Dimension dimension : dimensionsResult) {
+
+                    if (atomicLevels.stream().filter(d -> dimension.equals(d)).findAny().orElse(null) != null && !dimensionHierarchy.contains(dimension))
+                        dimensionHierarchy.addFirst(dimension);
+
+                    else if (dimensionRepository.findChildByParent(dimension.getId()).orElse(null) != null ){
+
+                        Dimension child = dimensionRepository.findChildByParent(dimension.getId()).orElse(null);
+
+                        if(!dimensionHierarchy.contains(child))
+                            dimensionHierarchy.addLast(child);
+                        while ( dimensionRepository.findChildByParent(child.getId()).orElse(null) != null ){
+                            child = dimensionRepository.findChildByParent(child.getId()).orElse(null);
+                            if (!dimensionHierarchy.contains(child))
+                                dimensionHierarchy.addFirst(child);
+                        }
+                        if(!dimensionHierarchy.contains(dimension))
+                            dimensionHierarchy.addLast(dimension);
+                    }
+                }
+
+                for (Dimension dh : dimensionHierarchy){
+                    if ( atomicLevels.stream().filter(d -> dh.equals(d)).findAny().orElse(null) != null ) {
+                        String atomicElement = dh.getName().replaceAll(" ","_").toLowerCase();
+                        roJoins.addFirst(" INNER JOIN reference_object_combination _ro_"+atomicElement+" ON _ro_"+atomicElement+".combination_id = ro.id INNER JOIN reference_object _"+atomicElement
+                                +" ON _"+atomicElement+".id = _ro_"+atomicElement+".subordinate_id AND _"+atomicElement+".dimension_id = "+dh.getId());
+                    }
+                    else {
+                        Dimension child1 = dimensionRepository.findChildByParent(dh.getId()).orElse(null);
+                        if (child1!= null){
+                            String childQuery = child1.getName().replaceAll(" ", "_").toLowerCase();
+                            String parentQuery = dh.getName().replaceAll(" ", "_").toLowerCase();
+                            roJoins.add(" INNER JOIN reference_object_hierarchy _" + childQuery + "_" + parentQuery + " ON _" + childQuery + "_" + parentQuery + ".child_id = _" + childQuery + ".id"
+                                    + " INNER JOIN reference_object _" + parentQuery + " ON _" + parentQuery + ".id = _"
+                                    + childQuery + "_" + parentQuery + ".parent_id AND _" + parentQuery + ".dimension_id = " + dh.getId());
+                        }
+                    }
+                }
+
+                String newDimensionCombination = dimensionsResult.stream().map(d -> d.getName()).collect(Collectors.joining(", "));
+                String insert_new_dimension = "insert into dimension (name, is_time) values (\""+ newDimensionCombination +"\", false);";
+                insertDC_SQL_Queries.add(insert_new_dimension);
+
+                for (Dimension dimension : dimensionsResult){
+                    String dimensionQuery = dimension.getName().replaceAll(" ","_").toLowerCase();
+                    groupBy.add("_"+dimensionQuery+".id");
+                    orderBy.add("_"+dimensionQuery+".name");
+                    String insertDimensionCombination = "insert into dimension_combination (combination_id, subordinate_id, show_on) values (" +
+                            "(select id from dimension where name = \""+ newDimensionCombination +"\")," +
+                            "(select id from dimension where name = \""+ dimension.getName() +"\"), false);";
+                    insertDC_SQL_Queries.add(insertDimensionCombination);
+                }
+
+                String select = "SELECT CONCAT_WS(\", \", "+orderBy.stream().collect(Collectors.joining(","))+") as 'roName', "
+                        + "(SELECT id FROM dimension WHERE NAME = \""+newDimensionCombination+"\") AS 'dimension_id', "
+                        + "(SELECT is_time FROM DIMENSION WHERE NAME = \""+newDimensionCombination+"\") AS 'is_time'," +
+                        "ROUND(SUM(REVENUE.VALUE),2) AS 'REVENUE', ROUND(SUM(PRODUCT_COST.VALUE),2) AS 'PRODUCT_COST', ROUND(SUM(PROFIT.VALUE),2) AS 'PROFIT', ROUND(SUM(SELL_PRICE.VALUE),2) AS 'SELL_PRICE', ROUND(SUM(PURCHASE_AMOUNT.VALUE),2) 'PURCHASE_AMOUNT' FROM reference_object ro ";
+                String where = " WHERE ro.dimension_id IN(20)";
+                String facts = " INNER JOIN fact revenue ON revenue.reference_object_id = ro.id AND revenue.ratio_id = 1 INNER JOIN fact product_cost ON product_cost.reference_object_id = ro.id AND product_cost.ratio_id = 2 INNER JOIN fact profit ON profit.reference_object_id = ro.id AND profit.ratio_id = 3 INNER JOIN fact sell_price ON sell_price.reference_object_id = ro.id AND sell_price.ratio_id = 4 INNER JOIN fact purchase_amount ON purchase_amount.reference_object_id = ro.id AND purchase_amount.ratio_id = 5 ";
+                String query = select + roJoins.stream().collect(Collectors.joining(" ")) + facts + where
+                        + " GROUP BY " + groupBy.stream().collect(Collectors.joining(", "))
+                        + " ORDER BY " + orderBy.stream().collect(Collectors.joining(", ")) +";";
+                selectRO_SQL_Queries.add(query);
+            }
+        }
+
+        PrintWriter pw = new PrintWriter(new FileOutputStream("c:/temp/acb_insertDCQueries.sql"));
+        for (String q : insertDC_SQL_Queries)
+            pw.println(q);
+        pw.close();
+        //delete lines 18509-18514 that corresponds to atomic levels already saved
+
+        PrintWriter pw2 = new PrintWriter(new FileOutputStream("c:/temp/acb_RO_Queries.sql"));
+        for (String q : selectRO_SQL_Queries)
+            pw2.println(q);
+        pw2.close();
+
+        return dimensionCombinationIds;
     }
 
     @Override
