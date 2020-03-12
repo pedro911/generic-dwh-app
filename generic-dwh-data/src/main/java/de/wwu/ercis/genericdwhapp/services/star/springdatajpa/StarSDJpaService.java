@@ -51,7 +51,8 @@ public class StarSDJpaService implements StarService {
                 + " FROM fact f\n"
                 + joins.stream().collect(Collectors.joining("\n"))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
-                + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","));
+                + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","))
+                + " LIMIT 1000";
         executedQuery = query;
         return starRepository.nativeQuery(query);
     }

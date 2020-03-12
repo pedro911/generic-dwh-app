@@ -9,16 +9,21 @@ set @max_customer := "Customer#000142346";
 #set @quantity_limit := 499;
 #set @max_customer := "Customer#001371611";
 
-
 select '#q1.1';
+SET @start_time := sysdate(2);
+
 select c_r_name, d_year_number, sum(revenue), sum(product_cost), sum(profit), sum(selling_price) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_date d on d.date_pk = f.fk_orderdate
 where c_r_name = "europe"
   and d.d_year_number = 1998;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q1.1 query_time';
 
 select '#q2.1';
+SET @start_time := sysdate(2); 
+
 select c_mktsegment, d_year_number, d_month_number, sum(profit), sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_date d on d.date_pk = f.fk_orderdate
@@ -26,8 +31,15 @@ where c_mktsegment = "automobile"
   and d_month_number = 12
   and d_year_number = 1995;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q2.1 query_time';
+
+SET @start_time := sysdate(2); 
+
 
 select '#q2.2';
+SET @start_time := sysdate(2); 
+
 select c_mktsegment, d_year_number, d_month_number, sum(profit), sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_date d on d.date_pk = f.fk_orderdate
@@ -41,8 +53,13 @@ where (c_mktsegment = "automobile"
 group by c_mktsegment,d_year_number,d_month_number
 having sum(l_quantity) >= 4000*@sf;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q2.2 query_time';
+
 
 select '#q3.1';
+SET @start_time := sysdate(2);
+
 select c_n_name, p_type, d_year_number, sum(product_cost),sum(profit),sum(selling_price) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -51,8 +68,13 @@ where c_n_name = "brazil"
   and p_type = "small plated tin"
   and d_year_number = 1997;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q3.1 query_time';
+
 
 select '#q3.2';
+SET @start_time := sysdate(2);
+
 select c_n_name, p_type, d_year_number, sum(product_cost),sum(profit),sum(selling_price) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -61,8 +83,13 @@ where p_type = "promo polished copper"
   and d_year_number between 1993 and 1996
 group by c_n_name,p_type,d_year_number;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q3.2 query_time';
+
 
 select '#q3.3';
+SET @start_time := sysdate(2);
+
 select c_n_name, p_type, d_year_number, sum(product_cost), sum(profit), sum(selling_price) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -77,8 +104,14 @@ where (c_n_name = "brazil"
 group by c_n_name,p_type,d_year_number
 order by c_n_name,p_type,d_year_number;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q3.3 query_time';
+
+
 
 select '#q4.1';
+SET @start_time := sysdate(2);
+
 select o_clerk, p_mfgr, d_year_number, sum(revenue), sum(profit) from fact f
     inner join dim_clerk k on k.pk_clerk = f.fk_clerk
     inner join dim_product p on p.pk_part = f.fk_part
@@ -89,8 +122,14 @@ where o_clerk = "clerk#000000015"
   and d_year_number = 1993
 group by p_mfgr;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q4.1 query_time';
+
+
 
 select '#q5.1';
+SET @start_time := sysdate(2);
+
 select c_r_name,p_mfgr,d_year_number,d_month_number, sum(revenue) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -100,8 +139,14 @@ where p_mfgr = "manufacturer#4"
   and d_year_number = 1992
 group by c_r_name,p_mfgr,d_year_number, d_month_number;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q5.1 query_time';
+
+
 
 select '#q5.2';
+SET @start_time := sysdate(2);
+
 select c_r_name,p_mfgr,d_year_number,d_month_number, sum(revenue) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -111,8 +156,13 @@ where (p_mfgr = "manufacturer#1"
   and d_year_number >= 1996
 group by c_r_name,p_mfgr,d_year_number,d_month_number;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q5.2 query_time';
+
 
 select '#q6.1';
+SET @start_time := sysdate(2);
+
 select c_mktsegment,p_type,s_name,d_year_number, sum(product_cost), sum(selling_price), sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -124,8 +174,13 @@ where c_mktsegment = "machinery"
 group by c_mktsegment,p_type,s_name,d_year_number
 order by c_mktsegment,p_type,s_name,d_year_number;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q6.1 query_time';
+
 
 select '#q7.1';
+SET @start_time := sysdate(2);
+
 select c_name,p_brand,d_year_number, d_month_number, sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -134,8 +189,13 @@ group by c_name,p_brand,d_year_number, d_month_number
 having sum(l_quantity) > @quantity_limit
 order by sum(l_quantity) desc;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q7.1 query_time';
+
 
 select '#q7.2';
+SET @start_time := sysdate(2);
+
 select c_name,p_brand,d_year_number,d_month_number, sum(l_quantity) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_product p on p.pk_part = f.fk_part
@@ -144,8 +204,13 @@ where c_name = @max_customer
 group by p_brand,d_year_number,d_month_number
 order by sum(l_quantity) desc;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q7.2 query_time';
+
 
 select '#q8.1';
+SET @start_time := sysdate(2);
+
 select o_clerk,c_r_name,c_mktsegment, sum(revenue),sum(product_cost),sum(profit),sum(selling_price),sum(l_quantity) from fact f
     inner join dim_clerk k on k.pk_clerk = f.fk_clerk
     inner join dim_customer c on c.pk_customer = f.fk_customer
@@ -154,8 +219,13 @@ where o_clerk = "clerk#000000535"
 group by o_clerk,c_r_name,c_mktsegment
 order by o_clerk,c_r_name,c_mktsegment;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q8.1 query_time';
+
 
 select '#q9.1';
+SET @start_time := sysdate(2);
+
 select c_n_name,c_mktsegment,s_name, sum(revenue), sum(product_cost), sum(selling_price) from fact f
     inner join dim_customer c on c.pk_customer = f.fk_customer
     inner join dim_supplier s on s.pk_supplier = f.fk_supplier
@@ -165,8 +235,14 @@ where s.s_name = "supplier#000000024"
 group by c_n_name,c_mktsegment,s_name
 order by c_n_name,c_mktsegment,s_name;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q9.1 query_time';
+
+
 
 select '#q10.1';
+SET @start_time := sysdate(2);
+
 select o_clerk, p_brand,p_name, sum(profit),sum(l_quantity) from fact f
     inner join dim_product p on p.pk_part = f.fk_part
     inner join dim_clerk k on k.pk_clerk = f.fk_clerk
@@ -175,13 +251,21 @@ group by o_clerk, p_brand, p_name
 having sum(profit) < 0
 order by o_clerk,p_brand,p_name;
 
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q10.1 query_time';
+
 
 select '#q10.2';
+SET @start_time := sysdate(2);
+
 select p_brand, p_name, sum(profit), sum(l_quantity) from fact f
     inner join dim_product p on p.pk_part = f.fk_part
 group by p_brand, p_name
 having sum(profit) < 0
 order by sum(profit);
+
+SET @end_time := sysdate(2);
+SELECT TIMEDIFF(@end_time, @start_time) AS '#q10.2 query_time';
 
 
 select 'end :)';

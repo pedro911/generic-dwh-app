@@ -32,6 +32,7 @@ public class FactSDJpaService implements FactService {
 
     private String queryMethod ="";
     private String executedQuery ="";
+    private String limit = " LIMIT 1000 ";
 
     public FactSDJpaService(FactRepository factRepository, RatioRepository ratioRepository, DimensionRepository dimensionRepository, ReferenceObjectRepository referenceObjectRepository, DimensionCombinationRepository dimensionCombinationRepository, DimensionHierarchyService dimensionHierarchyService) {
         this.factRepository = factRepository;
@@ -179,7 +180,7 @@ public class FactSDJpaService implements FactService {
                     .stream()
                     .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2)")
                     .collect(Collectors.joining(","))
-                    + from + ratiosJoins + where + "\n ORDER BY ro.name";
+                    + from + ratiosJoins + where + "\n ORDER BY ro.name " + limit;
             factsResult = factRepository.nativeQuery(query);
             executedQuery = query;
             queryMethod = "Returned existing facts.";
@@ -195,7 +196,8 @@ public class FactSDJpaService implements FactService {
                                     + "sum(" + ratio.getName().toLowerCase().replaceAll(" ", "_") + ".value)"
                                     + from + roJoins.stream().collect(Collectors.joining(" ")) + ratiosJoins + where
                                     + "\nGROUP BY _" + dimensionNameQuery + ".id "
-                                    + "\nORDER BY _" + dimensionNameQuery + ".id ";
+                                    + "\nORDER BY _" + dimensionNameQuery + ".id "
+                                    + limit;
                             factsResult = factRepository.nativeQuery(query);
                             saveFacts(factsResult);
                         }
@@ -232,7 +234,8 @@ public class FactSDJpaService implements FactService {
                             + ") as 'roName', sum(" + ratio.getName().toLowerCase().replaceAll(" ", "_") + ".value) "
                             + from + roJoins.stream().collect(Collectors.joining(" ")) + ratiosJoins + where
                             + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
-                            + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
+                            + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","))
+                            + limit;
                     factsResult = factRepository.nativeQuery(concatWSQuery);
                     executedQuery = concatWSQuery;
                     if (!factsResult.isEmpty()) {
@@ -251,7 +254,7 @@ public class FactSDJpaService implements FactService {
                             .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
-                            + from + ratiosJoins + where;
+                            + from + ratiosJoins + where + limit;
                     factsResult = factRepository.nativeQuery(substringQuery);
 
                 }
@@ -286,7 +289,7 @@ public class FactSDJpaService implements FactService {
                             .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
-                            + from + ratiosJoins + where;
+                            + from + ratiosJoins + where + limit;
                     factsResult = factRepository.nativeQuery(substringQuery);
                     executedQuery = stringJoinQuery;
                     queryMethod = "New facts inserted.";
@@ -300,7 +303,7 @@ public class FactSDJpaService implements FactService {
                             .stream()
                             .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
-                            .collect(Collectors.joining(",")) + from + ratiosJoins + where;
+                            .collect(Collectors.joining(",")) + from + ratiosJoins + where + limit;
                     factsResult = factRepository.nativeQuery(substringQuery);
                     executedQuery = substringQuery;
                     queryMethod = "Returned existing facts.";
@@ -381,7 +384,7 @@ public class FactSDJpaService implements FactService {
                     .stream()
                     .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                             "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
-                    .collect(Collectors.joining(",")) + from + ratiosJoins + where;
+                    .collect(Collectors.joining(",")) + from + ratiosJoins + where + limit;
             factsResult = factRepository.nativeQuery(substringQuery);
             executedQuery = substringQuery;
             queryMethod = "Returned existing facts.";
@@ -497,7 +500,8 @@ public class FactSDJpaService implements FactService {
                 .collect(Collectors.joining(","))
                 + from + roJoins.stream().collect(Collectors.joining(" ")) + where
                 + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
-                + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","));
+                + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","))
+                + limit;
 
         // change IDs to names to display on fronted
         ratios.clear();
@@ -649,19 +653,9 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public boolean saveCombination(String combination) throws InterruptedException {
-        //first check if facts from last combination were completely saved
-        System.out.println("Combination on fact service: " + combination);
-        //Dimension lastDimension = dimensionRepository.findFirstByOrderByIdDesc();
-        //DimensionCombination lastDimensionCombination = dimensionCombinationRepository.findFirstByOrderByCombinationIdDesc();
-        //System.out.println("Last dimension id: " + lastDimension.getId());
-        //System.out.println("Last dimension combination id:" + lastDimensionCombination.getCombinationId());
-        //if (lastDimension.getId() == lastDimensionCombination.getCombinationId());
-            //System.out.println(lastDimension.getName());
-
-        return true;
+    public List<String[]> adHocQuery(String query) {
+        executedQuery = query;
+        return factRepository.nativeQuery(query);
     }
-
-
 
 }

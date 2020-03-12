@@ -20,6 +20,5 @@ public interface FactService extends GenericDWHService<Fact, Long> {
 
     List<String> getAllDimensionCombinations() throws FileNotFoundException;
 
-    boolean saveCombination(String combination) throws InterruptedException;
-
+    List<String[]> adHocQuery(String query);
 }

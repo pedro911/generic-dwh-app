@@ -5,9 +5,11 @@ import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -84,16 +86,12 @@ public class GenericDWHController {
         return "genericdwh/gen_all_combinations";
     }
 
-    @ResponseBody
-    @RequestMapping("/genericdwh/gen_all_combinations/save/{db}")
-    public void saveCombination(@RequestParam("combination") String combination, HttpServletResponse response) throws InterruptedException {
+    @RequestMapping("/genericdwh/adhoc/{db}")
+    public String adhoc(@PathVariable String db, Model model){
 
-        //System.out.println("Combination controller:" + combination);
-        if (factService.saveCombination(combination))
-            response.setStatus(200);
-        else
-            response.setStatus(100);
+        model.addAttribute("db", db);
 
+        return "genericdwh/adhoc";
     }
 
     @GetMapping("/genericdwh/results/{db}")
@@ -127,6 +125,21 @@ public class GenericDWHController {
         return "genericdwh/results";
     }
 
+    @GetMapping("/genericdwh/adHocResults/{db}")
+    public String adhocResults(@PathVariable String db, Model model, @RequestParam("adHocQuery") String adHocQuery) {
 
+        model.addAttribute("db", db);
+        long start = System.nanoTime();
+
+        model.addAttribute("results", factService.adHocQuery(adHocQuery));
+
+        long end = System.nanoTime();
+        Double mSec = (end - start) / 1e6;
+
+        model.addAttribute("timeElapsed", mSec);
+        model.addAttribute("query", factService.query());
+
+        return "genericdwh/adHocResults";
+    }
 
 }

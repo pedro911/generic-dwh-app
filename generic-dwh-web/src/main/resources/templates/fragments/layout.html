@@ -63,27 +63,19 @@
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">Mini</a>
                         <ul class="dropdown-menu">
-                            <h6 class="dropdown-header">Querying:</h6>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_dyn}">Dynamic </a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_ncb}">No Combinations</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_mini_acb}">All Combinations</a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Util:</h6>
-                            <a class="dropdown-item">Dynamic ETL </a>
-                            <a class="dropdown-item" th:href="@{/genericdwh/gen_all_combinations/tpch_gdwh_mini_acb}">Generate All Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/adhoc/tpch_gdwh_mini_ncb}">Ad hoc</a>
                         </ul>
                     </li>
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" href="#">Small</a>
                         <ul class="dropdown-menu">
-                            <h6 class="dropdown-header">Querying:</h6>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_dyn}">Dynamic ETL</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_ncb}">No Combinations</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_small_acb}">All Combinations</a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Util:</h6>
-                            <a class="dropdown-item">Dynamic ETL </a>
-                            <a class="dropdown-item" th:href="@{/genericdwh/gen_all_combinations/tpch_gdwh_small_acb}">Generate All Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/adhoc/tpch_gdwh_small_ncb}">Ad hoc</a>
                         </ul>
                     </li>
                     <li class="dropdown-submenu">
@@ -92,6 +84,7 @@
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf1_dyn}">Dynamic ETL</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf1_ncb}">No Combinations</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf1_acb}">All Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/adhoc/tpch_gdwh_sf1_ncb}">Ad hoc</a>
                         </ul>
                     </li>
                     <li class="dropdown-submenu">
@@ -100,6 +93,7 @@
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf10_dyn}">Dynamic ETL</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf10_ncb}">No Combinations</a>
                             <a class="dropdown-item" th:href="@{/genericdwh/query/tpch_gdwh_sf10_acb}">All Combinations</a>
+                            <a class="dropdown-item" th:href="@{/genericdwh/adhoc/tpch_gdwh_sf10_ncb}">Ad hoc</a>
                         </ul>
                     </li>
                 </ul>

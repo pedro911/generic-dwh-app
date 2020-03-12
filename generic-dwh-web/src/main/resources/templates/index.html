@@ -7,14 +7,13 @@
 <body>
 <main role="main" class="container">
     <div class="jumbotron">
-        <h1 class="display-4">Generic DWH Tool</h1>
+        <h1 class="display-4">DWD-Query Tool</h1>
         <p class="lead">This tool is being developed for testing data warehouse query performance. The goal is to compare DW query performance using 3 different models:</p>
         <ul class="list-unstyled">
             <li>Generic DWH</li>
             <li>Star Schema</li>
             <li>Snowflake Schema</li>
         </ul>
-        <p>The current version is a beta, errors or instability may occur.</p>
         <hr class="my-4">
         <p class="h5">Data Source</p>
         <p>Data come from TPC-H Decision Support Benchmark. More info at <a href="http://www.tpc.org/tpch/">http://www.tpc.org/tpch/</a></p>
@@ -22,9 +21,8 @@
         <hr class="my-4">
         <p class="h5">Methodology</p>
         <p>The TPC-H DB was first generated using <a href="https://www.hammerdb.com/">HammerDB</a> script with different sizes.
-            A PHP ETL application was used to create the Generic DWH DBs.
             Pentaho BI was used to ETL TPC-H to Star and Snowflake schemas.
-            And this application was developed to query data as a Data Warehouse fashion on those models.
+            And this application was developed to query DW designs.
         </p>
         <p>
             The Generic DWH has 3 different DBs running:
@@ -32,14 +30,14 @@
                 <li>Dynamic: the algorithm checks if there are already saved facts for the selected ratio-dimension combinations.
                     If there are no facts saved yet, the system will create new reference objects if needed, and insert new facts.</li>
                 <li>No Combinations: static DB where only standard generic DWH queries are executed.</li>
-                <li>All Combinations: static DB where all possible ratio-dimension combinations are already stored, the query is always the fastest one.</li>
+                <li>All Combinations: static DB where all possible ratio-dimension combinations are already stored.</li>
             </ul>
         </p>
         <p>Those databases sizes were created using HammerDB, then, ETL for each DW model:</p>
         <ul class="list-unstyled">
             <li>Mini: 100 orders ~ 450KB </li>
             <li>Small: 15.000 orders ~ 15MB </li>
-            <li>Scale Factor (SF) 1: 1.500.000 orders ~ 2.3 GB </li>
+            <li>Scale Factor (SF) 1: 1.500.000 orders ~ 3.4 GB </li>
             <li>Scale Factor (SF) 10: 15.000.000 orders ~ 20.5 GB </li>
         </ul>
 
