@@ -19,7 +19,7 @@ where c_r_name = "europe"
   and d.d_year_number = 1998;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q1.1 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 select '#q2.1';
 SET @start_time := sysdate(2); 
@@ -32,9 +32,7 @@ where c_mktsegment = "automobile"
   and d_year_number = 1995;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q2.1 query_time';
-
-SET @start_time := sysdate(2); 
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q2.2';
@@ -54,7 +52,7 @@ group by c_mktsegment,d_year_number,d_month_number
 having sum(l_quantity) >= 4000*@sf;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q2.2 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q3.1';
@@ -69,7 +67,7 @@ where c_n_name = "brazil"
   and d_year_number = 1997;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q3.1 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q3.2';
@@ -84,7 +82,7 @@ where p_type = "promo polished copper"
 group by c_n_name,p_type,d_year_number;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q3.2 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q3.3';
@@ -105,8 +103,7 @@ group by c_n_name,p_type,d_year_number
 order by c_n_name,p_type,d_year_number;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q3.3 query_time';
-
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q4.1';
@@ -123,8 +120,7 @@ where o_clerk = "clerk#000000015"
 group by p_mfgr;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q4.1 query_time';
-
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q5.1';
@@ -140,8 +136,7 @@ where p_mfgr = "manufacturer#4"
 group by c_r_name,p_mfgr,d_year_number, d_month_number;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q5.1 query_time';
-
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q5.2';
@@ -157,7 +152,7 @@ where (p_mfgr = "manufacturer#1"
 group by c_r_name,p_mfgr,d_year_number,d_month_number;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q5.2 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q6.1';
@@ -175,7 +170,7 @@ group by c_mktsegment,p_type,s_name,d_year_number
 order by c_mktsegment,p_type,s_name,d_year_number;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q6.1 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q7.1';
@@ -190,7 +185,7 @@ having sum(l_quantity) > @quantity_limit
 order by sum(l_quantity) desc;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q7.1 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q7.2';
@@ -205,7 +200,7 @@ group by p_brand,d_year_number,d_month_number
 order by sum(l_quantity) desc;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q7.2 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q8.1';
@@ -220,7 +215,7 @@ group by o_clerk,c_r_name,c_mktsegment
 order by o_clerk,c_r_name,c_mktsegment;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q8.1 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q9.1';
@@ -236,8 +231,7 @@ group by c_n_name,c_mktsegment,s_name
 order by c_n_name,c_mktsegment,s_name;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q9.1 query_time';
-
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select '#q10.1';
@@ -252,7 +246,7 @@ having sum(profit) < 0
 order by o_clerk,p_brand,p_name;
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q10.1 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS '#query_time';
 
 
 select '#q10.2';
@@ -265,7 +259,7 @@ having sum(profit) < 0
 order by sum(profit);
 
 SET @end_time := sysdate(2);
-SELECT TIMEDIFF(@end_time, @start_time) AS '#q10.2 query_time';
+SELECT TIMEDIFF(@end_time, @start_time) AS 'query_time';
 
 
 select 'end :)';
