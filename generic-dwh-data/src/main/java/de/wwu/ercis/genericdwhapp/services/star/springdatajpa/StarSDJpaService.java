@@ -70,4 +70,10 @@ public class StarSDJpaService implements StarService {
         return result;
     }
 
+    @Override
+    public List<String[]> adHocQuery(String query) {
+        executedQuery = query;
+        return starRepository.nativeQuery(query);
+    }
+
 }

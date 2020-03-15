@@ -8,4 +8,6 @@ public interface StarService {
 
     String query();
 
+    List<String[]> adHocQuery(String query);
+
 }

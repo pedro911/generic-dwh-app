@@ -8,4 +8,6 @@ public interface SnowflakeService {
 
     String query();
 
+    List<String[]> adHocQuery(String query);
+
 }

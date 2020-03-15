@@ -86,14 +86,6 @@ public class GenericDWHController {
         return "genericdwh/gen_all_combinations";
     }
 
-    @RequestMapping("/genericdwh/adhoc/{db}")
-    public String adhoc(@PathVariable String db, Model model){
-
-        model.addAttribute("db", db);
-
-        return "genericdwh/adhoc";
-    }
-
     @GetMapping("/genericdwh/results/{db}")
     public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
@@ -123,6 +115,14 @@ public class GenericDWHController {
         queryTimeService.addQueryTime(db,dimensions.toString()+" - "+ratios.toString(), mSec);
 
         return "genericdwh/results";
+    }
+
+    @RequestMapping("/genericdwh/adhoc/{db}")
+    public String adhoc(@PathVariable String db, Model model){
+
+        model.addAttribute("db", db);
+
+        return "genericdwh/adhoc";
     }
 
     @GetMapping("/genericdwh/adHocResults/{db}")

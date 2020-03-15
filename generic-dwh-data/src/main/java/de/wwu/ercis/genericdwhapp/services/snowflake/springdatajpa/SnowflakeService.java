@@ -92,4 +92,10 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
         result = result.replace("WITH ROLLUP","<a class=\"text-success font-weight-bold\">WITH ROLLUP</a>");
         return result;
     }
+
+    @Override
+    public List<String[]> adHocQuery(String query) {
+        executedQuery = query;
+        return snowflakeRepository.nativeQuery(query);
+    }
 }

@@ -55,6 +55,31 @@ public class SnowflakeController {
 
     }
 
+    @RequestMapping("/snowflake/adhoc/{db}")
+    public String adhoc(@PathVariable String db, Model model){
+
+        model.addAttribute("db", db);
+
+        return "snowflake/adhoc";
+    }
+
+    @GetMapping("/snowflake/adHocResults/{db}")
+    public String adhocResults(@PathVariable String db, Model model, @RequestParam("adHocQuery") String adHocQuery) {
+
+        model.addAttribute("db", db);
+        long start = System.nanoTime();
+
+        model.addAttribute("results", snowflakeService.adHocQuery(adHocQuery));
+
+        long end = System.nanoTime();
+        Double mSec = (end - start) / 1e6;
+
+        model.addAttribute("timeElapsed", mSec);
+        model.addAttribute("query", snowflakeService.query());
+
+        return "snowflake/adHocResults";
+    }
+
     public List<String> formatRatios(List<String> ratios){
         List<String> ratiosValues = new ArrayList<>();
 
