@@ -85,7 +85,7 @@ public class SnowflakeController {
 
         for (String ratio: ratios){
             switch (ratio){
-                case "selling_price": ratio = "Sell Price";
+                case "selling_price": ratio = "Selling Price";
                     break;
                 case "l_quantity": ratio = "Purchase Amount";
                     break;
@@ -110,7 +110,7 @@ public class SnowflakeController {
                     break;
                 case "c_name": dimension = "Customer Name";
                     break;
-                case "o_clerk": dimension = "Order Clerk";
+                case "o_clerk": dimension = "Clerk Name";
                     break;
                 case "manufacturer_group": dimension = "Manufacturer Group";
                     break;
