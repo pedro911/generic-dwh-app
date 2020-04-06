@@ -25,13 +25,13 @@
                         </div>
                     </div>
                 </div>
-                <!--
+
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
-                        <br th:replace="_filters.html :: filters"/>
+                        <span th:include="genericdwh/_filters.html :: filters"></span>
                     </div>
                 </div>
-                -->
+
                 <div class="row">
 
                     <div class="col-sm-6 col-md-4">
@@ -78,6 +78,86 @@
                             }
                         });
 
+                        $(document).on('click', '.add-filter', function() {
+                            var uid = 'uid'+Math.floor((1 + Math.random()) * 0x10000).toString(16);
+                            var type = $(this).attr('class').replace(/.*?([a-z\-]+\-filter\-type).*?/, '$1');
+
+                            var $li = $('<li/>', { 'data-uid': uid });
+                            $('<a/>', { class: 'glyphicon glyphicon-remove remove-filter', href: '#', title: 'Remove filter' }).after(' ').appendTo($li);
+                            var $select = $('<select/>', { class: 'filter-dimension-select '+type, name: 'filters['+uid+'][dimension]' }).after(' ').appendTo($li);
+                            $('<option/>').appendTo($select);
+
+                            var last_root_id = null;
+                            var $optgroup = null;
+                            $('li.dimension').each(function() {
+                                var $this = $(this);
+                                var root_id = $this.data('root-id');
+                                if (root_id != last_root_id) {
+                                    $optgroup = $('<optgroup/>', { label: $this.data('root-name') }).appendTo($select);
+                                    last_root_id = root_id;
+                                }
+                                $('<option/>', { value: $this.data('id') }).text($this.data('name')).appendTo($optgroup);
+                            });
+
+                            $(this).closest('.filters').find('ul.defined-filters').append($li);
+                            return false;
+                        });
+
+                        $(document).on('change', '.filter-dimension-select.single-object-filter-type', function() {
+                            var uid = $(this).closest('li').data('uid');
+
+                            var $container = $(this).parent();
+                            $(this).nextAll().remove();
+
+                            $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
+
+                            $.ajax({
+                                url: "/genericdwh/getReferenceObjects",
+                                data: { dimension_id: $(this).val() },
+                                complete: function(jqXHR, textStatus) {
+                                    $container.find('.ajax-spinner').remove();
+                                    var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_object]' });
+                                    $.each(jqXHR.responseJSON, function(i, item) {
+                                        $('<option/>', { value: item.id }).text(item.name).appendTo($select);
+                                    });
+                                    $select.after(' ').appendTo($container);
+                                } // complete
+                            });
+                        });
+
+                        $(document).on('change', '.filter-dimension-select.multiple-objects-filter-type', function() {
+                            var uid = $(this).closest('li').data('uid');
+
+                            var $container = $(this).parent();
+                            $(this).nextAll().remove();
+
+                            $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
+
+                            $.ajax({
+                                url: "{{ path('fetch_reference_objects') }}",
+                                data: { dimension_id: $(this).val() },
+                                complete: function(jqXHR, textStatus) {
+                                    $container.find('.ajax-spinner').remove();
+                                    var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_objects][]', multiple: 'multiple' });
+                                    $.each(jqXHR.responseJSON, function(i, item) {
+                                        $('<option/>', { value: item.id }).text(item.name).appendTo($select);
+                                    });
+                                    $select.after(' ').appendTo($container);
+                                } // complete
+                            });
+                        });
+
+                        $(document).on('click', '.clear-filters', function() {
+                            $(this).closest('.filters').find('.remove-filter').click();
+                            return false;
+                        });
+
+                        $(document).on('click', '.remove-filter', function() {
+                            $(this).closest('li').remove();
+                            validate_form();
+                            return false;
+                        });
+
                         $(document).on('change', $('[name="ratioChecked"]'), function() {
                             $('.validation-msg').empty();
                             validate_form();
@@ -87,6 +167,7 @@
                             $('.validation-msg').empty();
                             validate_form();
                         });
+
 
                         $('.validation-msg').empty();
                         var is_valid = true;

@@ -36,13 +36,6 @@
                             <div class="card-body">
                                 <div class="card-columns">
                                     <div class="card border-dark mb-3">
-                                        <div class="card-header" th:text="'Clerks'" th:id="clerks"></div>
-                                        <div class="card-body">
-                                            <input type="checkbox" th:name="dimensionChecked"
-                                                   th:value="o_clerk" th:text="' Clerk Name'"><br/>
-                                        </div>
-                                    </div>
-                                    <div class="card border-dark mb-3">
                                         <div class="card-header" th:text="'Market Locations'" th:id="mktlocations"></div>
                                         <div class="card-body">
                                             <input type="checkbox" th:name="dimensionChecked"
@@ -80,6 +73,13 @@
                                                    th:value="product_type" th:text="' Product Type'"><br/>
                                             <input type="checkbox" th:name="dimensionChecked"
                                                    th:value="p_name" th:text="' Product Name'"><br/>
+                                        </div>
+                                    </div>
+                                    <div class="card border-dark mb-3">
+                                        <div class="card-header" th:text="'Clerks'" th:id="clerks"></div>
+                                        <div class="card-body">
+                                            <input type="checkbox" th:name="dimensionChecked"
+                                                   th:value="o_clerk" th:text="' Clerk Name'"><br/>
                                         </div>
                                     </div>
                                     <div class="card border-dark mb-3">

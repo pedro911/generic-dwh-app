@@ -6,12 +6,12 @@
     <div class="card border-dark mb-3" th:each="dimension : ${dimensionRoots}">
 
         <div class="card-header" >
-            <span th:if="'null' == ${dimension.parentId}" th:text="${dimension.name}" th:id="${dimension.id}" th:remove="tag"></span>
+            <span th:if="'null' == ${dimension.parentId}" th:text="${dimension.name}" th:name="root-id" th:id="${dimension.id}"></span>
         </div>
 
         <div class="card-body">
             <span th:each="dimension : ${dimension.childrenItems}" th:remove="tag">
-                 <input type="checkbox" th:text="'  ' + ${dimension.name}" th:name="dimensionChecked" th:value="${dimension.id}">
+                 <input type="checkbox" th:text="'  ' + ${dimension.name}" th:name="dimensionChecked" th:id="${dimension.id}" th:value="${dimension.id}">
                  <br/>
             </span>
         </div>

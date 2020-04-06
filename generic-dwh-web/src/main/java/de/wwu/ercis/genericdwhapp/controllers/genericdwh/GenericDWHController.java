@@ -1,14 +1,16 @@
 package de.wwu.ercis.genericdwhapp.controllers.genericdwh;
 
+import com.google.gson.Gson;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
+import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -140,6 +142,22 @@ public class GenericDWHController {
         model.addAttribute("query", factService.query());
 
         return "genericdwh/adHocResults";
+    }
+
+    @PostMapping("/genericdwh/getReferenceObjects")
+    public ResponseEntity<?> getSearchResultViaAjax(@RequestBody String dimension_id, Errors errors) {
+
+        //If error, just return a 400 bad request, along with the error message
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body("Error!");
+        }
+
+        Dimension dimension = dimensionService.findById(Long.parseLong(dimension_id));
+        List<ReferenceObject> referenceObjects = referenceObjectService.findAllByDimensionIn(dimension);
+        String json = new Gson().toJson(referenceObjects);
+
+        return ResponseEntity.ok(json);
+
     }
 
 }
