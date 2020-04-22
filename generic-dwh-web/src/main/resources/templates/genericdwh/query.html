@@ -83,20 +83,28 @@
                             var type = $(this).attr('class').replace(/.*?([a-z\-]+\-filter\-type).*?/, '$1');
 
                             var $li = $('<li/>', { 'data-uid': uid });
-                            $('<a/>', { class: 'glyphicon glyphicon-remove remove-filter', href: '#', title: 'Remove filter' }).after(' ').appendTo($li);
+                            $('<a/>', { class: 'icon ion-md-stats remove-filter', href: '#', title: 'Remove filter' }).after(' ').appendTo($li);
                             var $select = $('<select/>', { class: 'filter-dimension-select '+type, name: 'filters['+uid+'][dimension]' }).after(' ').appendTo($li);
                             $('<option/>').appendTo($select);
 
                             var last_root_id = null;
                             var $optgroup = null;
-                            $('li.dimension').each(function() {
+                            $('input.dimension').each(function() {
                                 var $this = $(this);
-                                var root_id = $this.data('root-id');
+                                var root_id = $this.attr('title');
                                 if (root_id != last_root_id) {
-                                    $optgroup = $('<optgroup/>', { label: $this.data('root-name') }).appendTo($select);
+                                    $optgroup = $('<optgroup/>', { label: $this.attr('alt') }).appendTo($select);
                                     last_root_id = root_id;
                                 }
-                                $('<option/>', { value: $this.data('id') }).text($this.data('name')).appendTo($optgroup);
+                                //root id
+                                //console.log($this.attr('alt'));
+                                //root name
+                                //console.log($this.attr('title'));
+                                //dimension level name
+                                //console.log($this.attr('id'));
+                                //dimension level id
+                                //console.log($this.attr('value'));
+                                $('<option/>', { value: $this.attr('value') }).text($this.attr('id')).appendTo($optgroup);
                             });
 
                             $(this).closest('.filters').find('ul.defined-filters').append($li);
@@ -110,10 +118,13 @@
                             $(this).nextAll().remove();
 
                             $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
+                            var dimensionId = $(this).val();
+                            console.log(dimensionId);
 
                             $.ajax({
-                                url: "/genericdwh/getReferenceObjects",
-                                data: { dimension_id: $(this).val() },
+                                type:'POST',
+                                url: "/genericdwh/getReferenceObjects/tpch_gdwh_mini_ncb",
+                                data: dimensionId,
                                 complete: function(jqXHR, textStatus) {
                                     $container.find('.ajax-spinner').remove();
                                     var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_object]' });
