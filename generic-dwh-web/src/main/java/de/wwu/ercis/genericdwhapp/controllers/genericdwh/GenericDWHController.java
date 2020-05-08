@@ -1,20 +1,14 @@
 package de.wwu.ercis.genericdwhapp.controllers.genericdwh;
 
-import com.google.gson.Gson;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension;
 import de.wwu.ercis.genericdwhapp.model.genericdwh.ReferenceObject;
 import de.wwu.ercis.genericdwhapp.services.genericdwh.*;
 import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Request;
-import org.springframework.boot.actuate.trace.http.HttpTrace;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -93,7 +87,11 @@ public class GenericDWHController {
     @GetMapping("/genericdwh/results/{db}")
     public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
-                                  @RequestParam("dimensionChecked") List<String> dimensions) throws FileNotFoundException {
+                                  @RequestParam("dimensionChecked") List<String> dimensions,
+                                  @RequestParam("filters") List<String> filters) {
+
+        for (String f:filters)
+            System.out.println(f);
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
@@ -103,7 +101,7 @@ public class GenericDWHController {
         else if (db.endsWith("acb"))
             model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions));
         else
-            model.addAttribute("results", factService.gdwhNcbQuery(ratios,dimensions));
+            model.addAttribute("results", factService.gdwhNcbQuery(ratios,dimensions, filters));
 
         long end = System.nanoTime();
         Double mSec = (end - start) / 1e6;
@@ -146,25 +144,15 @@ public class GenericDWHController {
         return "genericdwh/adHocResults";
     }
 
-    @PostMapping("/genericdwh/getReferenceObjects/{db}")
-    public ResponseEntity<?> getSearchResultViaAjax(@RequestBody String dimensionId, Errors errors, Model model, @PathVariable String db ) {
+    @RequestMapping(method=RequestMethod.POST, value = "/genericdwh/getReferenceObjects/{db}")
+    public @ResponseBody List<ReferenceObject> getSearchResultViaAjax(@RequestBody String dimensionId, Model model, @PathVariable String db ) {
 
         model.addAttribute("db", db);
-        //If error, just return a 400 bad request, along with the error message
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("Error!");
-        }
-        //fix passing argument
-        Dimension dimension = dimensionService.findById(Long.parseLong("2"));
-        System.out.println(dimension.getName());
+        dimensionId = dimensionId.replace("\"","");
+        Dimension dimension = dimensionService.findById(Long.parseLong(dimensionId));
         List<ReferenceObject> referenceObjects = referenceObjectService.findAllByDimensionIn(dimension);
-        for (ReferenceObject ro : referenceObjects)
-            System.out.println(ro.getName());
 
-        //String json = new Gson().toJson(referenceObjects);
-        //System.out.println(json);
-
-        return ResponseEntity.ok(referenceObjects);
+        return referenceObjects;
 
     }
 

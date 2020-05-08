@@ -1,5 +1,6 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,17 +30,22 @@ public class Dimension extends BaseEntity{
     private boolean is_time;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
+    @JsonIgnore
     private Set<DimensionCombination> dimensionCombinationsByCombinations = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate")
+    @JsonIgnore
     private Set<DimensionCombination> dimensionCombinationsBySubordinates = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    @JsonIgnore
     private Set<DimensionHierarchy> dimensionHierarchiesByParents = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "child")
+    @JsonIgnore
     private Set<DimensionHierarchy> dimensionHierarchiesByChildren = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dimension")
+    @JsonIgnore
     private Set<ReferenceObject> referenceObjects = new HashSet<>();
 }

@@ -203,7 +203,8 @@ public class FactSDJpaService implements FactService {
                         }
                     }
                 }
-                factsResult = gdwhNcbQuery(ratios, dimensions);
+                List<String> filters = new ArrayList<>();
+                factsResult = gdwhNcbQuery(ratios, dimensions, filters);
                 queryMethod = "New facts inserted.";
             }
         }
@@ -404,7 +405,7 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String[]> gdwhNcbQuery(List<String> ratios, List<String> dimensions) {
+    public List<String[]> gdwhNcbQuery(List<String> ratios, List<String> dimensions, List<String> filters) {
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
         List<Dimension> dimensionsResult = new ArrayList<>();
@@ -429,11 +430,39 @@ public class FactSDJpaService implements FactService {
 
         dimensions.stream().distinct().forEach( d -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
 
+        List<String> filters_where = new ArrayList<>();
+
+        if (!filters.isEmpty()) {
+            Map<String, String> filtersMap = filters
+                    .stream()
+                    .distinct()
+                    .map(s -> s.split("_"))
+                    .collect(toMap(s -> s[0], s -> s[1]));
+
+            filtersMap.values().stream().distinct().forEach( dimensionId -> {
+                Dimension dimension = dimensionRepository.findById(Long.parseLong(dimensionId)).orElse(null);
+
+                List<String> roIds = filtersMap
+                        .entrySet()
+                        .stream()
+                        .filter(x -> dimensionId.equals(x.getValue()))
+                        .map(x -> x.getKey())
+                        .collect(Collectors.toList());
+
+                filters_where.add(" AND _"+dimension.getName().replaceAll(" ","_").toLowerCase()+".id IN ("
+                        +roIds.stream().collect(Collectors.joining(","))+")");
+
+                if(!dimensionsResult.contains(dimension))
+                    dimensionsResult.add(dimension);
+            });
+        }
+
         String query = "";
         List<String> selects = new ArrayList<>();
         String from = " FROM reference_object ro \n";
         Deque<String> roJoins = new ArrayDeque<>();
-        String where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ")\n";
+        String where = "WHERE ro.dimension_id IN(" + dCombinations.stream().collect(Collectors.joining(",")) + ") " +
+                filters_where.stream().collect(Collectors.joining(" "))+ "\n";
         List<String> groupBy = new ArrayList<>();
         List<String> orderBy = new ArrayList<>();
 
@@ -480,6 +509,8 @@ public class FactSDJpaService implements FactService {
             }
         }
 
+        //List<Dimension> dimensions_select = new ArrayList<>();
+        //dimensions.stream().distinct().forEach( d -> dimensions_select.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
         List<Dimension> dimensions_sorted = dimensionsResult.stream().sorted(Comparator.comparingLong(Dimension::getId)).collect(Collectors.toList());
         for (Dimension dimension : dimensions_sorted){
             String dimensionQuery = dimension.getName().replaceAll(" ","_").toLowerCase();
@@ -502,6 +533,8 @@ public class FactSDJpaService implements FactService {
                 + "GROUP BY " + groupBy.stream().collect(Collectors.joining(","))
                 + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","))
                 + limit;
+
+        System.out.println(query);
 
         // change IDs to names to display on fronted
         ratios.clear();

@@ -26,11 +26,11 @@
                     </div>
                 </div>
 
-<!--                <div class="row">
+                <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <span th:include="genericdwh/_filters.html :: filters"></span>
                     </div>
-                </div>-->
+                </div>
 
                 <div class="row">
 
@@ -68,7 +68,9 @@
                         </div>
                     </div>
                 </div>
-                <script type="text/javascript">
+                <script type="text/javascript" th:inline="javascript">
+                    /*<![CDATA[*/
+                    var db = /*[[${db}]]*/ 'db_not_set';
                     $(function() {
 
                         $(document).on('submit', 'form.customizing', function() {
@@ -83,7 +85,7 @@
                             var type = $(this).attr('class').replace(/.*?([a-z\-]+\-filter\-type).*?/, '$1');
 
                             var $li = $('<li/>', { 'data-uid': uid });
-                            $('<a/>', { class: 'icon ion-md-stats remove-filter', href: '#', title: 'Remove filter' }).after(' ').appendTo($li);
+                            $('<a/>', { class: 'icon ion-md-trash remove-filter', href: '#', title: 'Remove filter' }).after(' ').appendTo($li);
                             var $select = $('<select/>', { class: 'filter-dimension-select '+type, name: 'filters['+uid+'][dimension]' }).after(' ').appendTo($li);
                             $('<option/>').appendTo($select);
 
@@ -96,14 +98,6 @@
                                     $optgroup = $('<optgroup/>', { label: $this.attr('alt') }).appendTo($select);
                                     last_root_id = root_id;
                                 }
-                                //root id
-                                //console.log($this.attr('alt'));
-                                //root name
-                                //console.log($this.attr('title'));
-                                //dimension level name
-                                //console.log($this.attr('id'));
-                                //dimension level id
-                                //console.log($this.attr('value'));
                                 $('<option/>', { value: $this.attr('value') }).text($this.attr('id')).appendTo($optgroup);
                             });
 
@@ -119,17 +113,18 @@
 
                             $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
                             var dimensionId = $(this).val();
-                            console.log(dimensionId);
 
                             $.ajax({
                                 type:'POST',
-                                url: "/genericdwh/getReferenceObjects/tpch_gdwh_mini_ncb",
-                                data: dimensionId,
+                                url: "/genericdwh/getReferenceObjects/"+db,
+                                contentType: "application/json",
+                                data: JSON.stringify(dimensionId),
                                 complete: function(jqXHR, textStatus) {
                                     $container.find('.ajax-spinner').remove();
-                                    var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_object]' });
+                                    var $select = $('<select/>', { class: 'filter-reference-object-select',
+                                        name: 'filters' });
                                     $.each(jqXHR.responseJSON, function(i, item) {
-                                        $('<option/>', { value: item.id }).text(item.name).appendTo($select);
+                                        $('<option/>', { value: item.id + '_' + dimensionId }).text(item.name).appendTo($select);
                                     });
                                     $select.after(' ').appendTo($container);
                                 } // complete
@@ -145,11 +140,14 @@
                             $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
 
                             $.ajax({
-                                url: "{{ path('fetch_reference_objects') }}",
-                                data: { dimension_id: $(this).val() },
+                                type:'POST',
+                                url: "/genericdwh/getReferenceObjects/"+db,
+                                contentType: "application/json",
+                                data: JSON.stringify(dimensionId),
                                 complete: function(jqXHR, textStatus) {
                                     $container.find('.ajax-spinner').remove();
-                                    var $select = $('<select/>', { class: 'filter-reference-object-select', name: 'filters['+uid+'][reference_objects][]', multiple: 'multiple' });
+                                    var $select = $('<select/>', { class: 'filter-reference-object-select',
+                                        name: 'filters['+uid+'][reference_objects][]', multiple: 'multiple' });
                                     $.each(jqXHR.responseJSON, function(i, item) {
                                         $('<option/>', { value: item.id }).text(item.name).appendTo($select);
                                     });
@@ -165,7 +163,6 @@
 
                         $(document).on('click', '.remove-filter', function() {
                             $(this).closest('li').remove();
-                            validate_form();
                             return false;
                         });
 
@@ -204,6 +201,7 @@
                         };
                         validate_form();
                     });
+                    /*]]>*/
                 </script>
 
             </form>

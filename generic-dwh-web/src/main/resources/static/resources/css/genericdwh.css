@@ -24,3 +24,23 @@
         width: auto;
     }
 }
+
+ul.defined-filters,
+ul.ratios,
+ul.dimensions {
+    list-style: none;
+    padding: 0;
+}
+ul.defined-filters > li,
+ul.ratios > li,
+ul.dimensions > li {
+    border-bottom: 1px dotted #ccc;
+    padding: 2px 0;
+}
+ul.defined-filters > li {
+    display: flex;
+    align-items: center;
+}
+ul.defined-filters > li.placeholder:not(:last-of-type) {
+    display: none;
+}

@@ -1,5 +1,6 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,12 @@ public class ReferenceObjectHierarchy {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id", insertable=false , updatable=false)
+    @JsonIgnore
     private ReferenceObject parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id", referencedColumnName = "id", insertable=false , updatable=false)
+    @JsonIgnore
     private ReferenceObject child;
 
     public ReferenceObjectHierarchy(Long parent_id, Long child_id) {

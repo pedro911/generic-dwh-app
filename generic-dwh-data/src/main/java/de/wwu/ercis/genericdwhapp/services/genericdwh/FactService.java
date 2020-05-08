@@ -16,7 +16,7 @@ public interface FactService extends GenericDWHService<Fact, Long> {
 
     List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions);
 
-    List<String[]> gdwhNcbQuery(List<String> ratios, List<String> dimensions);
+    List<String[]> gdwhNcbQuery(List<String> ratios, List<String> dimensions, List<String> filters);
 
     List<String> getAllDimensionCombinations() throws FileNotFoundException;
 
