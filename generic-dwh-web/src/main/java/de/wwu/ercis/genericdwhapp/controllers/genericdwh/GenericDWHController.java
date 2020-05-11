@@ -88,16 +88,13 @@ public class GenericDWHController {
     public String genericDWHQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
                                   @RequestParam("dimensionChecked") List<String> dimensions,
-                                  @RequestParam("filters") List<String> filters) {
-
-        for (String f:filters)
-            System.out.println(f);
+                                  @RequestParam(name = "filters", required = false) List<String> filters) {
 
         model.addAttribute("db", db);
         long start = System.nanoTime();
 
         if (db.endsWith("dyn"))
-            model.addAttribute("results", factService.gdwhDynQuery(ratios,dimensions));
+            model.addAttribute("results", factService.gdwhDynQuery(ratios,dimensions, filters));
         else if (db.endsWith("acb"))
             model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions));
         else
@@ -150,7 +147,7 @@ public class GenericDWHController {
         model.addAttribute("db", db);
         dimensionId = dimensionId.replace("\"","");
         Dimension dimension = dimensionService.findById(Long.parseLong(dimensionId));
-        List<ReferenceObject> referenceObjects = referenceObjectService.findAllByDimensionIn(dimension);
+        List<ReferenceObject> referenceObjects = referenceObjectService.findFirst1000ByDimensionIn(dimension);
 
         return referenceObjects;
 

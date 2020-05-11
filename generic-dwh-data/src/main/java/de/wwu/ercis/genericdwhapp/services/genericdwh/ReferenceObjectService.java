@@ -12,6 +12,8 @@ public interface ReferenceObjectService extends GenericDWHService<ReferenceObjec
 
     List<ReferenceObject> findAllByDimensionIn(Dimension dimension);
 
+    List<ReferenceObject> findFirst1000ByDimensionIn(Dimension dimension);
+
     List<ReferenceObject> findAllByNameContaining(String name);
 
     List<ReferenceObject> findAllByDimensionInAndNameContaining(Dimension dimension, String name);

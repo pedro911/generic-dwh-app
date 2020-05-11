@@ -107,12 +107,11 @@
 
                         $(document).on('change', '.filter-dimension-select.single-object-filter-type', function() {
                             var uid = $(this).closest('li').data('uid');
-
-                            var $container = $(this).parent();
-                            $(this).nextAll().remove();
-
-                            $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
                             var dimensionId = $(this).val();
+                            var $container = $(this).parent();
+
+                            $(this).nextAll().remove();
+                            $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
 
                             $.ajax({
                                 type:'POST',
@@ -133,10 +132,10 @@
 
                         $(document).on('change', '.filter-dimension-select.multiple-objects-filter-type', function() {
                             var uid = $(this).closest('li').data('uid');
-
+                            var dimensionId = $(this).val();
                             var $container = $(this).parent();
-                            $(this).nextAll().remove();
 
+                            $(this).nextAll().remove();
                             $('<span class="ajax-spinner ajax-spinner-16"></span>').after(' ').appendTo($container);
 
                             $.ajax({
@@ -147,9 +146,9 @@
                                 complete: function(jqXHR, textStatus) {
                                     $container.find('.ajax-spinner').remove();
                                     var $select = $('<select/>', { class: 'filter-reference-object-select',
-                                        name: 'filters['+uid+'][reference_objects][]', multiple: 'multiple' });
+                                        name: 'filters', multiple: 'multiple' });
                                     $.each(jqXHR.responseJSON, function(i, item) {
-                                        $('<option/>', { value: item.id }).text(item.name).appendTo($select);
+                                        $('<option/>', { value: item.id + '_' + dimensionId }).text(item.name).appendTo($select);
                                     });
                                     $select.after(' ').appendTo($container);
                                 } // complete

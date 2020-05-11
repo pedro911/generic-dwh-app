@@ -29,20 +29,20 @@ public class Dimension extends BaseEntity{
     @Column(name = "is_time", columnDefinition = "tinyint(1)")
     private boolean is_time;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
     @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "combination")
     private Set<DimensionCombination> dimensionCombinationsByCombinations = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate")
     @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subordinate")
     private Set<DimensionCombination> dimensionCombinationsBySubordinates = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private Set<DimensionHierarchy> dimensionHierarchiesByParents = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "child")
     @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "child")
     private Set<DimensionHierarchy> dimensionHierarchiesByChildren = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dimension")

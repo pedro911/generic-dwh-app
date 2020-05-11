@@ -1,5 +1,14 @@
 @import "navbar-top-fixed.css";
 
+.ajax-spinner {
+}
+.ajax-spinner-16 {
+    background: url('/resources/images/ajax-spinner-16.gif');
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
 .dropdown-submenu{
     position: relative;
 }

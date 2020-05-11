@@ -1,5 +1,6 @@
 package de.wwu.ercis.genericdwhapp.model.genericdwh;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,10 +25,12 @@ public class ReferenceObjectCombination {
     @Column(name = "subordinate_id", nullable = false)
     private Long subordinateId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "combination_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject combination;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subordinate_id", referencedColumnName = "id", insertable=false , updatable=false)
     private ReferenceObject subordinate;

@@ -87,7 +87,7 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions) {
+    public List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions, List<String> filters) {
         queryMethod = "";
         List<String[]> factsResult = new ArrayList<>();
         List<String> dCombinations = new ArrayList<>();
@@ -203,7 +203,6 @@ public class FactSDJpaService implements FactService {
                         }
                     }
                 }
-                List<String> filters = new ArrayList<>();
                 factsResult = gdwhNcbQuery(ratios, dimensions, filters);
                 queryMethod = "New facts inserted.";
             }
@@ -432,7 +431,7 @@ public class FactSDJpaService implements FactService {
 
         List<String> filters_where = new ArrayList<>();
 
-        if (!filters.isEmpty()) {
+        if (filters != null) {
             Map<String, String> filtersMap = filters
                     .stream()
                     .distinct()

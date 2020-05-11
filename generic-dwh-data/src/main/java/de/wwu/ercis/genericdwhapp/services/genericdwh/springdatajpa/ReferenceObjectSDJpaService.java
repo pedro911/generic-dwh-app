@@ -54,6 +54,11 @@ public class ReferenceObjectSDJpaService implements ReferenceObjectService {
     }
 
     @Override
+    public List<ReferenceObject> findFirst1000ByDimensionIn(Dimension dimension) {
+        return referenceObjectRepository.findFirst1000ByDimensionIn(dimension);
+    }
+
+    @Override
     public List<ReferenceObject> findAllByNameContaining(String name) {
         return referenceObjectRepository.findAllByNameContaining(name.toUpperCase());
     }

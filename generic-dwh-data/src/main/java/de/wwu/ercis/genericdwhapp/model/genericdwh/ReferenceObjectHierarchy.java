@@ -25,14 +25,14 @@ public class ReferenceObjectHierarchy {
     @Column(name = "child_id", nullable = false)
     private Long childId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id", insertable=false , updatable=false)
-    @JsonIgnore
     private ReferenceObject parent;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id", referencedColumnName = "id", insertable=false , updatable=false)
-    @JsonIgnore
     private ReferenceObject child;
 
     public ReferenceObjectHierarchy(Long parent_id, Long child_id) {

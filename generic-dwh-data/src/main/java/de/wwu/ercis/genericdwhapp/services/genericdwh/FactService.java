@@ -12,7 +12,7 @@ public interface FactService extends GenericDWHService<Fact, Long> {
 
     String query();
 
-    List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions);
+    List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions, List<String> filters);
 
     List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions);
 
