@@ -130,6 +130,38 @@ public class FactSDJpaService implements FactService {
             dimensionRepository.findAtomicLevels(dc).forEach(atomicLevels::add);
         });
 
+        List<String> filters_where = new ArrayList<>();
+
+        if (filters != null) {
+            Map<String, String> filtersMap = filters
+                    .stream()
+                    .distinct()
+                    .map(s -> s.split("_"))
+                    .collect(toMap(s -> s[0], s -> s[1]));
+
+            filtersMap.values().stream().distinct().forEach( dimensionId -> {
+
+                List<String> roIds = filtersMap
+                        .entrySet()
+                        .stream()
+                        .filter(x -> dimensionId.equals(x.getValue()))
+                        .map(x -> x.getKey())
+                        .collect(Collectors.toList());
+
+                List<String> roNames = new ArrayList<>();
+                for (String roId : roIds){
+                    ReferenceObject referenceObject = referenceObjectRepository.findById(
+                            Long.parseLong(roId)).orElse(null);
+                    roNames.add(referenceObject.getName());
+                }
+                filters_where.add(" AND RO.NAME REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
+
+                Dimension dimension = dimensionRepository.findById(Long.parseLong(dimensionId)).orElse(null);
+                if(!dimensionsResult.contains(dimension))
+                    dimensionsResult.add(dimension);
+            });
+        }
+
         Deque<Dimension> dimensionHierarchy = new ArrayDeque<>();
 
         for (Dimension dimension : dimensionsResult) {
@@ -175,7 +207,7 @@ public class FactSDJpaService implements FactService {
 
         if (dimensionsResult.size() == 1) {
 
-            where = "WHERE ro.dimension_id =" + dimensionsResult.get(0).getId();
+            where = "WHERE ro.dimension_id =" + dimensionsResult.get(0).getId() + filters_where.stream().collect(Collectors.joining(" "));
             query = "SELECT ro.name, " + ratiosResult
                     .stream()
                     .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2)")
@@ -246,7 +278,7 @@ public class FactSDJpaService implements FactService {
                         queryMethod = "New facts inserted.";
                     }
 
-                    where = " WHERE ro.dimension_id =" + newDimensionCombination.getId() + "\nORDER BY ro.name";
+                    where = " WHERE ro.dimension_id =" + newDimensionCombination.getId();
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
                     String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
@@ -254,8 +286,10 @@ public class FactSDJpaService implements FactService {
                             .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
-                            + from + ratiosJoins + where + limit;
+                            + from + ratiosJoins + where + filters_where.stream().collect(Collectors.joining(" "))
+                            + "\nORDER BY ro.name" + limit;
                     factsResult = factRepository.nativeQuery(substringQuery);
+                    executedQuery = executedQuery + "\n $$$$$$ \n" + substringQuery;
 
                 }
                 // if there's already a dimension combination, check if for each selected ratio there are facts saved
@@ -281,7 +315,7 @@ public class FactSDJpaService implements FactService {
                     //but after reading, insert using the same query
                     saveFacts(newFactsResult);
 
-                    where = " WHERE ro.dimension_id = " + existingDimensionCombination.getId() + " \nORDER BY ro.name";
+                    where = " WHERE ro.dimension_id = " + existingDimensionCombination.getId();
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
                     String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
@@ -289,14 +323,17 @@ public class FactSDJpaService implements FactService {
                             .map(r -> "FORMAT(" + r.getName().toLowerCase().replaceAll(" ", "_") + ".value,2) " +
                                     "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                             .collect(Collectors.joining(","))
-                            + from + ratiosJoins + where + limit;
+                            + from + ratiosJoins + where + filters_where.stream().collect(Collectors.joining(" "))
+                            +  " \nORDER BY ro.name" + limit;
                     factsResult = factRepository.nativeQuery(substringQuery);
                     executedQuery = stringJoinQuery;
                     queryMethod = "New facts inserted.";
                 }
                 else {
                     //there are already saved facts for this ratio and dimension combination
-                    where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " \nORDER BY ro.name";
+                    where = "WHERE ro.dimension_id =" + existingDimensionCombination.getId()
+                        + filters_where.stream().collect(Collectors.joining(" ")) + " \nORDER BY ro.name";
+
                     // this part uses substring_index function from mysql to split values in columns to show results on the frontend
                     String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
                             + ratiosResult
