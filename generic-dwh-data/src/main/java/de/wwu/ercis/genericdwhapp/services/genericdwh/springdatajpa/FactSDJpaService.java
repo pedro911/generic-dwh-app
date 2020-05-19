@@ -609,8 +609,6 @@ public class FactSDJpaService implements FactService {
                 + "\nORDER BY " + orderBy.stream().collect(Collectors.joining(","))
                 + limit;
 
-        System.out.println(query);
-
         // change IDs to names to display on fronted
         ratios.clear();
         ratiosResult.forEach(ratio -> ratios.add(ratio.getName()));
