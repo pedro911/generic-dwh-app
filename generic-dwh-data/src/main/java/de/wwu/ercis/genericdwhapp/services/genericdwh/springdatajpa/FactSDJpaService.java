@@ -154,7 +154,7 @@ public class FactSDJpaService implements FactService {
                             Long.parseLong(roId)).orElse(null);
                     roNames.add(referenceObject.getName());
                 }
-                filters_where.add(" AND RO.NAME REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
+                filters_where.add(" AND ro.name REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
 
                 if(!dimensionsIds.contains(Long.parseLong(dimensionId)))
                     dimensionsIds.add(Long.parseLong(dimensionId));
@@ -421,7 +421,7 @@ public class FactSDJpaService implements FactService {
                             Long.parseLong(roId)).orElse(null);
                     roNames.add(referenceObject.getName());
                 }
-                filters_where.add(" AND RO.NAME REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
+                filters_where.add(" AND ro.name REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
 
                 if(!dimensionsIds.contains(Long.parseLong(dimensionId)))
                     dimensionsIds.add(Long.parseLong(dimensionId));
