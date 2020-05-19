@@ -14,7 +14,7 @@ public interface FactService extends GenericDWHService<Fact, Long> {
 
     List<String[]> gdwhDynQuery(List<String> ratios, List<String> dimensions, List<String> filters);
 
-    List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions);
+    List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions, List<String> filters);
 
     List<String[]> gdwhNcbQuery(List<String> ratios, List<String> dimensions, List<String> filters);
 

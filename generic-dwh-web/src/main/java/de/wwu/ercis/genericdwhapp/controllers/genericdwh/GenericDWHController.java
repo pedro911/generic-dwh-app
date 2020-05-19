@@ -96,7 +96,7 @@ public class GenericDWHController {
         if (db.endsWith("dyn"))
             model.addAttribute("results", factService.gdwhDynQuery(ratios,dimensions, filters));
         else if (db.endsWith("acb"))
-            model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions));
+            model.addAttribute("results", factService.gdwhAcbQuery(ratios,dimensions, filters));
         else
             model.addAttribute("results", factService.gdwhNcbQuery(ratios,dimensions, filters));
 

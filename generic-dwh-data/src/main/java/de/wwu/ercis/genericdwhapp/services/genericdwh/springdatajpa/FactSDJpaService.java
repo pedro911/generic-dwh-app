@@ -93,6 +93,8 @@ public class FactSDJpaService implements FactService {
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
         List<Dimension> dimensionsResult = new ArrayList<>();
+        List<Long> dimensionsIds = dimensions.stream().map(s -> Long.parseLong(s)).distinct().sorted().collect(Collectors.toList());
+
         //split ratios and dimension combinations
         Map<String, String> dCombinationsMap = ratios
                 .stream()
@@ -106,8 +108,6 @@ public class FactSDJpaService implements FactService {
                 dCombinations.add(dimension_combinationId);
             ratiosResult.add(ratioRepository.findById(Long.parseLong(ratioId)).orElse(null));
         });
-        List<Long> dimensionsIds = dimensions.stream().map(s -> Long.parseLong(s)).distinct().sorted().collect(Collectors.toList());
-        dimensionsIds.stream().sorted().forEach(dId -> dimensionsResult.add(dimensionRepository.findById(dId).orElse(null)));
 
         String query = "";
         List<String> selects = new ArrayList<>();
@@ -156,11 +156,12 @@ public class FactSDJpaService implements FactService {
                 }
                 filters_where.add(" AND RO.NAME REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
 
-                Dimension dimension = dimensionRepository.findById(Long.parseLong(dimensionId)).orElse(null);
-                if(!dimensionsResult.contains(dimension))
-                    dimensionsResult.add(dimension);
+                if(!dimensionsIds.contains(Long.parseLong(dimensionId)))
+                    dimensionsIds.add(Long.parseLong(dimensionId));
             });
         }
+
+        dimensionsIds.stream().sorted().forEach(dId -> dimensionsResult.add(dimensionRepository.findById(dId).orElse(null)));
 
         Deque<Dimension> dimensionHierarchy = new ArrayDeque<>();
 
@@ -371,12 +372,14 @@ public class FactSDJpaService implements FactService {
     }
 
     @Override
-    public List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions) {
+    public List<String[]> gdwhAcbQuery(List<String> ratios, List<String> dimensions, List<String> filters) {
         queryMethod = "";
         List<String[]> factsResult = new ArrayList<>();
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
         List<Dimension> dimensionsResult = new ArrayList<>();
+        List<Long> dimensionsIds = dimensions.stream().map(s -> Long.parseLong(s)).distinct().sorted().collect(Collectors.toList());
+
         //split ratios and dimension combinations
         Map<String, String> dCombinationsMap = ratios
                 .stream()
@@ -390,12 +393,42 @@ public class FactSDJpaService implements FactService {
                 dCombinations.add(dimension_combinationId);
             ratiosResult.add(ratioRepository.findById(Long.parseLong(ratioId)).orElse(null));
         });
-        List<Long> dimensionsIds = dimensions.stream().map(s -> Long.parseLong(s)).distinct().sorted().collect(Collectors.toList());
-        dimensionsIds.stream().sorted().forEach(dId -> dimensionsResult.add(dimensionRepository.findById(dId).orElse(null)));
 
         List<String> selectsWithSubstring = new ArrayList<>();
         String from = " FROM reference_object ro \n";
         String ratiosJoins ="";
+
+        List<String> filters_where = new ArrayList<>();
+        if (filters != null) {
+            Map<String, String> filtersMap = filters
+                    .stream()
+                    .distinct()
+                    .map(s -> s.split("_"))
+                    .collect(toMap(s -> s[0], s -> s[1]));
+
+            filtersMap.values().stream().distinct().forEach( dimensionId -> {
+
+                List<String> roIds = filtersMap
+                        .entrySet()
+                        .stream()
+                        .filter(x -> dimensionId.equals(x.getValue()))
+                        .map(x -> x.getKey())
+                        .collect(Collectors.toList());
+
+                List<String> roNames = new ArrayList<>();
+                for (String roId : roIds){
+                    ReferenceObject referenceObject = referenceObjectRepository.findById(
+                            Long.parseLong(roId)).orElse(null);
+                    roNames.add(referenceObject.getName());
+                }
+                filters_where.add(" AND RO.NAME REGEXP '"+roNames.stream().collect(Collectors.joining("|"))+"' ");
+
+                if(!dimensionsIds.contains(Long.parseLong(dimensionId)))
+                    dimensionsIds.add(Long.parseLong(dimensionId));
+            });
+        }
+
+        dimensionsIds.stream().sorted().forEach(dId -> dimensionsResult.add(dimensionRepository.findById(dId).orElse(null)));
 
         for (Ratio ratio : ratiosResult) {
             String ratioQuery = ratio.getName().toLowerCase().replaceAll(" ", "_");
@@ -411,9 +444,11 @@ public class FactSDJpaService implements FactService {
         //check if selected dimension combination exists
         String dimensionName = dimensionsResult.stream().map(d -> d.getName()).collect(Collectors.joining(", "));
         Dimension existingDimensionCombination = dimensionRepository.findByName(dimensionName).orElse(null);
+
         //there are already saved facts for this ratio and dimension combination
         if (existingDimensionCombination != null) {
-            String where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId() + " \nORDER BY ro.name";
+            String where = " WHERE ro.dimension_id =" + existingDimensionCombination.getId()
+                    + filters_where.stream().collect(Collectors.joining(" ")) + " \nORDER BY ro.name";
 
             // this part uses substring_index function from mysql to split values in columns to show results on the frontend
             String substringQuery = "SELECT " + selectsWithSubstring.stream().collect(Collectors.joining(",")) + ", "
@@ -423,8 +458,15 @@ public class FactSDJpaService implements FactService {
                             "as '" + r.getName().toLowerCase().replaceAll(" ", "_") + "' ")
                     .collect(Collectors.joining(",")) + from + ratiosJoins + where + limit;
             factsResult = factRepository.nativeQuery(substringQuery);
-            executedQuery = substringQuery;
-            queryMethod = "Returned existing facts.";
+
+            if (factsResult.isEmpty()){
+                executedQuery = "No facts found for this combination!";
+                queryMethod = "";
+            }
+            else{
+                executedQuery = substringQuery;
+                queryMethod = "Returned existing facts.";
+            }
         }
         else{
             executedQuery = "No facts found for this combination!";
@@ -445,6 +487,8 @@ public class FactSDJpaService implements FactService {
         List<String> dCombinations = new ArrayList<>();
         List<Ratio> ratiosResult = new ArrayList<>();
         List<Dimension> dimensionsResult = new ArrayList<>();
+        dimensions.stream().distinct().forEach( d -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
+
         //split ratios and dimension combinations, they come together from frontend
         Map<String,String> dCombinationsMap = ratios
                 .stream()
@@ -464,10 +508,7 @@ public class FactSDJpaService implements FactService {
             dimensionRepository.findAtomicLevels(dc).forEach(atomicLevels::add);
         });
 
-        dimensions.stream().distinct().forEach( d -> dimensionsResult.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
-
         List<String> filters_where = new ArrayList<>();
-
         if (filters != null) {
             Map<String, String> filtersMap = filters
                     .stream()
@@ -545,8 +586,6 @@ public class FactSDJpaService implements FactService {
             }
         }
 
-        //List<Dimension> dimensions_select = new ArrayList<>();
-        //dimensions.stream().distinct().forEach( d -> dimensions_select.add(dimensionRepository.findById(Long.parseLong(d)).orElse(null)));
         List<Dimension> dimensions_sorted = dimensionsResult.stream().sorted(Comparator.comparingLong(Dimension::getId)).collect(Collectors.toList());
         for (Dimension dimension : dimensions_sorted){
             String dimensionQuery = dimension.getName().replaceAll(" ","_").toLowerCase();
