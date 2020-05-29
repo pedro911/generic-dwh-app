@@ -240,7 +240,7 @@
 
                             $.ajax({
                                 type:'POST',
-                                url: "/genericdwh/getReferenceObjects/"+db,
+                                url: "/star/getReferenceObjects/"+db,
                                 contentType: "application/json",
                                 data: JSON.stringify(dimensionId),
                                 complete: function(jqXHR, textStatus) {
@@ -248,7 +248,7 @@
                                     var $select = $('<select/>', { class: 'filter-reference-object-select',
                                         name: 'filters', multiple: 'multiple' });
                                     $.each(jqXHR.responseJSON, function(i, item) {
-                                        $('<option/>', { value: item.id + '_' + dimensionId }).text(item.name).appendTo($select);
+                                        $('<option/>', { value: item + '%%' + dimensionId}).text(item).appendTo($select);
                                     });
                                     $select.after(' ').appendTo($container);
                                 } // complete
