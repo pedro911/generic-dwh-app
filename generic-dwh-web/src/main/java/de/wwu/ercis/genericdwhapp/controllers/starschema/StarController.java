@@ -5,10 +5,7 @@ import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +35,11 @@ public class StarController {
     @GetMapping("/star/results/{db}")
     public String starQueryResults(@PathVariable String db, Model model,
                                   @RequestParam("ratioChecked") List<String> ratios,
-                                  @RequestParam("dimensionChecked") List<String> dimensions){
+                                  @RequestParam("dimensionChecked") List<String> dimensions,
+                                  @RequestParam(name = "filters", required = false) List<String> filters){
 
         long start = System.nanoTime();
-        model.addAttribute("starFacts", starService.starFacts(dimensions,ratios));
+        model.addAttribute("starFacts", starService.starFacts(dimensions,ratios, filters));
         long end = System.nanoTime();
         Double sec = (end - start) / 1e6;
 
@@ -80,6 +78,17 @@ public class StarController {
         return "star/adHocResults";
     }
 
+    @RequestMapping(method= RequestMethod.POST, value = "/star/getReferenceObjects/{db}")
+    public @ResponseBody List<String> getSearchResultViaAjax(@RequestBody String dimensionId,
+                                                                      Model model, @PathVariable String db ) {
+
+        model.addAttribute("db", db);
+
+        dimensionId = dimensionId.replace("\"","");
+        List<String> referenceObjects = starService.getReferenceObjects(dimensionId);
+        return referenceObjects;
+
+    }
 
     public List<String> formatRatios(List<String> ratios){
         List<String> ratiosValues = new ArrayList<>();

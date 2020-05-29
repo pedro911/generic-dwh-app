@@ -5,11 +5,13 @@
     <!--/*@thymesVar id="fact" type="de.wwu.ercis.genericdwhapp.model.genericdwh.Dimension"*/-->
     <div class="card border-dark mb-3" th:each="dimensionRoot : ${dimensionRoots}">
         <div class="card-header" >
-            <span class="dimension-root" th:if="'null' == ${dimensionRoot.parentId}" th:name="${dimensionRoot.name}" th:text="${dimensionRoot.name}" th:id="${dimensionRoot.id}"></span>
+            <span class="dimension-root" th:if="'null' == ${dimensionRoot.parentId}" th:name="${dimensionRoot.name}"
+                  th:text="${dimensionRoot.name}" th:id="${dimensionRoot.id}"></span>
         </div>
         <div class="card-body">
             <span th:each="dimension : ${dimensionRoot.childrenItems}" th:remove="tag">
-                 <input class="dimension" type="checkbox" th:text="'  ' + ${dimension.name}" th:name="dimensionChecked" th:id="${dimension.name}" th:value="${dimension.id}"
+                 <input class="dimension" type="checkbox" th:text="'  ' + ${dimension.name}" th:name="dimensionChecked"
+                        th:id="${dimension.name}" th:value="${dimension.id}"
                     th:alt="${dimensionRoot.name}" th:title="${dimension.parentId}">
                  <br/>
             </span>

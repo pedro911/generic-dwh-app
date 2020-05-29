@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 @Service
@@ -21,9 +24,37 @@ public class StarSDJpaService implements StarService {
     }
 
     @Override
-    public List<String[]> starFacts(List<String> dimensions, List<String> ratios) {
+    public List<String[]> starFacts(List<String> dimensions, List<String> ratios, List<String> filters) {
 
         List<String> joins = new ArrayList<>();
+
+        filters.forEach(System.out::println);
+        String where = "";
+
+        List<String> filters_where = new ArrayList<>();
+        if (filters != null) {
+            where = "\nWHERE ";
+            Map<String, String> filtersMap = filters
+                    .stream()
+                    .distinct()
+                    .map(s -> s.split("%%"))
+                    .collect(toMap(s -> s[0], s -> s[1]));
+
+            filtersMap.values().stream().distinct().forEach( dimensionId -> {
+
+                List<String> roIds = filtersMap
+                        .entrySet()
+                        .stream()
+                        .filter(x -> dimensionId.equals(x.getValue()))
+                        .map(x -> x.getKey())
+                        .collect(Collectors.toList());
+
+                filters_where.add(dimensionId + " IN ('" + roIds.stream().collect(Collectors.joining("','"))+"') ");
+
+                if(!dimensions.contains(dimensionId))
+                    dimensions.add(dimensionId);
+            });
+        }
 
         if (dimensions.contains("d_month_number") && !dimensions.contains("d_year_number"))
             dimensions.add("d_year_number");
@@ -50,11 +81,38 @@ public class StarSDJpaService implements StarService {
                 + ratios.stream().map(r-> "FORMAT(sum("+ r +"),2)").collect(Collectors.joining(","))
                 + " FROM fact f\n"
                 + joins.stream().collect(Collectors.joining("\n"))
+                + where + filters_where.stream().collect(Collectors.joining(" AND "))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " LIMIT 1000";
         executedQuery = query;
         return starRepository.nativeQuery(query);
+    }
+
+    @Override
+    public List<String> getReferenceObjects(String dimensionId){
+        String query = "";
+        List<String> result = new ArrayList<>();
+
+        if (dimensionId.startsWith("o"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_clerk ORDER BY " + dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.startsWith("c"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_customer ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.startsWith("p"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_product ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.startsWith("s"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_supplier ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.startsWith("d"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_date ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        List<String[]> queryResult = starRepository.nativeQuery(query);
+        queryResult.forEach(s -> result.add(s[0].toUpperCase()));
+
+        return result;
     }
 
     @Override
