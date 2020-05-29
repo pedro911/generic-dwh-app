@@ -27,11 +27,9 @@ public class StarSDJpaService implements StarService {
     public List<String[]> starFacts(List<String> dimensions, List<String> ratios, List<String> filters) {
 
         List<String> joins = new ArrayList<>();
-
-        filters.forEach(System.out::println);
         String where = "";
-
         List<String> filters_where = new ArrayList<>();
+
         if (filters != null) {
             where = "\nWHERE ";
             Map<String, String> filtersMap = filters
