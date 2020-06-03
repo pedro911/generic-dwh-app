@@ -4,10 +4,7 @@ import de.wwu.ercis.genericdwhapp.services.snowflake.springdatajpa.SnowflakeServ
 import de.wwu.ercis.genericdwhapp.services.stats.QueryTimeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +75,18 @@ public class SnowflakeController {
         model.addAttribute("query", snowflakeService.query());
 
         return "snowflake/adHocResults";
+    }
+
+    @RequestMapping(method= RequestMethod.POST, value = "/snowflake/getReferenceObjects/{db}")
+    public @ResponseBody List<String> getSearchResultViaAjax(@RequestBody String dimensionId,
+                                                             Model model, @PathVariable String db ) {
+
+        model.addAttribute("db", db);
+
+        dimensionId = dimensionId.replace("\"","");
+        List<String> referenceObjects = snowflakeService.getReferenceObjects(dimensionId);
+        return referenceObjects;
+
     }
 
     public List<String> formatRatios(List<String> ratios){

@@ -10,4 +10,6 @@ public interface SnowflakeService {
 
     List<String[]> adHocQuery(String query);
 
+    List<String> getReferenceObjects(String dimensionId);
+
 }

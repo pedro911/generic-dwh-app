@@ -98,4 +98,49 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
         executedQuery = query;
         return snowflakeRepository.nativeQuery(query);
     }
+
+    @Override
+    public List<String> getReferenceObjects(String dimensionId) {
+        String query = "";
+        List<String> result = new ArrayList<>();
+
+        if (dimensionId.startsWith("o"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_clerk ORDER BY " + dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.startsWith("s"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_supplier ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.startsWith("d"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_date ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.equals("r_name"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM region ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId == "n_name")
+            query = "SELECT DISTINCT "+ dimensionId + " FROM nation ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId == "c_name")
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_customer ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId == "market_segment")
+            query = "SELECT DISTINCT "+ dimensionId + " FROM market_segment ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId == "manufacturer_group")
+            query = "SELECT DISTINCT "+ dimensionId + " FROM manufacturer_group ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId == "product_brand")
+            query = "SELECT DISTINCT "+ dimensionId + " FROM product_brand ORDER BY "+ dimensionId + " LIMIT 1000;";
+
+        else if (dimensionId.toLowerCase() == "p_name")
+            query = "SELECT DISTINCT "+ dimensionId.toUpperCase() + " FROM dim_product ORDER BY "+ dimensionId.toUpperCase() + " LIMIT 1000;";
+
+        else if (dimensionId.toLowerCase() == "product_type")
+            query = "SELECT DISTINCT "+ dimensionId.toUpperCase() + " FROM product_type ORDER BY "+ dimensionId.toUpperCase() + " LIMIT 1000;";
+
+        List<String[]> queryResult = snowflakeRepository.nativeQuery(query);
+        queryResult.forEach(s -> result.add(s[0].toUpperCase()));
+
+        return result;
+    }
+
 }
