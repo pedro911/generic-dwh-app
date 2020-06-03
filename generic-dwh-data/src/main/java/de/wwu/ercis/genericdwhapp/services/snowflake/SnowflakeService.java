@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface SnowflakeService {
 
-    List<String[]> snowFacts(List<String> dimensions, List<String> ratios);
+    List<String[]> snowFacts(List<String> dimensions, List<String> ratios, List<String> filters);
 
     String query();
 

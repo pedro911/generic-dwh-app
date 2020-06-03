@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 @Service
@@ -21,9 +24,36 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
     }
 
     @Override
-    public List<String[]> snowFacts(List<String> dimensions, List<String> ratios) {
+    public List<String[]> snowFacts(List<String> dimensions, List<String> ratios, List<String> filters) {
 
         List<String> joins = new ArrayList<>();
+
+        String where = "";
+        List<String> filters_where = new ArrayList<>();
+
+        if (filters != null) {
+            where = "\nWHERE ";
+            Map<String, String> filtersMap = filters
+                    .stream()
+                    .distinct()
+                    .map(s -> s.split("%%"))
+                    .collect(toMap(s -> s[0], s -> s[1]));
+
+            filtersMap.values().stream().distinct().forEach( dimensionId -> {
+
+                List<String> roIds = filtersMap
+                        .entrySet()
+                        .stream()
+                        .filter(x -> dimensionId.equals(x.getValue()))
+                        .map(x -> x.getKey())
+                        .collect(Collectors.toList());
+
+                filters_where.add(dimensionId + " IN ('" + roIds.stream().collect(Collectors.joining("','"))+"') ");
+
+                if(!dimensions.contains(dimensionId))
+                    dimensions.add(dimensionId);
+            });
+        }
 
         if (dimensions.contains("d_month_number") && !dimensions.contains("d_year_number"))
             dimensions.add("d_year_number");
@@ -73,6 +103,7 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
                 + ratios.stream().map(r-> "FORMAT(sum("+ r +"),2)").collect(Collectors.joining(","))
                 + " FROM fact f\n"
                 + joins.stream().collect(Collectors.joining("\n"))
+                + where + filters_where.stream().collect(Collectors.joining(" AND "))
                 + "\n GROUP BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " WITH ROLLUP\n ORDER BY " + dimensions.stream().collect(Collectors.joining(","))
                 + " LIMIT 1000";
@@ -116,26 +147,26 @@ public class SnowflakeService implements de.wwu.ercis.genericdwhapp.services.sno
         else if (dimensionId.equals("r_name"))
             query = "SELECT DISTINCT "+ dimensionId + " FROM region ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId == "n_name")
+        else if (dimensionId.equals("n_name"))
             query = "SELECT DISTINCT "+ dimensionId + " FROM nation ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId == "c_name")
+        else if (dimensionId.equals("c_name"))
             query = "SELECT DISTINCT "+ dimensionId + " FROM dim_customer ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId == "market_segment")
+        else if (dimensionId.equals("market_segment"))
             query = "SELECT DISTINCT "+ dimensionId + " FROM market_segment ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId == "manufacturer_group")
+        else if (dimensionId.equals("manufacturer_group"))
             query = "SELECT DISTINCT "+ dimensionId + " FROM manufacturer_group ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId == "product_brand")
+        else if (dimensionId.equals("product_brand"))
             query = "SELECT DISTINCT "+ dimensionId + " FROM product_brand ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId.toLowerCase() == "p_name")
-            query = "SELECT DISTINCT "+ dimensionId.toUpperCase() + " FROM dim_product ORDER BY "+ dimensionId.toUpperCase() + " LIMIT 1000;";
+        else if (dimensionId.equals("p_name"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM dim_product ORDER BY "+ dimensionId + " LIMIT 1000;";
 
-        else if (dimensionId.toLowerCase() == "product_type")
-            query = "SELECT DISTINCT "+ dimensionId.toUpperCase() + " FROM product_type ORDER BY "+ dimensionId.toUpperCase() + " LIMIT 1000;";
+        else if (dimensionId.equals("product_type"))
+            query = "SELECT DISTINCT "+ dimensionId + " FROM product_type ORDER BY "+ dimensionId + " LIMIT 1000;";
 
         List<String[]> queryResult = snowflakeRepository.nativeQuery(query);
         queryResult.forEach(s -> result.add(s[0].toUpperCase()));

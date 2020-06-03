@@ -32,12 +32,13 @@ public class SnowflakeController {
     }
 
     @GetMapping("/snowflake/results/{db}")
-    public String starQueryResults(@PathVariable String db, Model model,
+    public String snowFlakeQueryResults(@PathVariable String db, Model model,
                                    @RequestParam("ratioChecked") List<String> ratios,
-                                   @RequestParam("dimensionChecked") List<String> dimensions){
+                                   @RequestParam("dimensionChecked") List<String> dimensions,
+                                   @RequestParam(name = "filters", required = false) List<String> filters){
 
         long start = System.nanoTime();
-        model.addAttribute("snowFacts", snowflakeService.snowFacts(dimensions,ratios));
+        model.addAttribute("snowFacts", snowflakeService.snowFacts(dimensions,ratios, filters));
         long end = System.nanoTime();
         Double sec = (end - start) / 1e6;
 
