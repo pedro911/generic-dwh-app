@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -38,17 +39,19 @@ public class StarController {
                                   @RequestParam("dimensionChecked") List<String> dimensions,
                                   @RequestParam(name = "filters", required = false) List<String> filters){
 
+        List<String> distinctDimensions = dimensions.stream().distinct().collect(Collectors.toList());
+
         long start = System.nanoTime();
-        model.addAttribute("starFacts", starService.starFacts(dimensions,ratios, filters));
+        model.addAttribute("starFacts", starService.starFacts(distinctDimensions,ratios, filters));
         long end = System.nanoTime();
         Double sec = (end - start) / 1e6;
 
         model.addAttribute("query", starService.query());
         model.addAttribute("timeElapsed", sec);
         model.addAttribute("db", db);
-        model.addAttribute("dimensions",formatDimensions(dimensions));
+        model.addAttribute("dimensions",formatDimensions(distinctDimensions));
         model.addAttribute("ratios", formatRatios(ratios));
-        queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
+        queryTimeService.addQueryTime(db,formatDimensions(distinctDimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
 
         return "star/results";
     }

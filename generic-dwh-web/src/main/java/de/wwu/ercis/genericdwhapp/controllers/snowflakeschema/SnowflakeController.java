@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class SnowflakeController {
@@ -37,17 +38,19 @@ public class SnowflakeController {
                                    @RequestParam("dimensionChecked") List<String> dimensions,
                                    @RequestParam(name = "filters", required = false) List<String> filters){
 
+        List<String> distinctDimensions = dimensions.stream().distinct().collect(Collectors.toList());
+
         long start = System.nanoTime();
-        model.addAttribute("snowFacts", snowflakeService.snowFacts(dimensions,ratios, filters));
+        model.addAttribute("snowFacts", snowflakeService.snowFacts(distinctDimensions, ratios, filters));
         long end = System.nanoTime();
         Double sec = (end - start) / 1e6;
 
         model.addAttribute("query", snowflakeService.query());
         model.addAttribute("timeElapsed", sec);
         model.addAttribute("db", db);
-        model.addAttribute("dimensions",formatDimensions(dimensions));
+        model.addAttribute("dimensions",formatDimensions(distinctDimensions));
         model.addAttribute("ratios", formatRatios(ratios));
-        queryTimeService.addQueryTime(db,formatDimensions(dimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
+        queryTimeService.addQueryTime(db,formatDimensions(distinctDimensions).toString()+" - "+formatRatios(ratios).toString(),sec);
 
         return "snowflake/results";
 
